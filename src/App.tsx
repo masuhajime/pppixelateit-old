@@ -62,7 +62,7 @@ function App() {
       shallow
     )
 
-  const onConnectA = useCallback(
+  const onConnectCustom = useCallback(
     (params: any) => {
       console.log(params)
       params.data = {}
@@ -152,7 +152,7 @@ function App() {
               onEdgesChange={onEdgesChange}
               nodeTypes={nodeTypes}
               edgeTypes={edgeTypes}
-              onConnect={onConnectA}
+              onConnect={onConnectCustom}
               proOptions={{
                 hideAttribution: true,
               }}
