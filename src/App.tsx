@@ -1,4 +1,4 @@
-import { DragEvent, useCallback, useRef, useState } from 'react'
+import { DragEvent, useCallback, useEffect, useRef, useState } from 'react'
 import './App.css'
 import ReactFlow, {
   addEdge,
@@ -22,6 +22,10 @@ import { IconButton } from '@mui/material'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import { Sidebar } from './components/Sidebar'
 import { v4 as uuidv4 } from 'uuid'
+import processStore from './store/processStore'
+
+import useStore, { RFState } from './store/store'
+import { shallow } from 'zustand/shallow'
 
 const nodeTypes = {
   inputImage: ImageInputNode,
@@ -44,79 +48,30 @@ function App() {
       },
     },
   })
-  const initialNodes = [
-    {
-      id: 'node-1',
-      type: 'inputImage',
-      position: { x: 0, y: 100 },
-      data: { label: '3' },
-    },
-    {
-      id: 'w2b',
-      type: 'whiteToBlack',
-      position: { x: 300, y: 100 },
-      data: { label: '3' },
-    },
-    {
-      id: 'ipn',
-      type: 'imagePreviewNode',
-      position: { x: 600, y: 100 },
-      data: { label: '3' },
-    },
-  ]
-  const initialEdges = [
-    {
-      id: 'e1-2',
-      source: 'node-1',
-      target: 'w2b',
-      data: {
-        label: 'edge label',
-        onDelete: (id: string) => {
-          onEdgeDelete(id)
-        },
-      },
-      type: 'custom',
-    },
-    {
-      id: 'e1-2a',
-      source: 'w2b',
-      target: 'ipn',
-      data: {
-        label: 'edge label',
-        onDelete: (id: string) => {
-          onEdgeDelete(id)
-        },
-      },
-      type: 'custom',
-    },
-  ]
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+  const { nodes, edges, onNodesChange, onEdgesChange, onConnect, nodeAdd } =
+    useStore(
+      (state: RFState) => ({
+        nodes: state.nodes,
+        edges: state.edges,
+        onNodesChange: state.onNodesChange,
+        onEdgesChange: state.onEdgesChange,
+        onConnect: state.onConnect,
+        nodeAdd: state.nodeAdd,
+      }),
+      shallow
+    )
 
-  const onEdgeDelete = useCallback(
-    (edgeId: string) => {
-      console.log('delete edge', edgeId)
-      // TODO: Callback all edge data?
-      setEdges((eds) => eds.filter((e) => e.id !== edgeId))
-    },
-    [setEdges]
-  )
-
-  const onConnect = useCallback(
+  const onConnectA = useCallback(
     (params: any) => {
       console.log(params)
-      params.data = {
-        label: 'edge label',
-        onDelete: (id: string) => {
-          onEdgeDelete(id)
-        },
-      }
+      params.data = {}
       params.type = 'custom'
-      setEdges((eds) => addEdge(params, eds))
+      onConnect(params)
     },
-    [setEdges]
+    [onConnect]
   )
+
   const reactFlowWrapper = useRef<HTMLDivElement>(null)
   const [reactFlowInstance, setReactFlowInstance] = useState<
     ReactFlowInstance | undefined
@@ -124,6 +79,14 @@ function App() {
   const onDragOver = useCallback((event: any) => {
     event.preventDefault()
     event.dataTransfer.dropEffect = 'move'
+  }, [])
+
+  const init = useCallback(() => {
+    console.log('init')
+    processStore.getState().reset()
+    processStore.subscribe((state) => {
+      console.log('App: processStore in subscribe', state)
+    })
   }, [])
 
   const onDrop = useCallback(
@@ -149,17 +112,15 @@ function App() {
         y: event.clientY - reactFlowBounds.top,
       })
       const newNode = {
-        id: 'node-' + uuidv4(),
+        id: `node-${type}-${uuidv4()}`,
         type,
         position,
         data: { label: `${type} node` },
       }
-
-      setNodes((nds) => nds.concat(newNode))
+      nodeAdd(newNode)
     },
     [reactFlowInstance]
   )
-
   return (
     <ThemeProvider theme={theme}>
       <ReactFlowProvider>
@@ -191,7 +152,7 @@ function App() {
               onEdgesChange={onEdgesChange}
               nodeTypes={nodeTypes}
               edgeTypes={edgeTypes}
-              onConnect={onConnect}
+              onConnect={onConnectA}
               proOptions={{
                 hideAttribution: true,
               }}
@@ -201,7 +162,7 @@ function App() {
               onDragOver={onDragOver}
               onInit={(instance: ReactFlowInstance) => {
                 console.log('flow loaded:', instance)
-
+                init()
                 setReactFlowInstance(instance)
               }}
             >
@@ -213,6 +174,7 @@ function App() {
                   }}
                   onClick={() => {
                     console.log('play')
+                    processStore.getState().start()
                   }}
                 >
                   <PlayArrowIcon />

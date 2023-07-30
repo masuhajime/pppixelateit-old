@@ -4,6 +4,8 @@ import {
   EdgeLabelRenderer,
   BaseEdge,
 } from 'reactflow'
+import useStore, { RFState } from '../../store/store'
+import { shallow } from 'zustand/shallow'
 
 type CustomEdgeData = {
   label?: string
@@ -29,6 +31,13 @@ export const CustomEdge = ({
     targetPosition,
   })
 
+  const { edgeDelete } = useStore(
+    (state: RFState) => ({
+      edgeDelete: state.edgeDelete,
+    }),
+    shallow
+  )
+
   return (
     <>
       <BaseEdge id={id} path={edgePath} />
@@ -47,7 +56,7 @@ export const CustomEdge = ({
             }}
             className="nodrag nopan"
             onClick={() => {
-              data?.onDelete(id)
+              edgeDelete(id)
             }}
           >
             Delete
