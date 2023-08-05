@@ -1,46 +1,57 @@
-import { useCallback, useState } from 'react'
-import { Handle, Position } from 'reactflow'
-import Input from '@mui/material/Input'
+import { useState } from 'react'
+import { Handle, Node, NodeProps, Position } from 'reactflow'
 
-import Box from '@mui/material/Box'
-import Card from '@mui/material/Card'
-import CardActions from '@mui/material/CardActions'
-import CardContent from '@mui/material/CardContent'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
-import {
-  Avatar,
-  CardHeader,
-  FormControl,
-  FormHelperText,
-  IconButton,
-  InputLabel,
-} from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import { red } from '@mui/material/colors'
-import { MuiFileInput } from 'mui-file-input'
+import { CardHeader, IconButton } from '@mui/material'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import {
+  HandleTarget,
+  IncomingDataType,
+  NodeBaseData,
+  NodeBehaviorInterface,
+} from './data/NodeData'
+import useNodeStore, { getNodeSnapshot } from '../../store/store'
 
-type Props = { data: any; isConnectable: boolean }
-export const ImagePreviewNode = ({ data, isConnectable }: Props) => {
-  const [value, setValue] = useState<File | undefined>(undefined)
-  const [imageBase64, setImageBase64] = useState<string | undefined>(undefined)
+const handleTargets: Record<string, HandleTarget> = {
+  image: {
+    id: 'image',
+    type: 'image',
+  },
+}
 
-  const handleChange = (newValue: File | null) => {
-    console.log(newValue)
-    if (newValue instanceof File) {
-      // get base64 from file
-      const reader = new FileReader()
-      reader.readAsDataURL(newValue)
-      reader.onload = () => {
-        console.log(reader.result)
-        setImageBase64(reader.result as string)
-      }
-      setValue(newValue)
-    } else {
-      setValue(undefined)
-      setImageBase64(undefined)
-    }
-  }
+type NodeData = {
+  imageBase64?: string
+} & NodeBaseData
+
+export const nodeBehavior: NodeBehaviorInterface = {
+  dataIncoming(
+    nodeId: string,
+    handleId: string,
+    dataType: string,
+    data: any
+  ): void {
+    const node = getNodeSnapshot(nodeId)
+    //data.completed = true
+    console.log('dataIncoming:', node.id, handleId, dataType, data)
+    const store = useNodeStore.getState()
+    store.updateNodeData(nodeId, {
+      ...node.data,
+      imageBase64: data,
+    })
+  },
+  nodeProcess(nodeId: string): void {
+    const node = getNodeSnapshot(nodeId)
+    //data.completed = true
+    console.error('node process:', node.id, node.type)
+  },
+  canStartProcess(nodeId: string): boolean {
+    const node = getNodeSnapshot(nodeId)
+    return !!node.data.imageBase64
+  },
+}
+
+export const ImagePreviewNode = ({ id, data }: NodeProps<NodeData>) => {
   return (
     <Card
       sx={{
@@ -56,9 +67,9 @@ export const ImagePreviewNode = ({ data, isConnectable }: Props) => {
         title="Image Preview"
       />
       <CardContent>
-        {imageBase64 && (
+        {data.imageBase64 && (
           <img
-            src={imageBase64}
+            src={data.imageBase64}
             style={{
               width: '100%',
               height: 'auto',
@@ -66,8 +77,25 @@ export const ImagePreviewNode = ({ data, isConnectable }: Props) => {
           />
         )}
       </CardContent>
+      {/* <Handle
+        type="target"
+        id={data.input.image.id}
+        onConnect={(params) => console.log('handle onConnect', id, params)}
+        position={Position.Left}
+        style={{
+          top: '0',
+          background: 'Yellow',
+          width: 16,
+          height: 16,
+        }}
+      /> */}
       <Handle
         type="target"
+        id={handleTargets.image.id}
+        isValidConnection={(connection) => {
+          return true
+        }}
+        onConnect={(params) => console.log('handle onConnect', id, params)}
         position={Position.Left}
         style={{
           right: -8,

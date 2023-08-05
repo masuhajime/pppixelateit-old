@@ -1,20 +1,99 @@
 import { useCallback } from 'react'
-import { Handle, Position } from 'reactflow'
+import { Handle, Node, NodeProps, Position } from 'reactflow'
 
-import Box from '@mui/material/Box'
+import { CardHeader, IconButton } from '@mui/material'
 import Card from '@mui/material/Card'
-import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
-import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import { Avatar, CardHeader, IconButton } from '@mui/material'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import { red } from '@mui/material/colors'
+import {
+  HandleTarget,
+  NodeBaseData,
+  NodeBehaviorInterface,
+} from './data/NodeData'
+import useNodeStore, { getNodeSnapshot } from '../../store/store'
+import { getNodeBehavior } from '../../process/process'
 
-const handleStyle = { left: 10 }
+const handleTargets: Record<string, HandleTarget> = {
+  image: {
+    id: 'image',
+    type: 'image',
+  },
+}
 
-type Props = { data: any; isConnectable: boolean }
-export const WhiteToBlackNode = ({ data, isConnectable }: Props) => {
+const handleSources = {
+  image: {
+    id: 'image',
+    type: 'image',
+  },
+}
+
+type NodeData = {
+  imageBase64?: string
+} & NodeBaseData
+
+export const nodeBehavior: NodeBehaviorInterface = {
+  dataIncoming(
+    nodeId: string,
+    handleId: string,
+    dataType: string,
+    data: any
+  ): void {
+    const node = getNodeSnapshot(nodeId)
+    //data.completed = true
+    console.log('dataIncoming:', nodeId, handleId, dataType, data)
+
+    const store = useNodeStore.getState()
+    store.updateNodeData(nodeId, {
+      ...node.data,
+      imageBase64: data,
+    })
+    console.log('node', store.getNode(nodeId))
+
+    if (this.canStartProcess(node.id)) {
+      this.nodeProcess(node.id)
+    }
+  },
+  nodeProcess(nodeId: string): void {
+    const node = getNodeSnapshot(nodeId)
+    if (!this.canStartProcess(node.id)) {
+      return
+    }
+    console.log('node process:', node.id, node.type)
+
+    const store = useNodeStore.getState()
+    store.getOutgoingEdgesFromSourceNode(nodeId).forEach((edge) => {
+      console.log('edge', edge)
+
+      const targetNode = store.getNode(edge.target)
+      if (!targetNode.type) {
+        return
+      }
+
+      getNodeBehavior(targetNode.type).then((behavior) => {
+        console.log('behavior', behavior)
+        if (!edge.targetHandle) {
+          return
+        }
+        behavior.dataIncoming(
+          targetNode.id,
+          edge.targetHandle,
+          'image',
+          node.data.imageBase64
+        )
+      })
+    })
+  },
+  canStartProcess(nodeId: string): boolean {
+    const node = getNodeSnapshot(nodeId)
+    return !!node.data.imageBase64
+  },
+}
+
+export const WhiteToBlackNode = ({
+  id,
+  data,
+  isConnectable,
+}: NodeProps<NodeData>) => {
   const onChange = useCallback((evt: any) => {
     console.log(evt.target.value)
   }, [])
@@ -29,11 +108,21 @@ export const WhiteToBlackNode = ({ data, isConnectable }: Props) => {
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
             Word of the Day
           </Typography>
+          {data.imageBase64 && (
+            <img
+              src={data.imageBase64}
+              style={{
+                width: '100%',
+                height: 'auto',
+              }}
+            />
+          )}
         </CardContent>
       </Card>
 
       <Handle
         type="source"
+        id={handleSources.image.id}
         position={Position.Right}
         style={{
           right: -8,
@@ -44,6 +133,7 @@ export const WhiteToBlackNode = ({ data, isConnectable }: Props) => {
       />
       <Handle
         type="target"
+        id={handleTargets.image.id}
         position={Position.Left}
         style={{
           right: -8,

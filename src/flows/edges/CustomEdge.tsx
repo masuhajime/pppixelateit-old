@@ -4,7 +4,7 @@ import {
   EdgeLabelRenderer,
   BaseEdge,
 } from 'reactflow'
-import useStore, { RFState } from '../../store/store'
+import useNodeStore, { RFState } from '../../store/store'
 import { shallow } from 'zustand/shallow'
 
 type CustomEdgeData = {
@@ -31,7 +31,7 @@ export const CustomEdge = ({
     targetPosition,
   })
 
-  const { edgeDelete } = useStore(
+  const { edgeDelete } = useNodeStore(
     (state: RFState) => ({
       edgeDelete: state.edgeDelete,
     }),

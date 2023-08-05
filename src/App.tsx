@@ -1,15 +1,12 @@
-import { DragEvent, useCallback, useEffect, useRef, useState } from 'react'
+import { DragEvent, useCallback, useRef, useState } from 'react'
 import './App.css'
 import ReactFlow, {
-  addEdge,
   Background,
   Controls,
   EdgeTypes,
   Panel,
   ReactFlowInstance,
   ReactFlowProvider,
-  useEdgesState,
-  useNodesState,
 } from 'reactflow'
 import 'reactflow/dist/style.css'
 import { ImageInputNode } from './flows/nodes/ImageInputNode'
@@ -24,8 +21,9 @@ import { Sidebar } from './components/Sidebar'
 import { v4 as uuidv4 } from 'uuid'
 import processStore from './store/processStore'
 
-import useStore, { RFState } from './store/store'
+import useNodeStore, { RFState } from './store/store'
 import { shallow } from 'zustand/shallow'
+import processController from './process/process'
 
 const nodeTypes = {
   inputImage: ImageInputNode,
@@ -50,7 +48,7 @@ function App() {
   })
 
   const { nodes, edges, onNodesChange, onEdgesChange, onConnect, nodeAdd } =
-    useStore(
+    useNodeStore(
       (state: RFState) => ({
         nodes: state.nodes,
         edges: state.edges,
@@ -174,7 +172,8 @@ function App() {
                   }}
                   onClick={() => {
                     console.log('play')
-                    processStore.getState().start()
+                    //processStore.getState().start()
+                    processController.start()
                   }}
                 >
                   <PlayArrowIcon />
