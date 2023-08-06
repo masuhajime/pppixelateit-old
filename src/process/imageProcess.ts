@@ -1,7 +1,5 @@
-import { shallow } from "zustand/shallow";
 import processStore from "../store/processStore";
 import useNodeStore, { RFState } from "../store/store";
-import { Node } from "reactflow";
 import { NodeBehaviorInterface } from "../flows/nodes/data/NodeData";
 
 
@@ -14,16 +12,16 @@ import { NodeBehaviorInterface } from "../flows/nodes/data/NodeData";
 export const getNodeBehavior = async (type: string): Promise<NodeBehaviorInterface> => {
     switch (type) {
         case 'inputImage':
-            return await import(`../flows/nodes/ImageInputNode`).then((module) => {
+            return await import(`../flows/nodes/ImageInputNodeBehavior`).then((module) => {
                 return module.nodeBehavior;
             });
         case 'whiteToBlack':
-            return await import(`../flows/nodes/WhiteToBlackNode`).then((module) => {
+            return await import(`../flows/nodes/WhiteToBlackNodeBehavior`).then((module) => {
                 return module.nodeBehavior;
             }
             );
         case 'imagePreviewNode':
-            return await import(`../flows/nodes/ImagePreviewNode`).then((module) => {
+            return await import(`../flows/nodes/ImagePreviewNodeBehavior`).then((module) => {
                 return module.nodeBehavior;
             }
             );
