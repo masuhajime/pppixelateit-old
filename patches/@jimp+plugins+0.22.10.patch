@@ -1,0 +1,21 @@
+diff --git a/node_modules/@jimp/plugins/es/index.js b/node_modules/@jimp/plugins/es/index.js
+index 22a5897..5fde642 100644
+--- a/node_modules/@jimp/plugins/es/index.js
++++ b/node_modules/@jimp/plugins/es/index.js
+@@ -14,13 +14,14 @@ import gaussian from "@jimp/plugin-gaussian";
+ import invert from "@jimp/plugin-invert";
+ import mask from "@jimp/plugin-mask";
+ import normalize from "@jimp/plugin-normalize";
+-import print from "@jimp/plugin-print";
++// import print from "@jimp/plugin-print";
+ import resize from "@jimp/plugin-resize";
+ import rotate from "@jimp/plugin-rotate";
+ import scale from "@jimp/plugin-scale";
+ import shadow from "@jimp/plugin-shadow";
+ import threshold from "@jimp/plugin-threshold";
+-const plugins = [blit, blur, circle, color, contain, cover, crop, displace, dither, fisheye, flip, gaussian, invert, mask, normalize, print, resize, rotate, scale, shadow, threshold];
++//const plugins = [blit, blur, circle, color, contain, cover, crop, displace, dither, fisheye, flip, gaussian, invert, mask, normalize, print, resize, rotate, scale, shadow, threshold];
++const plugins = [blit, blur, circle, color, contain, cover, crop, displace, dither, fisheye, flip, gaussian, invert, mask, normalize, resize, rotate, scale, shadow, threshold];
+ export default (jimpEvChange => {
+   const initializedPlugins = plugins.map(pluginModule => {
+     let plugin = pluginModule(jimpEvChange) || {};
