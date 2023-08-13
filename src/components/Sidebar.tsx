@@ -27,26 +27,7 @@ imagePreviewNode
     <div>
       <Box
         draggable
-        onDragStart={(event) => onDragStart(event, 'whiteToBlack')}
-        sx={{ padding: '4px' }}
-      >
-        <Card
-          sx={{
-            cursor: 'grab',
-          }}
-        >
-          <CardHeader
-            action={<IconButton aria-label="settings"></IconButton>}
-            title="White To Black Node"
-            titleTypographyProps={{
-              variant: 'h6',
-            }}
-          />
-        </Card>
-      </Box>
-      <Box
-        draggable
-        onDragStart={(event) => onDragStart(event, 'inputImage')}
+        onDragStart={(event) => onDragStart(event, 'ImageInputNode')}
         sx={{ padding: '4px' }}
       >
         <Card
@@ -65,7 +46,26 @@ imagePreviewNode
       </Box>
       <Box
         draggable
-        onDragStart={(event) => onDragStart(event, 'imagePreviewNode')}
+        onDragStart={(event) => onDragStart(event, 'WhiteToBlackNode')}
+        sx={{ padding: '4px' }}
+      >
+        <Card
+          sx={{
+            cursor: 'grab',
+          }}
+        >
+          <CardHeader
+            action={<IconButton aria-label="settings"></IconButton>}
+            title="White To Black Node"
+            titleTypographyProps={{
+              variant: 'h6',
+            }}
+          />
+        </Card>
+      </Box>
+      <Box
+        draggable
+        onDragStart={(event) => onDragStart(event, 'ImagePreviewNode')}
         sx={{ padding: '4px' }}
       >
         <Card
@@ -75,6 +75,24 @@ imagePreviewNode
         >
           <CardHeader
             title="Image Preview"
+            titleTypographyProps={{
+              variant: 'h6',
+            }}
+          />
+        </Card>
+      </Box>
+      <Box
+        draggable
+        onDragStart={(event) => onDragStart(event, 'ResizeToSideNode')}
+        sx={{ padding: '4px' }}
+      >
+        <Card
+          sx={{
+            cursor: 'grab',
+          }}
+        >
+          <CardHeader
+            title="Resize to side"
             titleTypographyProps={{
               variant: 'h6',
             }}

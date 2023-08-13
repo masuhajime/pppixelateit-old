@@ -24,6 +24,7 @@ import processStore from './store/processStore'
 import useNodeStore, { RFState } from './store/store'
 import { shallow } from 'zustand/shallow'
 import processController from './process/imageProcess'
+import { ResizeToSideNode } from './flows/nodes/ResizeToSideNode'
 
 // import { fileURLToPath } from 'url'
 // import { dirname } from 'path'
@@ -32,9 +33,10 @@ import processController from './process/imageProcess'
 // const __dirname = dirname(__filename)
 
 const nodeTypes = {
-  inputImage: ImageInputNode,
-  whiteToBlack: WhiteToBlackNode,
-  imagePreviewNode: ImagePreviewNode,
+  ImageInputNode: ImageInputNode,
+  WhiteToBlackNode: WhiteToBlackNode,
+  ImagePreviewNode: ImagePreviewNode,
+  ResizeToSideNode: ResizeToSideNode,
 }
 const edgeTypes: EdgeTypes = {
   custom: CustomEdge,

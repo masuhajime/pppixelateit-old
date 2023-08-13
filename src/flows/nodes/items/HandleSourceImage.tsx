@@ -1,0 +1,50 @@
+// @flow
+import { Box, Typography } from '@mui/material'
+import * as React from 'react'
+import { Handle, Position, useUpdateNodeInternals } from 'reactflow'
+type Props = {
+  label: string
+  handleId: string
+  nodeId: string
+}
+const handleSize = 20
+export const HandleSourceImage = (props: Props) => {
+  const ref = React.useRef<HTMLDivElement>(null)
+
+  const updateNodeInternals = useUpdateNodeInternals()
+  const [handlePositionTop, setHandlePositionTop] = React.useState(0)
+  React.useEffect(() => {
+    if (!ref.current) {
+      return
+    }
+    setHandlePositionTop(ref.current.offsetTop + 16)
+  }, [ref.current?.offsetTop])
+  React.useEffect(() => {
+    updateNodeInternals(props.nodeId)
+  }, [handlePositionTop])
+
+  return (
+    <Box
+      ref={ref}
+      sx={{
+        padding: '4px',
+      }}
+    >
+      <Typography variant="h6">{props.label}</Typography>
+      {handlePositionTop && (
+        <Handle
+          type="source"
+          position={Position.Right}
+          id={props.handleId}
+          style={{
+            background: 'RoyalBlue',
+            width: handleSize,
+            height: handleSize,
+            right: -handleSize / 2,
+            top: handlePositionTop,
+          }}
+        />
+      )}
+    </Box>
+  )
+}

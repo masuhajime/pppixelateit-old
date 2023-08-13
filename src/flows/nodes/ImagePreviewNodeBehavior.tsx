@@ -1,10 +1,15 @@
+import { Handle, NodeProps, Position } from 'reactflow'
 
-import useNodeStore, { getNodeSnapshot } from '../../store/store'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
+import { CardHeader, IconButton } from '@mui/material'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
 import {
   HandleTarget,
   NodeBaseData,
   NodeBehaviorInterface,
 } from './data/NodeData'
+import useNodeStore, { getNodeSnapshot } from '../../store/store'
 
 export const handleTargets: Record<string, HandleTarget> = {
   image: {

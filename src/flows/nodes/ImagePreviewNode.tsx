@@ -4,6 +4,12 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { CardHeader, IconButton } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
+import {
+  HandleTarget,
+  NodeBaseData,
+  NodeBehaviorInterface,
+} from './data/NodeData'
+import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import { NodeData, handleTargets } from './ImagePreviewNodeBehavior'
 
 export const ImagePreviewNode = ({ id, data }: NodeProps<NodeData>) => {

@@ -1,13 +1,18 @@
+import { useCallback } from 'react'
+import { Handle, NodeProps, Position } from 'reactflow'
 
-import { log } from 'console'
-import { getNodeBehavior } from '../../process/imageProcess'
-import { greyscale } from '../../process/w2b'
-import useNodeStore, { getNodeSnapshot } from '../../store/store'
+import { CardHeader, IconButton } from '@mui/material'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Typography from '@mui/material/Typography'
 import {
   HandleTarget,
   NodeBaseData,
   NodeBehaviorInterface,
 } from './data/NodeData'
+import useNodeStore, { getNodeSnapshot } from '../../store/store'
+import { greyscale } from '../../process/w2b'
+import { getNodeBehavior } from '../../process/imageProcess'
 
 export const handleTargets: Record<string, HandleTarget> = {
   image: {
@@ -57,10 +62,9 @@ export const nodeBehavior: NodeBehaviorInterface = {
     }
     console.log('node process:', node.id, node.type)
 
-
     const store = useNodeStore.getState()
-    const w2b = await greyscale(node.data.imageBase64);
-    log('w2b', w2b)
+    const w2b = await greyscale(node.data.imageBase64)
+
     store.updateNodeData(nodeId, {
       ...node.data,
       imageBase64: w2b,

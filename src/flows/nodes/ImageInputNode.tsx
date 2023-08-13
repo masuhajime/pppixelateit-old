@@ -7,11 +7,17 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import { MuiFileInput } from 'mui-file-input'
 import { shallow } from 'zustand/shallow'
-import useNodeStore, { RFState } from '../../store/store'
+import useNodeStore, { RFState, getNodeSnapshot } from '../../store/store'
+import {
+  HandleTarget,
+  NodeBaseData,
+  NodeBehaviorInterface,
+} from './data/NodeData'
+import { getNodeBehavior } from '../../process/imageProcess'
 import { NodeData, handleSources } from './ImageInputNodeBehavior'
 
 export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
-  const { getNode, getNodeTargetedFrom, updateNodeData } = useNodeStore(
+  const { updateNodeData } = useNodeStore(
     (state: RFState) => ({
       getNode: state.getNode,
       getNodeTargetedFrom: state.getNodeTargetedFrom,
@@ -19,65 +25,6 @@ export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
     }),
     shallow
   )
-
-  // Initialize
-  // const [initialized, setInitialized] = useState(false)
-  // const nodesInitialized = useNodesInitialized({
-  //   includeHiddenNodes: true,
-  // })
-  const [count, setCount] = useState(0)
-  // useEffect(() => {
-  //   if (!initialized && nodesInitialized) {
-  //     setInitialized(true)
-  //     processStore.subscribe((state) => {
-  //       // console.log(
-  //       //   'process: ImageInputNode',
-  //       //   count,
-  //       //   state.count,
-  //       //   id,
-  //       //   imageBase64,
-  //       //   getNode(id).data.color
-  //       // )
-  //       // onProceed()
-  //     })
-  //   }
-  // }, [nodesInitialized, count])
-
-  // const ref = useRef<() => void>(() => {})
-  // useEffect(() => {
-  //   ref.current()
-  //   ref.current = processStore.subscribe((state) => {
-  //     console.log(
-  //       'process: ImageInputNode',
-  //       count,
-  //       state.count,
-  //       id,
-  //       imageBase64
-  //     )
-  //     onProceed()
-  //   })
-  // }, [])
-
-  //const [inputFile, setInputFile] = useState<File | undefined>(undefined)
-  // const [imageBase64, setImageBase64] = useState<string | undefined>(undefined)
-
-  // const onProceed = useCallback(() => {
-  //   const nodeData = getNode(id).data
-  //   console.log('onProceed', id, !!nodeData.imageBase64, nodeData.imageBase64)
-  //   if (!!nodeData.imageBase64) {
-  //     // send image to next node
-  //     // get next node
-  //     // const edges = store.getState().edges.find((edge) => {
-  //     //   return edge.source === id
-  //     // })
-  //     // console.log('edges', edges)
-
-  //     // TODO: infinite loop.....
-
-  //     console.log('getNodeTargetedFrom', id, getNodeTargetedFrom(id))
-  //     // processStore.getState().progress()
-  //   }
-  // }, [])
 
   const onChange = (inputFile: File | null) => {
     console.log('onChange', inputFile)
@@ -106,13 +53,6 @@ export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
         maxWidth: 256, // TODO: 幅は適当です
       }}
     >
-      <button
-        onClick={() => {
-          setCount(count + 1)
-        }}
-      >
-        {count}
-      </button>
       <CardHeader
         action={
           <IconButton aria-label="settings">

@@ -11,17 +11,22 @@ import { NodeBehaviorInterface } from "../flows/nodes/data/NodeData";
 
 export const getNodeBehavior = async (type: string): Promise<NodeBehaviorInterface> => {
     switch (type) {
-        case 'inputImage':
+        case 'ImageInputNode':
             return await import(`../flows/nodes/ImageInputNodeBehavior`).then((module) => {
                 return module.nodeBehavior;
             });
-        case 'whiteToBlack':
+        case 'WhiteToBlackNode':
             return await import(`../flows/nodes/WhiteToBlackNodeBehavior`).then((module) => {
                 return module.nodeBehavior;
             }
             );
-        case 'imagePreviewNode':
+        case 'ImagePreviewNode':
             return await import(`../flows/nodes/ImagePreviewNodeBehavior`).then((module) => {
+                return module.nodeBehavior;
+            }
+            );
+        case 'ResizeToSideNode':
+            return await import(`../flows/nodes/ResizeToSideNodeBehavior`).then((module) => {
                 return module.nodeBehavior;
             }
             );
