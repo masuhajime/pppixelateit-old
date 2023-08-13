@@ -17,7 +17,9 @@ type ResizeMethod =
     | "bicubicInterpolation"
     | "hermiteInterpolation"
     | "bezierInterpolation";
-export const resizeSize = async (base64: string, side: 'width' | 'height', size: number, method: ResizeMethod) => {
+export const resizeBaseOn = async (base64: string, side: 'width' | 'height', size: number, method: ResizeMethod) => {
+
+    console.log('resizeBaseOn', base64, side, size, method);
 
     let url = base64.replace(/^data:image\/\w+;base64,/, "");
     let buffer = Buffer.from(url, 'base64');

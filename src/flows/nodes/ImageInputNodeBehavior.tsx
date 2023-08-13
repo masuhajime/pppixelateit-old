@@ -57,7 +57,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
       }
 
       getNodeBehavior(targetNode.type).then((behavior) => {
-        console.log('behavior', behavior)
+        console.log('behavior', targetNode.type)
         if (!edge.targetHandle) {
           return
         }

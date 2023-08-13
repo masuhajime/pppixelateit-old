@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Handle, NodeProps, Position } from 'reactflow'
 
 import MoreVertIcon from '@mui/icons-material/MoreVert'
@@ -7,13 +6,7 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import { MuiFileInput } from 'mui-file-input'
 import { shallow } from 'zustand/shallow'
-import useNodeStore, { RFState, getNodeSnapshot } from '../../store/store'
-import {
-  HandleTarget,
-  NodeBaseData,
-  NodeBehaviorInterface,
-} from './data/NodeData'
-import { getNodeBehavior } from '../../process/imageProcess'
+import useNodeStore, { RFState } from '../../store/store'
 import { NodeData, handleSources } from './ImageInputNodeBehavior'
 
 export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {

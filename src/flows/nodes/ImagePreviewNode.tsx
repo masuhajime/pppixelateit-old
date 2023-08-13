@@ -38,18 +38,6 @@ export const ImagePreviewNode = ({ id, data }: NodeProps<NodeData>) => {
           />
         )}
       </CardContent>
-      {/* <Handle
-        type="target"
-        id={data.input.image.id}
-        onConnect={(params) => console.log('handle onConnect', id, params)}
-        position={Position.Left}
-        style={{
-          top: '0',
-          background: 'Yellow',
-          width: 16,
-          height: 16,
-        }}
-      /> */}
       <Handle
         type="target"
         id={handleTargets.image.id}

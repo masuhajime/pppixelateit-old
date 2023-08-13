@@ -43,6 +43,9 @@ class ProcessController {
             if (node.type === undefined) {
                 return;
             }
+            if (node.type !== "ImageInputNode") {
+                return;
+            }
             const behavior = await getNodeBehavior(node.type);
             behavior.nodeProcess(node.id);
         });

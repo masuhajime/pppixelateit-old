@@ -15,6 +15,7 @@ import { HandleTargetImage } from './items/HandleTargetImage'
 import { HandleTargetNumber } from './items/HandleTargetNumber'
 import { Select } from './items/Select'
 import { Separator } from './items/Separator'
+import { resizeBaseOn } from '../../process/w2b'
 
 export const handleSources: Record<string, HandleTarget> = {
   image: {
@@ -32,6 +33,9 @@ export const handleTargets: Record<string, HandleTarget> = {
 
 export type NodeData = {
   imageBase64?: string
+  size?: number
+  resizeBase?: string
+  method?: string
   inputFile?: File
   completed?: boolean
 } & NodeBaseData
@@ -43,39 +47,83 @@ export const nodeBehavior: NodeBehaviorInterface = {
     dataType: string,
     data: any
   ): void {
-    console.error('node process: should not be incoming', nodeId)
+    const node = getNodeSnapshot(nodeId)
+    const store = useNodeStore.getState()
+    store.updateNodeData(nodeId, {
+      ...node.data,
+      imageBase64: data,
+    })
+    if (this.canStartProcess(node.id)) {
+      this.nodeProcess(node.id)
+    }
   },
   nodeProcess(nodeId: string): void {
-    const node = getNodeSnapshot(nodeId)
+    let node = getNodeSnapshot(nodeId)
     //data.completed = true
-    console.log('node process:', node.id, node.type)
+    console.log(
+      'node process resize to:',
+      node.data.imageBase64,
+      node.id,
+      node.type
+    )
 
     const store = useNodeStore.getState()
+    const w2b = resizeBaseOn(
+      node.data.imageBase64,
+      node.data.resizeBase,
+      node.data.size,
+      node.data.method
+    ).then((w2b) => {
+      store.updateNodeData(nodeId, {
+        ...node.data,
+        imageBase64: w2b,
+      })
 
-    store.getOutgoingEdgesFromSourceNode(node.id).forEach((edge) => {
-      console.log('edge', edge)
+      node = getNodeSnapshot(nodeId)
+      store.getOutgoingEdgesFromSourceNode(node.id).forEach((edge) => {
+        console.log('edge', edge)
 
-      const targetNode = store.getNode(edge.target)
-      if (!targetNode.type) {
-        return
-      }
-
-      getNodeBehavior(targetNode.type).then((behavior) => {
-        console.log('behavior', behavior)
-        if (!edge.targetHandle) {
+        const targetNode = store.getNode(edge.target)
+        if (!targetNode.type) {
           return
         }
-        behavior.dataIncoming(
-          targetNode.id,
-          edge.targetHandle,
-          'image',
-          node.data.imageBase64
-        )
+
+        getNodeBehavior(targetNode.type).then((behavior) => {
+          console.log('behavior', targetNode.type)
+          if (!edge.targetHandle) {
+            return
+          }
+          behavior.dataIncoming(
+            targetNode.id,
+            edge.targetHandle,
+            'image',
+            node.data.imageBase64
+          )
+        })
       })
     })
   },
   canStartProcess(nodeId: string): boolean {
     const node = getNodeSnapshot(nodeId)
-    return !!node.data.imageBase64
+    console.log(
+      'canStartProcess',
+      !!node.data.imageBase64 &&
+        !!node.data.size &&
+        !!node.data.resizeBase &&
+        !!node.data.method,
+      node.id,
+      node.type,
+      node.data.method,
+      node.data.size,
+      node.data.resizeBase,
+      node.data?.imageBase64
+    )
+
+    return (
+      !!node.data.imageBase64 &&
+      !!node.data.size &&
+      !!node.data.resizeBase &&
+      !!node.data.method
+    )
   },
 }

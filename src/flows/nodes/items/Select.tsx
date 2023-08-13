@@ -12,18 +12,27 @@ type Props = {
   label: string
   nodeId: string
   children: React.ReactNode
-  defaultValue?: string
-  onChange?: (value: string) => void
+  defaultValue: string
+  onSelect?: (value: string) => void
 } & SelectProps
 export const Select = (props: Props) => {
+  const ref = React.useRef<HTMLDivElement>(null)
   const [value, setValue] = React.useState(props.defaultValue ?? '')
 
   const handleChange = (event: SelectChangeEvent) => {
     setValue(event.target.value as string)
-    props.onChange && props.onChange(event.target.value as string)
+    props.onSelect && props.onSelect(event.target.value as string)
   }
+
+  React.useEffect(() => {
+    if (!ref.current) {
+      return
+    }
+    props.onSelect && props.onSelect(props.defaultValue)
+  }, [ref.current])
+
   return (
-    <Box>
+    <Box ref={ref}>
       <FormControl fullWidth>
         <InputLabel id="select-label">{props.label}</InputLabel>
         <MuiSelect

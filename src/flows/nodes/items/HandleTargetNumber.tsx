@@ -6,7 +6,7 @@ type Props = {
   name: string
   handleId: string
   nodeId: string
-  defaultValue?: number
+  defaultValue: number
   onChange?: (value: number) => void
 }
 const handleSize = 20
@@ -18,6 +18,7 @@ export const HandleTargetNumber = (props: Props) => {
     if (!ref.current) {
       return
     }
+    props.onChange && props.onChange(props.defaultValue)
     setHandlePositionTop(ref.current.offsetTop + 28)
   }, [ref.current?.offsetTop])
   React.useEffect(() => {
@@ -43,7 +44,9 @@ export const HandleTargetNumber = (props: Props) => {
           variant="outlined"
           className="nodrag"
           onChange={(e) => {
-            parseInt(e.target.value) && props.onChange(parseInt(e.target.value))
+            props.onChange &&
+              parseInt(e.target.value) &&
+              props.onChange(parseInt(e.target.value))
           }}
         />
       </Box>

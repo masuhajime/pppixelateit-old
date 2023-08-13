@@ -34,7 +34,17 @@ export const ResizeToSideNode = ({ id, data }: NodeProps<NodeData>) => {
           handleId={handleTargets.image.id}
           nodeId={id}
         ></HandleTargetImage>
-        <Select label={'Resize Base To'} nodeId={id} defaultValue="width">
+        <Select
+          label={'Resize Base'}
+          nodeId={id}
+          defaultValue="width"
+          onSelect={(value) => {
+            useNodeStore.getState().updateNodeData(id, {
+              ...data,
+              resizeBase: value,
+            })
+          }}
+        >
           <MenuItem value={'width'}>Width</MenuItem>
           <MenuItem value={'height'}>Height</MenuItem>
         </Select>
@@ -43,8 +53,24 @@ export const ResizeToSideNode = ({ id, data }: NodeProps<NodeData>) => {
           handleId="size"
           nodeId={id}
           defaultValue={128}
+          onChange={(value) => {
+            useNodeStore.getState().updateNodeData(id, {
+              ...data,
+              size: value,
+            })
+          }}
         ></HandleTargetNumber>
-        <Select label={'Method'} nodeId={id} defaultValue="nearestNeighbor">
+        <Select
+          label={'Method'}
+          nodeId={id}
+          defaultValue="nearestNeighbor"
+          onSelect={(value) => {
+            useNodeStore.getState().updateNodeData(id, {
+              ...data,
+              method: value,
+            })
+          }}
+        >
           <MenuItem value={'nearestNeighbor'}>NearestNeighbor</MenuItem>
           <MenuItem value={'bilinearInterpolation'}>Bilinear</MenuItem>
           <MenuItem value={'bicubicInterpolation'}>Bicubic</MenuItem>
