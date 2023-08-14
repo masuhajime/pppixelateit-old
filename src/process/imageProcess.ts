@@ -35,6 +35,11 @@ export const getNodeBehavior = async (type: string): Promise<NodeBehaviorInterfa
                 return module.nodeBehavior;
             }
             );
+        case 'PixelateNode':
+            return await import(`../flows/nodes/PixelateNodeBehavior`).then((module) => {
+                return module.nodeBehavior;
+            }
+            );
         default:
             throw new Error(`Node type ${type} not found`);
     }

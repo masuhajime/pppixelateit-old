@@ -26,6 +26,7 @@ import { shallow } from 'zustand/shallow'
 import processController from './process/imageProcess'
 import { ResizeToSideNode } from './flows/nodes/ResizeToSideNode'
 import { PosterizeNode } from './flows/nodes/PosterizeNode'
+import { PixelateNode } from './flows/nodes/PixelateNode'
 
 const nodeTypes = {
   ImageInputNode: ImageInputNode,
@@ -33,6 +34,7 @@ const nodeTypes = {
   ImagePreviewNode: ImagePreviewNode,
   ResizeToSideNode: ResizeToSideNode,
   PosterizeNode: PosterizeNode,
+  PixelateNode: PixelateNode,
 }
 const edgeTypes: EdgeTypes = {
   custom: CustomEdge,

@@ -117,6 +117,24 @@ imagePreviewNode
           />
         </Card>
       </Box>
+      <Box
+        draggable
+        onDragStart={(event) => onDragStart(event, 'PixelateNode')}
+        sx={{ padding: '4px' }}
+      >
+        <Card
+          sx={{
+            cursor: 'grab',
+          }}
+        >
+          <CardHeader
+            title="PixelateNode"
+            titleTypographyProps={{
+              variant: 'h6',
+            }}
+          />
+        </Card>
+      </Box>
     </div>
   )
 }

@@ -42,3 +42,13 @@ export const posterize = async (base64: string, number: number) => {
     img.posterize(number);
     return await img.getBase64Async(Jimp.AUTO);
 }
+
+export const pixelate = async (base64: string, number: number) => {
+
+    let url = base64.replace(/^data:image\/\w+;base64,/, "");
+    let buffer = Buffer.from(url, 'base64');
+
+    let img = await Jimp.read(buffer);
+    img.pixelate(number);
+    return await img.getBase64Async(Jimp.AUTO);
+}
