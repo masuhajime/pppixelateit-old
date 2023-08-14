@@ -34,6 +34,7 @@ export const ImagePreviewNode = ({ id, data }: NodeProps<NodeData>) => {
             style={{
               width: '100%',
               height: 'auto',
+              imageRendering: 'pixelated',
             }}
           />
         )}
