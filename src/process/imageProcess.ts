@@ -30,6 +30,11 @@ export const getNodeBehavior = async (type: string): Promise<NodeBehaviorInterfa
                 return module.nodeBehavior;
             }
             );
+        case 'PosterizeNode':
+            return await import(`../flows/nodes/PosterizeNodeBehavior`).then((module) => {
+                return module.nodeBehavior;
+            }
+            );
         default:
             throw new Error(`Node type ${type} not found`);
     }

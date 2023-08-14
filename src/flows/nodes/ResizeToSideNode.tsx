@@ -1,25 +1,19 @@
 import { NodeProps } from 'reactflow'
 
-import { CardHeader, IconButton, MenuItem } from '@mui/material'
+import { CardHeader, MenuItem } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
-import { getNodeBehavior } from '../../process/imageProcess'
-import useNodeStore, { getNodeSnapshot } from '../../store/store'
-import {
-  HandleTarget,
-  NodeBaseData,
-  NodeBehaviorInterface,
-} from './data/NodeData'
-import { HandleSourceImage } from './items/HandleSourceImage'
-import { HandleTargetImage } from './items/HandleTargetImage'
-import { HandleTargetNumber } from './items/HandleTargetNumber'
-import { Select } from './items/Select'
-import { Separator } from './items/Separator'
+import useNodeStore from '../../store/store'
 import {
   NodeData,
   handleSources,
   handleTargets,
 } from './ResizeToSideNodeBehavior'
+import { HandleSourceImage } from './items/HandleSourceImage'
+import { HandleTargetImage } from './items/HandleTargetImage'
+import { HandleTargetNumber } from './items/HandleTargetNumber'
+import { Select } from './items/Select'
+import { Separator } from './items/Separator'
 
 export const ResizeToSideNode = ({ id, data }: NodeProps<NodeData>) => {
   return (

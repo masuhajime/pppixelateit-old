@@ -25,18 +25,14 @@ import useNodeStore, { RFState } from './store/store'
 import { shallow } from 'zustand/shallow'
 import processController from './process/imageProcess'
 import { ResizeToSideNode } from './flows/nodes/ResizeToSideNode'
-
-// import { fileURLToPath } from 'url'
-// import { dirname } from 'path'
-// import { createRequire } from 'module'
-// const __filename = fileURLToPath(import.meta.url)
-// const __dirname = dirname(__filename)
+import { PosterizeNode } from './flows/nodes/PosterizeNode'
 
 const nodeTypes = {
   ImageInputNode: ImageInputNode,
   WhiteToBlackNode: WhiteToBlackNode,
   ImagePreviewNode: ImagePreviewNode,
   ResizeToSideNode: ResizeToSideNode,
+  PosterizeNode: PosterizeNode,
 }
 const edgeTypes: EdgeTypes = {
   custom: CustomEdge,

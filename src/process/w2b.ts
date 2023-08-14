@@ -32,3 +32,13 @@ export const resizeBaseOn = async (base64: string, side: 'width' | 'height', siz
     }
     return await img.getBase64Async(Jimp.AUTO);
 }
+
+export const posterize = async (base64: string, number: number) => {
+
+    let url = base64.replace(/^data:image\/\w+;base64,/, "");
+    let buffer = Buffer.from(url, 'base64');
+
+    let img = await Jimp.read(buffer);
+    img.posterize(number);
+    return await img.getBase64Async(Jimp.AUTO);
+}

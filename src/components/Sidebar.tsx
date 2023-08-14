@@ -99,6 +99,24 @@ imagePreviewNode
           />
         </Card>
       </Box>
+      <Box
+        draggable
+        onDragStart={(event) => onDragStart(event, 'PosterizeNode')}
+        sx={{ padding: '4px' }}
+      >
+        <Card
+          sx={{
+            cursor: 'grab',
+          }}
+        >
+          <CardHeader
+            title="PosterizeNode"
+            titleTypographyProps={{
+              variant: 'h6',
+            }}
+          />
+        </Card>
+      </Box>
     </div>
   )
 }
