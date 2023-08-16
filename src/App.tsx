@@ -1,5 +1,8 @@
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import { IconButton } from '@mui/material'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { DragEvent, useCallback, useRef, useState } from 'react'
-import './App.css'
+import Split from 'react-split'
 import ReactFlow, {
   Background,
   Controls,
@@ -9,37 +12,18 @@ import ReactFlow, {
   ReactFlowProvider,
 } from 'reactflow'
 import 'reactflow/dist/style.css'
-import { ImageInputNode } from './flows/nodes/ImageInputNode'
-import { WhiteToBlackNode } from './flows/nodes/WhiteToBlackNode'
-import Split from 'react-split'
-import { CustomEdge } from './flows/edges/CustomEdge'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
-import { ImagePreviewNode } from './flows/nodes/ImagePreviewNode'
-import { IconButton } from '@mui/material'
-import PlayArrowIcon from '@mui/icons-material/PlayArrow'
-import { Sidebar } from './components/Sidebar'
 import { v4 as uuidv4 } from 'uuid'
+import './App.css'
+import { Sidebar } from './components/Sidebar'
+import { CustomEdge } from './flows/edges/CustomEdge'
 import processStore from './store/processStore'
 
-import useNodeStore, { RFState } from './store/store'
 import { shallow } from 'zustand/shallow'
+import { getNodeTypesForReactFlow } from './flows/nodes'
 import processController from './process/imageProcess'
-import { ResizeToSideNode } from './flows/nodes/ResizeToSideNode'
-import { PosterizeNode } from './flows/nodes/PosterizeNode'
-import { PixelateNode } from './flows/nodes/PixelateNode'
-import { TestNode } from './flows/nodes/TestNode'
-import { Fill00ColorToTransparentNode } from './flows/nodes/Fill00ColorToTransparentNode'
+import useNodeStore, { RFState } from './store/store'
 
-const nodeTypes = {
-  ImageInputNode: ImageInputNode,
-  WhiteToBlackNode: WhiteToBlackNode,
-  ImagePreviewNode: ImagePreviewNode,
-  ResizeToSideNode: ResizeToSideNode,
-  PosterizeNode: PosterizeNode,
-  PixelateNode: PixelateNode,
-  TestNode: TestNode,
-  Fill00ColorToTransparentNode: Fill00ColorToTransparentNode,
-}
+const nodeTypes = getNodeTypesForReactFlow()
 const edgeTypes: EdgeTypes = {
   custom: CustomEdge,
 }

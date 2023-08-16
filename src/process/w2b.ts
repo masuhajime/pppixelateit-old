@@ -112,7 +112,8 @@ export const outlinePaint = async (base64: string) => {
         let colorCurrent = cloneImage.getPixelColor(x, y);
         // if current color is base color and around pixel color include non base color
         // colorCurrent === baseColor && 
-        if (colorCurrent === baseColor && !colorAround.includes(baseColor)) {
+        const countDifferentColorAround = colorAround.filter(color => color !== baseColor).length;
+        if (colorCurrent === baseColor && countDifferentColorAround > 0) {
             this.bitmap.data[idx + 0] = 32;
             this.bitmap.data[idx + 1] = 32;
             this.bitmap.data[idx + 2] = 32;
