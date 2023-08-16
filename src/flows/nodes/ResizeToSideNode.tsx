@@ -14,6 +14,7 @@ import { HandleTargetImage } from './items/HandleTargetImage'
 import { HandleTargetNumber } from './items/HandleTargetNumber'
 import { Select } from './items/Select'
 import { Separator } from './items/Separator'
+import { ImagePreview } from './items/ImagePreview'
 
 export const ResizeToSideNode = ({ id, data }: NodeProps<NodeData>) => {
   return (
@@ -77,16 +78,7 @@ export const ResizeToSideNode = ({ id, data }: NodeProps<NodeData>) => {
           handleId={handleSources.image.id}
           nodeId={id}
         ></HandleSourceImage>
-        {data.imageBase64 && (
-          <img
-            src={data.imageBase64}
-            style={{
-              width: '100%',
-              height: 'auto',
-              imageRendering: 'pixelated',
-            }}
-          />
-        )}
+        <ImagePreview imageBase64={data.imageBase64}></ImagePreview>
       </CardContent>
     </Card>
   )

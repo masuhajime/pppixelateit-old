@@ -9,6 +9,7 @@ import { HandleSourceImage } from './items/HandleSourceImage'
 import { HandleTargetImage } from './items/HandleTargetImage'
 import { HandleTargetNumber } from './items/HandleTargetNumber'
 import { Separator } from './items/Separator'
+import { ImagePreview } from './items/ImagePreview'
 
 export const PixelateNode = ({ id, data }: NodeProps<NodeData>) => {
   return (
@@ -41,16 +42,8 @@ export const PixelateNode = ({ id, data }: NodeProps<NodeData>) => {
           handleId={handleSources.image.id}
           nodeId={id}
         ></HandleSourceImage>
-        {data.imageBase64 && (
-          <img
-            src={data.imageBase64}
-            style={{
-              width: '100%',
-              height: 'auto',
-              imageRendering: 'pixelated',
-            }}
-          />
-        )}
+
+        <ImagePreview imageBase64={data.imageBase64}></ImagePreview>
       </CardContent>
     </Card>
   )

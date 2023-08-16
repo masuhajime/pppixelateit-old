@@ -4,21 +4,24 @@ import { CardHeader } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import useNodeStore from '../../store/store'
-import { NodeData, handleSources, handleTargets } from './PosterizeNodeBehavior'
+import { NodeData, handleSources, handleTargets } from './TestNodeBehavior'
 import { HandleSourceImage } from './items/HandleSourceImage'
 import { HandleTargetImage } from './items/HandleTargetImage'
 import { HandleTargetNumber } from './items/HandleTargetNumber'
 import { Separator } from './items/Separator'
 import { ImagePreview } from './items/ImagePreview'
 
-export const PosterizeNode = ({ id, data }: NodeProps<NodeData>) => {
+export const Fill00ColorToTransparentNode = ({
+  id,
+  data,
+}: NodeProps<NodeData>) => {
   return (
     <Card
       sx={{
         maxWidth: 256,
       }}
     >
-      <CardHeader title="PosterizeNode" />
+      <CardHeader title="Fill00ColorToTransparent" />
       <CardContent>
         <HandleTargetImage
           handleId={handleTargets.image.id}

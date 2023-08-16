@@ -27,6 +27,8 @@ import processController from './process/imageProcess'
 import { ResizeToSideNode } from './flows/nodes/ResizeToSideNode'
 import { PosterizeNode } from './flows/nodes/PosterizeNode'
 import { PixelateNode } from './flows/nodes/PixelateNode'
+import { TestNode } from './flows/nodes/TestNode'
+import { Fill00ColorToTransparentNode } from './flows/nodes/Fill00ColorToTransparentNode'
 
 const nodeTypes = {
   ImageInputNode: ImageInputNode,
@@ -35,6 +37,8 @@ const nodeTypes = {
   ResizeToSideNode: ResizeToSideNode,
   PosterizeNode: PosterizeNode,
   PixelateNode: PixelateNode,
+  TestNode: TestNode,
+  Fill00ColorToTransparentNode: Fill00ColorToTransparentNode,
 }
 const edgeTypes: EdgeTypes = {
   custom: CustomEdge,

@@ -40,6 +40,16 @@ export const getNodeBehavior = async (type: string): Promise<NodeBehaviorInterfa
                 return module.nodeBehavior;
             }
             );
+        case 'TestNode':
+            return await import(`../flows/nodes/TestNodeBehavior`).then((module) => {
+                return module.nodeBehavior;
+            }
+            );
+        case 'Fill00ColorToTransparentNode':
+            return await import(`../flows/nodes/Fill00ColorToTransparentNodeBehavior`).then((module) => {
+                return module.nodeBehavior;
+            }
+            );
         default:
             throw new Error(`Node type ${type} not found`);
     }

@@ -8,6 +8,7 @@ import { MuiFileInput } from 'mui-file-input'
 import { shallow } from 'zustand/shallow'
 import useNodeStore, { RFState } from '../../store/store'
 import { NodeData, handleSources } from './ImageInputNodeBehavior'
+import { ImagePreview } from './items/ImagePreview'
 
 export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
   const { updateNodeData } = useNodeStore(
@@ -69,16 +70,7 @@ export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
             }}
           />
         </FormControl>
-        {data.imageBase64 && (
-          <img
-            src={data.imageBase64}
-            style={{
-              width: '100%',
-              height: 'auto',
-              imageRendering: 'pixelated',
-            }}
-          />
-        )}
+        <ImagePreview imageBase64={data.imageBase64}></ImagePreview>
       </CardContent>
       <Handle
         type="source"

@@ -11,6 +11,7 @@ import {
 } from './data/NodeData'
 import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import { NodeData, handleTargets } from './ImagePreviewNodeBehavior'
+import { ImagePreview } from './items/ImagePreview'
 
 export const ImagePreviewNode = ({ id, data }: NodeProps<NodeData>) => {
   return (
@@ -28,16 +29,7 @@ export const ImagePreviewNode = ({ id, data }: NodeProps<NodeData>) => {
         title="Image Preview"
       />
       <CardContent>
-        {data.imageBase64 && (
-          <img
-            src={data.imageBase64}
-            style={{
-              width: '100%',
-              height: 'auto',
-              imageRendering: 'pixelated',
-            }}
-          />
-        )}
+        <ImagePreview imageBase64={data.imageBase64}></ImagePreview>
       </CardContent>
       <Handle
         type="target"

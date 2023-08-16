@@ -18,6 +18,7 @@ import {
   handleSources,
   handleTargets,
 } from './WhiteToBlackNodeBehavior'
+import { ImagePreview } from './items/ImagePreview'
 
 export const WhiteToBlackNode = ({
   id,
@@ -38,16 +39,8 @@ export const WhiteToBlackNode = ({
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
             Word of the Day
           </Typography>
-          {data.imageBase64 && (
-            <img
-              src={data.imageBase64}
-              style={{
-                width: '100%',
-                height: 'auto',
-                imageRendering: 'pixelated',
-              }}
-            />
-          )}
+
+          <ImagePreview imageBase64={data.imageBase64}></ImagePreview>
         </CardContent>
       </Card>
 

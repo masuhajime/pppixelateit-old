@@ -135,6 +135,44 @@ imagePreviewNode
           />
         </Card>
       </Box>
+      <Box
+        draggable
+        onDragStart={(event) => onDragStart(event, 'TestNode')}
+        sx={{ padding: '4px' }}
+      >
+        <Card
+          sx={{
+            cursor: 'grab',
+          }}
+        >
+          <CardHeader
+            title="TestNode"
+            titleTypographyProps={{
+              variant: 'h6',
+            }}
+          />
+        </Card>
+      </Box>
+      <Box
+        draggable
+        onDragStart={(event) =>
+          onDragStart(event, 'Fill00ColorToTransparentNode')
+        }
+        sx={{ padding: '4px' }}
+      >
+        <Card
+          sx={{
+            cursor: 'grab',
+          }}
+        >
+          <CardHeader
+            title="Fill00ColorToTransparentNode"
+            titleTypographyProps={{
+              variant: 'h6',
+            }}
+          />
+        </Card>
+      </Box>
     </div>
   )
 }
