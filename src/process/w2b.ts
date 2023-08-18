@@ -113,10 +113,26 @@ export const outlinePaint = async (base64: string) => {
         // if current color is base color and around pixel color include non base color
         // colorCurrent === baseColor && 
         const countDifferentColorAround = colorAround.filter(color => color !== baseColor).length;
-        if (colorCurrent === baseColor && countDifferentColorAround > 0) {
-            this.bitmap.data[idx + 0] = 32;
-            this.bitmap.data[idx + 1] = 32;
-            this.bitmap.data[idx + 2] = 32;
+        // if (colorCurrent === baseColor && countDifferentColorAround > 1) {
+        //     this.bitmap.data[idx + 0] = 255;
+        //     this.bitmap.data[idx + 1] = 0;
+        //     this.bitmap.data[idx + 2] = 0;
+        //     this.bitmap.data[idx + 3] = 255;
+        // }
+
+        // 鋭角のpixelを省くことができる
+        // if (colorCurrent !== baseColor && countDifferentColorAround < 4) {
+        //     this.bitmap.data[idx + 0] = 255;
+        //     this.bitmap.data[idx + 1] = 0;
+        //     this.bitmap.data[idx + 2] = 0;
+        //     this.bitmap.data[idx + 3] = 255;
+        // }
+
+        // draw outline in inner side
+        if (colorCurrent !== baseColor && countDifferentColorAround < 7) {
+            this.bitmap.data[idx + 0] = 0;
+            this.bitmap.data[idx + 1] = 0;
+            this.bitmap.data[idx + 2] = 0;
             this.bitmap.data[idx + 3] = 255;
         }
     });
