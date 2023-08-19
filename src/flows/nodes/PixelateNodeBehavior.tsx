@@ -1,5 +1,5 @@
 import { getNodeBehavior } from '../../process/imageProcess'
-import { pixelate, posterize, resizeBaseOn } from '../../process/w2b'
+import { pixelate } from '../../process/w2b'
 import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import {
   HandleTarget,
@@ -23,7 +23,9 @@ export const handleTargets: Record<string, HandleTarget> = {
 
 export type NodeData = {
   imageBase64?: string
-  number?: number
+  settings: {
+    number?: number
+  }
 } & NodeBaseData
 
 export const nodeBehavior: NodeBehaviorInterface = {
@@ -44,7 +46,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
     }
   },
   nodeProcess(nodeId: string): void {
-    let node = getNodeSnapshot(nodeId)
+    let node = getNodeSnapshot<NodeData>(nodeId)
     //data.completed = true
     console.log(
       'node process resize to:',
@@ -52,42 +54,43 @@ export const nodeBehavior: NodeBehaviorInterface = {
       node.id,
       node.type
     )
+    if (!node.data.imageBase64 || !node.data.settings.number) {
+      throw new Error('no image or number')
+    }
 
     const store = useNodeStore.getState()
-    const w2b = pixelate(node.data.imageBase64, node.data.number).then(
-      (w2b) => {
-        store.updateNodeData(nodeId, {
-          ...node.data,
-          imageBase64: w2b,
-        })
+    pixelate(node.data.imageBase64, node.data.settings.number).then((w2b) => {
+      store.updateNodeData(nodeId, {
+        ...node.data,
+        imageBase64: w2b,
+      })
 
-        node = getNodeSnapshot(nodeId)
-        store.getOutgoingEdgesFromSourceNode(node.id).forEach((edge) => {
-          console.log('edge', edge)
+      node = getNodeSnapshot(nodeId)
+      store.getOutgoingEdgesFromSourceNode(node.id).forEach((edge) => {
+        console.log('edge', edge)
 
-          const targetNode = store.getNode(edge.target)
-          if (!targetNode.type) {
+        const targetNode = store.getNode(edge.target)
+        if (!targetNode.type) {
+          return
+        }
+
+        getNodeBehavior(targetNode.type).then((behavior) => {
+          console.log('behavior', targetNode.type)
+          if (!edge.targetHandle) {
             return
           }
-
-          getNodeBehavior(targetNode.type).then((behavior) => {
-            console.log('behavior', targetNode.type)
-            if (!edge.targetHandle) {
-              return
-            }
-            behavior.dataIncoming(
-              targetNode.id,
-              edge.targetHandle,
-              'image',
-              node.data.imageBase64
-            )
-          })
+          behavior.dataIncoming(
+            targetNode.id,
+            edge.targetHandle,
+            'image',
+            node.data.imageBase64
+          )
         })
-      }
-    )
+      })
+    })
   },
   canStartProcess(nodeId: string): boolean {
-    const node = getNodeSnapshot(nodeId)
-    return !!node.data.imageBase64 && !!node.data.number
+    const node = getNodeSnapshot<NodeData>(nodeId)
+    return !!node.data.imageBase64 && !!node.data.settings.number
   },
 }

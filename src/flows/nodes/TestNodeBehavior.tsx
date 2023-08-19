@@ -1,10 +1,5 @@
 import { getNodeBehavior } from '../../process/imageProcess'
-import {
-  drawOutline,
-  outlinePaint,
-  posterize,
-  resizeBaseOn,
-} from '../../process/w2b'
+import { outlinePaint } from '../../process/w2b'
 import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import {
   HandleTarget,
@@ -28,7 +23,6 @@ export const handleTargets: Record<string, HandleTarget> = {
 
 export type NodeData = {
   imageBase64?: string
-  number?: number
 } & NodeBaseData
 
 export const nodeBehavior: NodeBehaviorInterface = {
@@ -49,7 +43,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
     }
   },
   nodeProcess(nodeId: string): void {
-    let node = getNodeSnapshot(nodeId)
+    let node = getNodeSnapshot<NodeData>(nodeId)
     //data.completed = true
     console.log(
       'node process resize to:',
@@ -58,14 +52,18 @@ export const nodeBehavior: NodeBehaviorInterface = {
       node.type
     )
 
+    if (!node.data.imageBase64) {
+      throw new Error('no image data')
+    }
+
     const store = useNodeStore.getState()
-    const w2b = outlinePaint(node.data.imageBase64).then((w2b) => {
+    outlinePaint(node.data.imageBase64).then((w2b) => {
       store.updateNodeData(nodeId, {
         ...node.data,
         imageBase64: w2b,
       })
 
-      node = getNodeSnapshot(nodeId)
+      node = getNodeSnapshot<NodeData>(nodeId)
       store.getOutgoingEdgesFromSourceNode(node.id).forEach((edge) => {
         console.log('edge', edge)
 
@@ -90,7 +88,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
     })
   },
   canStartProcess(nodeId: string): boolean {
-    const node = getNodeSnapshot(nodeId)
-    return !!node.data.imageBase64 && !!node.data.number
+    const node = getNodeSnapshot<NodeData>(nodeId)
+    return !!node.data.imageBase64
   },
 }

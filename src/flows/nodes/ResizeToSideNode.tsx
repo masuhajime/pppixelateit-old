@@ -34,8 +34,7 @@ export const ResizeToSideNode = ({ id, data }: NodeProps<NodeData>) => {
           nodeId={id}
           defaultValue="width"
           onSelect={(value) => {
-            useNodeStore.getState().updateNodeData(id, {
-              ...data,
+            useNodeStore.getState().updateNodeSetting(id, {
               resizeBase: value,
             })
           }}
@@ -49,8 +48,7 @@ export const ResizeToSideNode = ({ id, data }: NodeProps<NodeData>) => {
           nodeId={id}
           defaultValue={128}
           onChange={(value) => {
-            useNodeStore.getState().updateNodeData(id, {
-              ...data,
+            useNodeStore.getState().updateNodeSetting(id, {
               size: value,
             })
           }}
@@ -60,8 +58,7 @@ export const ResizeToSideNode = ({ id, data }: NodeProps<NodeData>) => {
           nodeId={id}
           defaultValue="nearestNeighbor"
           onSelect={(value) => {
-            useNodeStore.getState().updateNodeData(id, {
-              ...data,
+            useNodeStore.getState().updateNodeSetting(id, {
               method: value,
             })
           }}

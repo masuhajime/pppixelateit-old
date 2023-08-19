@@ -1,8 +1,11 @@
-import { Node } from 'reactflow'
-
 export type IncomingDataType = 'image' | 'number'
 
+export type NodeBaseDataSettings = {
+  [k: string]: any
+}
+
 export type NodeBaseData = {
+  settings: NodeBaseDataSettings
   isProcessing: boolean
 }
 

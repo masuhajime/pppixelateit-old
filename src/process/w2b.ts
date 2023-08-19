@@ -17,7 +17,7 @@ type ResizeMethod =
     | "bicubicInterpolation"
     | "hermiteInterpolation"
     | "bezierInterpolation";
-export const resizeBaseOn = async (base64: string, side: 'width' | 'height', size: number, method: ResizeMethod) => {
+export const resizeBaseOn = async (base64: string, side: string | 'width' | 'height', size: number, method: string | ResizeMethod) => {
 
     console.log('resizeBaseOn', base64, side, size, method);
 
@@ -71,7 +71,7 @@ export const drawOutline = async (base64: string, number: number) => {
     return await img.getBase64Async(Jimp.MIME_PNG);
 }
 
-export const fill00ColorToTransparent = async (base64: string, number: number) => {
+export const fill00ColorToTransparent = async (base64: string) => {
 
     let url = base64.replace(/^data:image\/\w+;base64,/, "");
     let buffer = Buffer.from(url, 'base64');

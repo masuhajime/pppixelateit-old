@@ -1,21 +1,11 @@
-import { NodeProps } from 'reactflow'
-
-import { CardHeader, IconButton, MenuItem } from '@mui/material'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
 import { getNodeBehavior } from '../../process/imageProcess'
+import { resizeBaseOn } from '../../process/w2b'
 import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import {
   HandleTarget,
   NodeBaseData,
   NodeBehaviorInterface,
 } from './data/NodeData'
-import { HandleSourceImage } from './items/HandleSourceImage'
-import { HandleTargetImage } from './items/HandleTargetImage'
-import { HandleTargetNumber } from './items/HandleTargetNumber'
-import { Select } from './items/Select'
-import { Separator } from './items/Separator'
-import { resizeBaseOn } from '../../process/w2b'
 
 export const handleSources: Record<string, HandleTarget> = {
   image: {
@@ -33,11 +23,11 @@ export const handleTargets: Record<string, HandleTarget> = {
 
 export type NodeData = {
   imageBase64?: string
-  size?: number
-  resizeBase?: string
-  method?: string
-  inputFile?: File
-  completed?: boolean
+  settings: {
+    size?: number
+    resizeBase?: string
+    method?: string
+  }
 } & NodeBaseData
 
 export const nodeBehavior: NodeBehaviorInterface = {
@@ -47,7 +37,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
     dataType: string,
     data: any
   ): void {
-    const node = getNodeSnapshot(nodeId)
+    const node = getNodeSnapshot<NodeData>(nodeId)
     const store = useNodeStore.getState()
     store.updateNodeData(nodeId, {
       ...node.data,
@@ -58,7 +48,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
     }
   },
   nodeProcess(nodeId: string): void {
-    let node = getNodeSnapshot(nodeId)
+    let node = getNodeSnapshot<NodeData>(nodeId)
     //data.completed = true
     console.log(
       'node process resize to:',
@@ -67,19 +57,28 @@ export const nodeBehavior: NodeBehaviorInterface = {
       node.type
     )
 
+    if (
+      !node.data.imageBase64 ||
+      !node.data.settings.size ||
+      !node.data.settings.resizeBase ||
+      !node.data.settings.method
+    ) {
+      return
+    }
+
     const store = useNodeStore.getState()
-    const w2b = resizeBaseOn(
+    resizeBaseOn(
       node.data.imageBase64,
-      node.data.resizeBase,
-      node.data.size,
-      node.data.method
+      node.data.settings.resizeBase,
+      node.data.settings.size,
+      node.data.settings.method
     ).then((w2b) => {
       store.updateNodeData(nodeId, {
         ...node.data,
         imageBase64: w2b,
       })
 
-      node = getNodeSnapshot(nodeId)
+      node = getNodeSnapshot<NodeData>(nodeId)
       store.getOutgoingEdgesFromSourceNode(node.id).forEach((edge) => {
         console.log('edge', edge)
 
@@ -104,26 +103,26 @@ export const nodeBehavior: NodeBehaviorInterface = {
     })
   },
   canStartProcess(nodeId: string): boolean {
-    const node = getNodeSnapshot(nodeId)
+    const node = getNodeSnapshot<NodeData>(nodeId)
     console.log(
       'canStartProcess',
       !!node.data.imageBase64 &&
-        !!node.data.size &&
-        !!node.data.resizeBase &&
-        !!node.data.method,
+        !!node.data.settings.size &&
+        !!node.data.settings.resizeBase &&
+        !!node.data.settings.method,
       node.id,
       node.type,
-      node.data.method,
-      node.data.size,
-      node.data.resizeBase,
+      node.data.settings.method,
+      node.data.settings.size,
+      node.data.settings.resizeBase,
       node.data?.imageBase64
     )
 
     return (
       !!node.data.imageBase64 &&
-      !!node.data.size &&
-      !!node.data.resizeBase &&
-      !!node.data.method
+      !!node.data.settings.size &&
+      !!node.data.settings.resizeBase &&
+      !!node.data.settings.method
     )
   },
 }

@@ -1,18 +1,11 @@
-import { useCallback } from 'react'
-import { Handle, NodeProps, Position } from 'reactflow'
-
-import { CardHeader, IconButton } from '@mui/material'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import Typography from '@mui/material/Typography'
+import { getNodeBehavior } from '../../process/imageProcess'
+import { greyscale } from '../../process/w2b'
+import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import {
   HandleTarget,
   NodeBaseData,
   NodeBehaviorInterface,
 } from './data/NodeData'
-import useNodeStore, { getNodeSnapshot } from '../../store/store'
-import { greyscale } from '../../process/w2b'
-import { getNodeBehavior } from '../../process/imageProcess'
 
 export const handleTargets: Record<string, HandleTarget> = {
   image: {
@@ -30,7 +23,6 @@ export const handleSources = {
 
 export type NodeData = {
   imageBase64?: string
-  imageBase64Output?: string
 } & NodeBaseData
 
 export const nodeBehavior: NodeBehaviorInterface = {
@@ -40,7 +32,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
     dataType: string,
     data: any
   ): void {
-    const node = getNodeSnapshot(nodeId)
+    const node = getNodeSnapshot<NodeData>(nodeId)
     //data.completed = true
     console.log('dataIncoming:', nodeId, handleId, dataType, data)
 
@@ -56,13 +48,18 @@ export const nodeBehavior: NodeBehaviorInterface = {
     }
   },
   async nodeProcess(nodeId: string): Promise<void> {
-    let node = getNodeSnapshot(nodeId)
+    let node = getNodeSnapshot<NodeData>(nodeId)
     if (!this.canStartProcess(node.id)) {
       return
     }
     console.log('node process:', node.id, node.type)
 
     const store = useNodeStore.getState()
+
+    if (!node.data.imageBase64) {
+      throw new Error('no image data')
+    }
+
     const w2b = await greyscale(node.data.imageBase64)
 
     store.updateNodeData(nodeId, {
@@ -70,7 +67,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
       imageBase64: w2b,
     })
 
-    node = getNodeSnapshot(nodeId)
+    node = getNodeSnapshot<NodeData>(nodeId)
 
     store.getOutgoingEdgesFromSourceNode(nodeId).forEach((edge) => {
       console.log('edge', edge)
@@ -95,7 +92,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
     })
   },
   canStartProcess(nodeId: string): boolean {
-    const node = getNodeSnapshot(nodeId)
+    const node = getNodeSnapshot<NodeData>(nodeId)
     return !!node.data.imageBase64
   },
 }

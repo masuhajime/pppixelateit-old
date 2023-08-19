@@ -30,8 +30,7 @@ export const PosterizeNode = ({ id, data }: NodeProps<NodeData>) => {
           nodeId={id}
           defaultValue={5}
           onChange={(value) => {
-            useNodeStore.getState().updateNodeData(id, {
-              ...data,
+            useNodeStore.getState().updateNodeSetting(id, {
               number: value,
             })
           }}

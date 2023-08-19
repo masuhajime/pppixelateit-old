@@ -23,9 +23,9 @@ export const handleSources: Record<string, HandleTarget> = {
 }
 
 export type NodeData = {
+  settings: {}
   imageBase64?: string
   inputFile?: File
-  completed?: boolean
 } & NodeBaseData
 
 export const nodeBehavior: NodeBehaviorInterface = {
@@ -38,8 +38,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
     console.error('node process: should not be incoming', nodeId)
   },
   nodeProcess(nodeId: string): void {
-    const node = getNodeSnapshot(nodeId)
-    //data.completed = true
+    const node = getNodeSnapshot<NodeData>(nodeId)
     console.log('node process:', node.id, node.type)
 
     // console.log('aaaaaaaaaaaa')
@@ -71,7 +70,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
     })
   },
   canStartProcess(nodeId: string): boolean {
-    const node = getNodeSnapshot(nodeId)
+    const node = getNodeSnapshot<NodeData>(nodeId)
     return !!node.data.imageBase64
   },
 }

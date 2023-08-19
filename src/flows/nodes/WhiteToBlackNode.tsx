@@ -6,14 +6,6 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import {
-  HandleTarget,
-  NodeBaseData,
-  NodeBehaviorInterface,
-} from './data/NodeData'
-import useNodeStore, { getNodeSnapshot } from '../../store/store'
-import { greyscale } from '../../process/w2b'
-import { getNodeBehavior } from '../../process/imageProcess'
-import {
   NodeData,
   handleSources,
   handleTargets,

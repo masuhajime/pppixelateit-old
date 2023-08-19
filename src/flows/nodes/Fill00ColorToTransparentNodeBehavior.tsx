@@ -1,10 +1,5 @@
 import { getNodeBehavior } from '../../process/imageProcess'
-import {
-  drawOutline,
-  fill00ColorToTransparent,
-  posterize,
-  resizeBaseOn,
-} from '../../process/w2b'
+import { fill00ColorToTransparent } from '../../process/w2b'
 import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import {
   HandleTarget,
@@ -28,7 +23,7 @@ export const handleTargets: Record<string, HandleTarget> = {
 
 export type NodeData = {
   imageBase64?: string
-  number?: number
+  // number?: number
 } & NodeBaseData
 
 export const nodeBehavior: NodeBehaviorInterface = {
@@ -49,7 +44,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
     }
   },
   nodeProcess(nodeId: string): void {
-    let node = getNodeSnapshot(nodeId)
+    let node = getNodeSnapshot<NodeData>(nodeId)
     //data.completed = true
     console.log(
       'node process resize to:',
@@ -58,11 +53,12 @@ export const nodeBehavior: NodeBehaviorInterface = {
       node.type
     )
 
+    if (!node.data.imageBase64) {
+      throw new Error('no image')
+    }
+
     const store = useNodeStore.getState()
-    const w2b = fill00ColorToTransparent(
-      node.data.imageBase64,
-      node.data.number
-    ).then((w2b) => {
+    fill00ColorToTransparent(node.data.imageBase64).then((w2b) => {
       store.updateNodeData(nodeId, {
         ...node.data,
         imageBase64: w2b,
@@ -93,8 +89,8 @@ export const nodeBehavior: NodeBehaviorInterface = {
     })
   },
   canStartProcess(nodeId: string): boolean {
-    const node = getNodeSnapshot(nodeId)
-    return !!node.data.imageBase64 && !!node.data.number
+    const node = getNodeSnapshot<NodeData>(nodeId)
+    return !!node.data.imageBase64 // && !!node.data.settings.number
   },
 }
 

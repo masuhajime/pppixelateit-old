@@ -15,25 +15,7 @@ import {
 } from 'reactflow';
 import { initialEdges, initialNodes } from './initialNodesTransparent';
 import { createJSONStorage, persist } from 'zustand/middleware';
-
-
-export type RFStateA = {
-    bears: number;
-}
-
-export const useBearStore = create(
-    persist(
-        (set, get: () => RFStateA) => ({
-            bears: 0,
-            addABear: () => set({ bears: get().bears + 1 }),
-        }),
-        {
-            name: 'food-storage', // name of the item in the storage (must be unique)
-            storage: createJSONStorage(() => localStorage), // (optional) by default, 'localStorage' is used
-        }
-    )
-)
-
+import { NodeBaseData, NodeBaseDataSettings } from '../flows/nodes/data/NodeData';
 
 export type RFState = {
     nodes: Node[];
@@ -42,7 +24,8 @@ export type RFState = {
     nodeAdd: (node: Node) => void;
     edgeDelete: (edgeId: string) => void;
     updateNodeData: <T = any>(nodeId: string, data: Partial<T>) => void;
-    getNode(nodeId: string): Node;
+    updateNodeSetting: <T = NodeBaseDataSettings>(nodeId: string, settings: T) => void;
+    getNode<T = NodeBaseData>(nodeId: string): Node<T>;
     getOutgoingEdgesFromSourceNode(sourceNodeId: string): Edge[];
     onNodesChange: OnNodesChange;
     onEdgesChange: OnEdgesChange;
@@ -60,7 +43,7 @@ const useNodeStore = create(
                 if (!nodeFrom) throw new Error('node not found');
                 return getOutgoers(nodeFrom, get().nodes, get().edges);
             },
-            updateNodeData<T = any>(nodeId: string, data: T) {
+            updateNodeData<T = NodeBaseData>(nodeId: string, data: T) {
                 set({
                     nodes: get().nodes.map((node) => {
                         if (node.id === nodeId) {
@@ -71,7 +54,18 @@ const useNodeStore = create(
                     }),
                 });
             },
-            getNode(nodeId: string): Node {
+            updateNodeSetting<T = NodeBaseDataSettings>(nodeId: string, settings: T) {
+                set({
+                    nodes: get().nodes.map((node) => {
+                        if (node.id === nodeId) {
+                            const newSettings = { ...node.data.settings, ...settings }
+                            node.data = { ...node.data, settings: newSettings };
+                        }
+                        return node;
+                    }),
+                });
+            },
+            getNode<T = NodeBaseData>(nodeId: string): Node<T> {
                 const node = get().nodes.find((node) => node.id === nodeId);
                 if (!node) throw new Error('node not found');
                 return node as Node;
@@ -107,7 +101,7 @@ const useNodeStore = create(
             },
         }),
         {
-            name: 'reactflow-state',
+            name: 'node-edge-store',
             storage: createJSONStorage(() => localStorage),
             partialize: (state) => {
                 return Object.fromEntries(
@@ -119,6 +113,6 @@ const useNodeStore = create(
     )
 );
 
-export const getNodeSnapshot = (nodeId: string) => useNodeStore.getState().getNode(nodeId)
+export const getNodeSnapshot = <T = NodeBaseData>(nodeId: string) => useNodeStore.getState().getNode<T>(nodeId)
 
 export default useNodeStore;
