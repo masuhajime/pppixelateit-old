@@ -144,8 +144,8 @@ export const outlinePaint = async (base64: string) => {
 
 export const opencv2 = async (base64: string) => {
     let url = base64.replace(/^data:image\/\w+;base64,/, "");
-    console.log('base64', base64);
-    console.log('url', url);
+    // console.log('base64', base64);
+    // console.log('url', url);
 
     let buffer = Buffer.from(url, 'base64');
     let img = await Jimp.read(buffer);
@@ -154,26 +154,50 @@ export const opencv2 = async (base64: string) => {
         width: img.bitmap.width,
         height: img.bitmap.height
     });
-    const dst = new cv.Mat();
+    // const dst = new cv.Mat();
+
+    // let n4 = new cv.Mat(3, 3, cv.CV_8U);
+    // let n4Data = new Uint8Array([
+    //     0, 1, 0,
+    //     1, 1, 1,
+    //     0, 1, 0
+    // ]);
+    // n4.data.set(n4Data);
+
+    // // const M = cv.Mat.ones(2, 2, cv.CV_8U);
+    // const anchor = new cv.Point(0, 0);
+    // cv.erode(src, dst, n4, anchor, 1);
 
     let n4 = new cv.Mat(3, 3, cv.CV_8U);
     let n4Data = new Uint8Array([
         0, 1, 0,
         1, 1, 1,
-        0, 1, 0
+        0, 1, 0,
     ]);
     n4.data.set(n4Data);
 
-    // const M = cv.Mat.ones(2, 2, cv.CV_8U);
-    const anchor = new cv.Point(0, 0);
-    cv.erode(src, dst, n4, anchor, 1);
+    let eroded = new cv.Mat();
+    const anchor = new cv.Point(-1, -1);
+    // cv.erode(src, eroded, n4, anchor);
+    cv.Scalar.all(0);
+    cv.erode(src, eroded, n4, anchor, 1, cv.BORDER_DEFAULT, new cv.Scalar(1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0));
 
-    const bufferDst = Buffer.from(dst.data);
+    // log height and width
+    // console.log('src', src.rows, src.cols, "eroded", eroded.rows, eroded.cols);
+
+    // let bitwise_not = new cv.Mat();
+    // //cv.bitwise_not(src, bitwise_not);  // エロージョン画像のビットを反転
+    // // cv.bitwise_and(src, eroded, bitwise_not);
+    // // let highlightedEdges = new cv.Mat();
+    // cv.subtract(src, eroded, bitwise_not);  // エッジを強調
+
+
+    const bufferDst = Buffer.from(eroded.data);
 
     const jimpImageS = new Jimp({
         data: bufferDst,
-        width: dst.cols,
-        height: dst.rows
+        width: eroded.cols,
+        height: eroded.rows
     });
     return await jimpImageS.getBase64Async(Jimp.MIME_PNG);
 }

@@ -76,9 +76,9 @@ function App() {
   const init = useCallback(() => {
     console.log('init')
     processStore.getState().reset()
-    processStore.subscribe((state) => {
-      console.log('App: processStore in subscribe', state)
-    })
+    // processStore.subscribe((state) => {
+    //   console.log('App: processStore in subscribe', state)
+    // })
   }, [])
 
   const onDrop = useCallback(
@@ -107,7 +107,7 @@ function App() {
         id: `node-${type}-${uuidv4()}`,
         type,
         position,
-        data: { label: `${type} node` },
+        data: { settings: {} },
       }
       nodeAdd(newNode)
     },
