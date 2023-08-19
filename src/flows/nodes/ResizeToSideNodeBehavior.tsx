@@ -52,7 +52,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
     //data.completed = true
     console.log(
       'node process resize to:',
-      node.data.imageBase64,
+      //node.data.imageBase64,
       node.id,
       node.type
     )
@@ -114,8 +114,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
       node.type,
       node.data.settings.method,
       node.data.settings.size,
-      node.data.settings.resizeBase,
-      node.data?.imageBase64
+      node.data.settings.resizeBase
     )
 
     return (

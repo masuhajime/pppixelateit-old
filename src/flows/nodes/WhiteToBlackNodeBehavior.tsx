@@ -34,7 +34,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
   ): void {
     const node = getNodeSnapshot<NodeData>(nodeId)
     //data.completed = true
-    console.log('dataIncoming:', nodeId, handleId, dataType, data)
+    console.log('dataIncoming:', nodeId, handleId, dataType)
 
     const store = useNodeStore.getState()
     store.updateNodeData(nodeId, {

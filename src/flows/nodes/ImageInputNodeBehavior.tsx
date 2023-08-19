@@ -41,10 +41,6 @@ export const nodeBehavior: NodeBehaviorInterface = {
     const node = getNodeSnapshot<NodeData>(nodeId)
     console.log('node process:', node.id, node.type)
 
-    // console.log('aaaaaaaaaaaa')
-    // const sharp = import('sharp')
-    // console.log('bbbbbbbbbbbb')
-
     const store = useNodeStore.getState()
 
     store.getOutgoingEdgesFromSourceNode(node.id).forEach((edge) => {

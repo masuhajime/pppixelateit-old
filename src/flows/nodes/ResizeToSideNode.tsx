@@ -3,7 +3,7 @@ import { NodeProps } from 'reactflow'
 import { CardHeader, MenuItem } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
-import useNodeStore from '../../store/store'
+import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import {
   NodeData,
   handleSources,
@@ -17,6 +17,9 @@ import { Separator } from './items/Separator'
 import { ImagePreview } from './items/ImagePreview'
 
 export const ResizeToSideNode = ({ id, data }: NodeProps<NodeData>) => {
+  const store = useNodeStore.getState()
+  const node = store.getNode<NodeData>(id)
+
   return (
     <Card
       sx={{
@@ -46,7 +49,7 @@ export const ResizeToSideNode = ({ id, data }: NodeProps<NodeData>) => {
           name="size"
           handleId="size"
           nodeId={id}
-          defaultValue={128}
+          defaultValue={node.data.settings.size || 128}
           onChange={(value) => {
             useNodeStore.getState().updateNodeSetting(id, {
               size: value,

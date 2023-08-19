@@ -1,5 +1,5 @@
 import { getNodeBehavior } from '../../process/imageProcess'
-import { outlinePaint } from '../../process/w2b'
+import { opencv2, outlinePaint } from '../../process/w2b'
 import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import {
   HandleTarget,
@@ -45,19 +45,15 @@ export const nodeBehavior: NodeBehaviorInterface = {
   nodeProcess(nodeId: string): void {
     let node = getNodeSnapshot<NodeData>(nodeId)
     //data.completed = true
-    console.log(
-      'node process resize to:',
-      node.data.imageBase64,
-      node.id,
-      node.type
-    )
+    console.log('node process resize to:', node.id, node.type)
 
     if (!node.data.imageBase64) {
       throw new Error('no image data')
     }
 
     const store = useNodeStore.getState()
-    outlinePaint(node.data.imageBase64).then((w2b) => {
+
+    opencv2(node.data.imageBase64).then((w2b) => {
       store.updateNodeData(nodeId, {
         ...node.data,
         imageBase64: w2b,
