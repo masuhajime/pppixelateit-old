@@ -14,6 +14,7 @@ export const ImagePreview = (props: Props) => {
             backgroundImage: `url(assets/transparant-background.png)`,
             backgroundSize: 'contain',
             backgroundRepeat: 'repeat',
+            lineHeight: 0,
           }}
         >
           <img
