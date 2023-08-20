@@ -21,6 +21,7 @@ export const ImagePreview = (props: Props) => {
             src={props.imageBase64}
             style={{
               width: '100%',
+              maxWidth: '208px',
               height: 'auto',
               imageRendering: 'pixelated',
             }}

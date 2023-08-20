@@ -14,7 +14,13 @@ export const Sidebar = (props: Props) => {
   }
 
   return (
-    <div>
+    <div
+      style={{
+        height: '100vh',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+      }}
+    >
       {nodeTypes.map((nodeType) => {
         return (
           <Box
