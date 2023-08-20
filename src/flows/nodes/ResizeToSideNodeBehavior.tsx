@@ -40,7 +40,6 @@ export const nodeBehavior: NodeBehaviorInterface = {
     const node = getNodeSnapshot<NodeData>(nodeId)
     const store = useNodeStore.getState()
     store.updateNodeData(nodeId, {
-      ...node.data,
       imageBase64: data,
     })
     if (this.canStartProcess(node.id)) {
@@ -110,11 +109,12 @@ export const nodeBehavior: NodeBehaviorInterface = {
         !!node.data.settings.size &&
         !!node.data.settings.resizeBase &&
         !!node.data.settings.method,
-      node.id,
-      node.type,
-      node.data.settings.method,
-      node.data.settings.size,
-      node.data.settings.resizeBase
+      {
+        imageBase64: !!node.data.imageBase64,
+        method: node.data.settings.method,
+        size: node.data.settings.size,
+        resizeBase: node.data.settings.resizeBase,
+      }
     )
 
     return (

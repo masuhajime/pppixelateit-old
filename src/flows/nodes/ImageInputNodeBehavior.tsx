@@ -39,7 +39,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
   },
   nodeProcess(nodeId: string): void {
     const node = getNodeSnapshot<NodeData>(nodeId)
-    console.log('node process:', node.id, node.type)
+    console.log('ImageInputNode node process:', node.id, node.type)
 
     const store = useNodeStore.getState()
 
@@ -67,6 +67,9 @@ export const nodeBehavior: NodeBehaviorInterface = {
   },
   canStartProcess(nodeId: string): boolean {
     const node = getNodeSnapshot<NodeData>(nodeId)
+    console.log('canStartProcess ImageInput', {
+      imageBase64: !!node.data.imageBase64,
+    })
     return !!node.data.imageBase64
   },
 }
