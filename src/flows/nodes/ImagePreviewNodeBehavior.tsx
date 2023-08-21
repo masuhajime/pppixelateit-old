@@ -8,7 +8,7 @@ import {
 export const handleTargets: Record<string, HandleTarget> = {
   image: {
     id: 'image',
-    type: 'image',
+    dataType: 'image',
   },
 }
 

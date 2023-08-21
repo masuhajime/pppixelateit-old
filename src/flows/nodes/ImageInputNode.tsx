@@ -84,13 +84,6 @@ export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
           height: 16,
         }}
       />
-      {/* <Handle
-        type="target"
-        position={Position.Left}
-        isConnectable={isConnectable}
-        style={{ top: 100, background: 'red' }}
-        id="aba"
-      /> */}
     </Card>
   )
 }

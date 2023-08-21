@@ -2,22 +2,22 @@ import { getNodeBehavior } from '../../process/imageProcess'
 import { greyscale } from '../../process/w2b'
 import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import {
+  HandleSource,
   HandleTarget,
   NodeBaseData,
   NodeBehaviorInterface,
+  handleSourceImageDefault,
+  propagateValue,
 } from './data/NodeData'
+
+export const handleSources: Record<string, HandleSource> = {
+  image: handleSourceImageDefault,
+}
 
 export const handleTargets: Record<string, HandleTarget> = {
   image: {
     id: 'image',
-    type: 'image',
-  },
-}
-
-export const handleSources = {
-  image: {
-    id: 'image',
-    type: 'image',
+    dataType: 'image',
   },
 }
 
@@ -63,33 +63,10 @@ export const nodeBehavior: NodeBehaviorInterface = {
     const w2b = await greyscale(node.data.imageBase64)
 
     store.updateNodeData(nodeId, {
-      ...node.data,
       imageBase64: w2b,
     })
 
-    node = getNodeSnapshot<NodeData>(nodeId)
-
-    store.getOutgoingEdgesFromSourceNode(nodeId).forEach((edge) => {
-      console.log('edge', edge)
-
-      const targetNode = store.getNode(edge.target)
-      if (!targetNode.type) {
-        return
-      }
-
-      getNodeBehavior(targetNode.type).then((behavior) => {
-        console.log('behavior', targetNode.type)
-        if (!edge.targetHandle) {
-          return
-        }
-        behavior.dataIncoming(
-          targetNode.id,
-          edge.targetHandle,
-          'image',
-          node.data.imageBase64
-        )
-      })
-    })
+    propagateValue(nodeId, handleSources)
   },
   canStartProcess(nodeId: string): boolean {
     const node = getNodeSnapshot<NodeData>(nodeId)

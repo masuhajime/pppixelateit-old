@@ -1,4 +1,7 @@
-export type IncomingDataType = 'image' | 'number'
+import { getNodeBehavior } from '../../../process/imageProcess'
+import useNodeStore, { getNodeSnapshot } from '../../../store/store'
+
+export type PropagateDataType = 'image' | 'number'
 
 export type NodeBaseDataSettings = {
   [k: string]: any
@@ -9,11 +12,15 @@ export type NodeBaseData = {
   isProcessing: boolean
 }
 
+export type NodeBaseDataImageBase64 = {
+  imageBase64?: string
+}
+
 export interface NodeBehaviorInterface {
   dataIncoming: (
     nodeId: string,
     handleId: string,
-    dataType: IncomingDataType,
+    dataType: PropagateDataType,
     data: any
   ) => void
   nodeProcess: (nodeId: string) => void
@@ -22,5 +29,46 @@ export interface NodeBehaviorInterface {
 
 export type HandleTarget = {
   id: string
-  type: string
+  dataType: PropagateDataType
+}
+
+export type HandleSource<T = any> = {
+  id: string
+  dataType: PropagateDataType
+  propagateValue: (nodeId: string) => T
+}
+
+export const handleSourceImageDefault = {
+  id: 'image',
+  dataType: 'image',
+  propagateValue: (nodeId: string) =>
+    getNodeSnapshot<{
+      imageBase64: string
+    }>(nodeId).data.imageBase64,
+} as HandleSource<string>
+
+export const propagateValue = (
+  nodeId: string,
+  handleSources: Record<string, HandleSource>
+) => {
+  const store = useNodeStore.getState()
+  store.getOutgoingEdgesFromSourceNode(nodeId).forEach((edge) => {
+    const targetNode = store.getNode(edge.target)
+    if (!targetNode.type) {
+      return
+    }
+    getNodeBehavior(targetNode.type).then((behavior) => {
+      Object.values(handleSources).forEach((handleSource) => {
+        if (!edge.targetHandle) {
+          return
+        }
+        behavior.dataIncoming(
+          targetNode.id,
+          edge.targetHandle,
+          handleSource.dataType,
+          handleSource.propagateValue(nodeId)
+        )
+      })
+    })
+  })
 }
