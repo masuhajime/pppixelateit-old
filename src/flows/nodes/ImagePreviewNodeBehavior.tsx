@@ -2,19 +2,19 @@ import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import {
   HandleTarget,
   NodeBaseData,
+  NodeBaseDataImageBase64,
+  NodeBaseDataImageBuffer,
   NodeBehaviorInterface,
 } from './data/NodeData'
 
 export const handleTargets: Record<string, HandleTarget> = {
   image: {
     id: 'image',
-    dataType: 'image',
+    dataType: 'buffer',
   },
 }
 
-export type NodeData = {
-  imageBase64?: string
-} & NodeBaseData
+export type NodeData = {} & NodeBaseData & NodeBaseDataImageBuffer
 
 export const nodeBehavior: NodeBehaviorInterface = {
   dataIncoming(
@@ -27,9 +27,9 @@ export const nodeBehavior: NodeBehaviorInterface = {
     //data.completed = true
     console.log('dataIncoming:', node.id, handleId, dataType)
     const store = useNodeStore.getState()
-    store.updateNodeData(nodeId, {
-      ...node.data,
-      imageBase64: data,
+    store.updateNodeData<NodeData>(nodeId, {
+      completed: true,
+      imageBuffer: data,
     })
   },
   nodeProcess(nodeId: string): void {
@@ -39,6 +39,6 @@ export const nodeBehavior: NodeBehaviorInterface = {
   },
   canStartProcess(nodeId: string): boolean {
     const node = getNodeSnapshot<NodeData>(nodeId)
-    return !!node.data.imageBase64
+    return !!node.data.imageBuffer
   },
 }

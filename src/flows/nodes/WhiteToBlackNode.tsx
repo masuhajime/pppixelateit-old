@@ -32,7 +32,10 @@ export const WhiteToBlackNode = ({
             Word of the Day
           </Typography>
 
-          <ImagePreview imageBase64={data.imageBase64}></ImagePreview>
+          <ImagePreview
+            enabled={!!data.completed}
+            imageBuffer={data.imageBuffer}
+          ></ImagePreview>
         </CardContent>
       </Card>
 

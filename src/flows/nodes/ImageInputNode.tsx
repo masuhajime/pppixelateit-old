@@ -9,6 +9,7 @@ import { shallow } from 'zustand/shallow'
 import useNodeStore, { RFState } from '../../store/store'
 import { NodeData, handleSources } from './ImageInputNodeBehavior'
 import { ImagePreview } from './items/ImagePreview'
+import { getBufferFromBase64 } from '../../process/w2b'
 
 export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
   const { updateNodeData } = useNodeStore(
@@ -26,8 +27,9 @@ export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
       // get base64 from file
       const reader = new FileReader()
       reader.onload = () => {
+        const buffer = getBufferFromBase64(reader.result as string)
         updateNodeData<NodeData>(id, {
-          imageBase64: reader.result as string,
+          imageBuffer: buffer,
         })
       }
       reader.readAsDataURL(inputFile)
@@ -36,7 +38,7 @@ export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
       })
     } else {
       updateNodeData<NodeData>(id, {
-        imageBase64: undefined,
+        imageBuffer: undefined,
         inputFile: undefined,
       })
     }
@@ -70,7 +72,10 @@ export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
             }}
           />
         </FormControl>
-        <ImagePreview imageBase64={data.imageBase64}></ImagePreview>
+        <ImagePreview
+          enabled={true}
+          imageBuffer={data.imageBuffer}
+        ></ImagePreview>
       </CardContent>
       <Handle
         type="source"

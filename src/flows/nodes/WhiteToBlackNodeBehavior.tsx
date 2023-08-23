@@ -5,6 +5,8 @@ import {
   HandleSource,
   HandleTarget,
   NodeBaseData,
+  NodeBaseDataImageBase64,
+  NodeBaseDataImageBuffer,
   NodeBehaviorInterface,
   handleSourceImageDefault,
   propagateValue,
@@ -21,9 +23,7 @@ export const handleTargets: Record<string, HandleTarget> = {
   },
 }
 
-export type NodeData = {
-  imageBase64?: string
-} & NodeBaseData
+export type NodeData = {} & NodeBaseData & NodeBaseDataImageBuffer
 
 export const nodeBehavior: NodeBehaviorInterface = {
   dataIncoming(
@@ -38,8 +38,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
 
     const store = useNodeStore.getState()
     store.updateNodeData(nodeId, {
-      ...node.data,
-      imageBase64: data,
+      imageBuffer: data,
     })
     console.log('node', store.getNode(nodeId))
 
@@ -52,24 +51,26 @@ export const nodeBehavior: NodeBehaviorInterface = {
     if (!this.canStartProcess(node.id)) {
       return
     }
+    const store = useNodeStore.getState()
+    store.updateNodeData<NodeData>(nodeId, {
+      completed: false,
+    })
     console.log('node process:', node.id, node.type)
 
-    const store = useNodeStore.getState()
-
-    if (!node.data.imageBase64) {
+    if (!node.data.imageBuffer) {
       throw new Error('no image data')
     }
 
-    const w2b = await greyscale(node.data.imageBase64)
-
-    store.updateNodeData(nodeId, {
-      imageBase64: w2b,
+    greyscale(node.data.imageBuffer).then((w2b) => {
+      store.updateNodeData<NodeData>(nodeId, {
+        completed: true,
+        imageBuffer: w2b,
+      })
+      propagateValue(nodeId, handleSources)
     })
-
-    propagateValue(nodeId, handleSources)
   },
   canStartProcess(nodeId: string): boolean {
     const node = getNodeSnapshot<NodeData>(nodeId)
-    return !!node.data.imageBase64
+    return !!node.data.imageBuffer
   },
 }

@@ -43,8 +43,10 @@ export const Fill00ColorToTransparentNode = ({
           handleId={handleSources.image.id}
           nodeId={id}
         ></HandleSourceImage>
-
-        <ImagePreview imageBase64={data.imageBase64}></ImagePreview>
+        <ImagePreview
+          enabled={!!data.completed}
+          imageBuffer={data.imageBuffer}
+        ></ImagePreview>
       </CardContent>
     </Card>
   )

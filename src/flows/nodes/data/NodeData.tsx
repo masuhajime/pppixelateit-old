@@ -1,7 +1,7 @@
 import { getNodeBehavior } from '../../../process/imageProcess'
 import useNodeStore, { getNodeSnapshot } from '../../../store/store'
 
-export type PropagateDataType = 'image' | 'number'
+export type PropagateDataType = 'image' | 'number' | 'buffer'
 
 export type NodeBaseDataSettings = {
   [k: string]: any
@@ -10,10 +10,15 @@ export type NodeBaseDataSettings = {
 export type NodeBaseData = {
   settings: NodeBaseDataSettings
   isProcessing: boolean
+  completed?: boolean
 }
 
 export type NodeBaseDataImageBase64 = {
   imageBase64?: string
+}
+
+export type NodeBaseDataImageBuffer = {
+  imageBuffer?: Buffer
 }
 
 export interface NodeBehaviorInterface {
@@ -40,12 +45,15 @@ export type HandleSource<T = any> = {
 
 export const handleSourceImageDefault = {
   id: 'image',
-  dataType: 'image',
+  dataType: 'buffer',
   propagateValue: (nodeId: string) =>
+    // getNodeSnapshot<{
+    //   imageBase64: string
+    // }>(nodeId).data.imageBase64,
     getNodeSnapshot<{
-      imageBase64: string
-    }>(nodeId).data.imageBase64,
-} as HandleSource<string>
+      imageBuffer: Buffer
+    }>(nodeId).data.imageBuffer,
+} as HandleSource<Buffer>
 
 export const propagateValue = (
   nodeId: string,

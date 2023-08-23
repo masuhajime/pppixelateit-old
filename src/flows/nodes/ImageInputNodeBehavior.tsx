@@ -4,6 +4,7 @@ import {
   HandleSource,
   NodeBaseData,
   NodeBaseDataImageBase64,
+  NodeBaseDataImageBuffer,
   NodeBehaviorInterface,
   handleSourceImageDefault,
   propagateValue,
@@ -16,7 +17,7 @@ export const handleSources: Record<string, HandleSource> = {
 export type NodeData = {
   inputFile?: File
 } & NodeBaseData &
-  NodeBaseDataImageBase64
+  NodeBaseDataImageBuffer
 
 export const nodeBehavior: NodeBehaviorInterface = {
   dataIncoming(
@@ -30,13 +31,19 @@ export const nodeBehavior: NodeBehaviorInterface = {
   nodeProcess(nodeId: string): void {
     const node = getNodeSnapshot<NodeData>(nodeId)
     // TODO: throw error is not image selected
+
+    const store = useNodeStore.getState()
+    store.updateNodeData<NodeData>(nodeId, {
+      completed: true,
+    })
+
     propagateValue(nodeId, handleSources)
   },
   canStartProcess(nodeId: string): boolean {
     const node = getNodeSnapshot<NodeData>(nodeId)
     console.log('canStartProcess ImageInput', {
-      imageBase64: !!node.data.imageBase64,
+      imageBase64: !!node.data.imageBuffer,
     })
-    return !!node.data.imageBase64
+    return !!node.data.imageBuffer
   },
 }

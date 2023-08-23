@@ -3,14 +3,11 @@ import cv from "@techstark/opencv-js"
 import { Buffer } from "buffer"
 import Jimp from "jimp"
 
-export const greyscale = async (base64: string) => {
+export const greyscale = async (imageBuffer: Buffer) => {
 
-    let url = base64.replace(/^data:image\/\w+;base64,/, "");
-    let buffer = Buffer.from(url, 'base64');
-
-    let img = await Jimp.read(buffer);
+    let img = await Jimp.read(imageBuffer);
     img.greyscale();
-    return await img.getBase64Async(Jimp.MIME_PNG);
+    return img.getBufferAsync(Jimp.MIME_PNG);
 }
 
 type ResizeMethod =
@@ -19,40 +16,29 @@ type ResizeMethod =
     | "bicubicInterpolation"
     | "hermiteInterpolation"
     | "bezierInterpolation";
-export const resizeBaseOn = async (base64: string, side: string | 'width' | 'height', size: number, method: string | ResizeMethod) => {
+export const resizeBaseOn = async (imageBuffer: Buffer, side: string | 'width' | 'height', size: number, method: string | ResizeMethod) => {
 
-    console.log('resizeBaseOn', side, size, method);
-
-    let url = base64.replace(/^data:image\/\w+;base64,/, "");
-    let buffer = Buffer.from(url, 'base64');
-
-    let img = await Jimp.read(buffer);
+    let img = await Jimp.read(imageBuffer);
     if (side === 'width') {
         img.resize(size, Jimp.AUTO, method);
     } else {
         img.resize(Jimp.AUTO, size, method);
     }
-    return await img.getBase64Async(Jimp.MIME_PNG);
+    return img.getBufferAsync(Jimp.MIME_PNG);
 }
 
-export const posterize = async (base64: string, number: number) => {
+export const posterize = async (imageBuffer: Buffer, number: number) => {
 
-    let url = base64.replace(/^data:image\/\w+;base64,/, "");
-    let buffer = Buffer.from(url, 'base64');
-
-    let img = await Jimp.read(buffer);
+    let img = await Jimp.read(imageBuffer);
     img.posterize(number);
-    return await img.getBase64Async(Jimp.MIME_PNG);
+    return img.getBufferAsync(Jimp.MIME_PNG);
 }
 
-export const pixelate = async (base64: string, number: number) => {
+export const pixelate = async (imageBuffer: Buffer, number: number) => {
 
-    let url = base64.replace(/^data:image\/\w+;base64,/, "");
-    let buffer = Buffer.from(url, 'base64');
-
-    let img = await Jimp.read(buffer);
+    let img = await Jimp.read(imageBuffer);
     img.pixelate(number);
-    return await img.getBase64Async(Jimp.MIME_PNG);
+    return img.getBufferAsync(Jimp.MIME_PNG);
 }
 
 export const drawOutline = async (base64: string, number: number) => {
@@ -73,12 +59,13 @@ export const drawOutline = async (base64: string, number: number) => {
     return await img.getBase64Async(Jimp.MIME_PNG);
 }
 
-export const fill00ColorToTransparent = async (base64: string) => {
-
+export const getBufferFromBase64 = (base64: string) => {
     let url = base64.replace(/^data:image\/\w+;base64,/, "");
-    let buffer = Buffer.from(url, 'base64');
+    return Buffer.from(url, 'base64');
+}
 
-    let img = await Jimp.read(buffer);
+export const fill00ColorToTransparent = async (imageBuffer: Buffer) => {
+    let img = await Jimp.read(imageBuffer);
     // get pixel color of 0,0
     let colorTarget = img.getPixelColor(0, 0);
     console.log('colorTarget', colorTarget, Jimp.intToRGBA(colorTarget));
@@ -92,15 +79,11 @@ export const fill00ColorToTransparent = async (base64: string) => {
             this.bitmap.data[idx + 3] = 0;
         }
     });
-    return await img.getBase64Async(Jimp.MIME_PNG);
+    return img.getBufferAsync(Jimp.MIME_PNG);
 }
 
-export const outlinePaint = async (base64: string) => {
-
-    let url = base64.replace(/^data:image\/\w+;base64,/, "");
-    let buffer = Buffer.from(url, 'base64');
-
-    let img = await Jimp.read(buffer);
+export const outlinePaint = async (imageBuffer: Buffer) => {
+    let img = await Jimp.read(imageBuffer);
 
     const baseColor = img.getPixelColor(0, 0);
 
@@ -138,17 +121,12 @@ export const outlinePaint = async (base64: string) => {
             this.bitmap.data[idx + 3] = 255;
         }
     });
-    return await img.getBase64Async(Jimp.MIME_PNG);
+    return img.getBufferAsync(Jimp.MIME_PNG);
 }
 
 
-export const opencv2 = async (base64: string) => {
-    let url = base64.replace(/^data:image\/\w+;base64,/, "");
-    // console.log('base64', base64);
-    // console.log('url', url);
-
-    let buffer = Buffer.from(url, 'base64');
-    let img = await Jimp.read(buffer);
+export const opencv2 = async (imageBuffer: Buffer) => {
+    let img = await Jimp.read(imageBuffer);
     const src = cv.matFromImageData({
         data: img.bitmap.data,
         width: img.bitmap.width,
@@ -167,6 +145,7 @@ export const opencv2 = async (base64: string) => {
     // // const M = cv.Mat.ones(2, 2, cv.CV_8U);
     // const anchor = new cv.Point(0, 0);
     // cv.erode(src, dst, n4, anchor, 1);
+
 
     let n4 = new cv.Mat(3, 3, cv.CV_8U);
     let n4Data = new Uint8Array([
@@ -199,7 +178,7 @@ export const opencv2 = async (base64: string) => {
         width: eroded.cols,
         height: eroded.rows
     });
-    return await jimpImageS.getBase64Async(Jimp.MIME_PNG);
+    return await jimpImageS.getBufferAsync(Jimp.MIME_PNG);
 }
 
 const getPixelColor = (img: Jimp, x: number, y: number) => {

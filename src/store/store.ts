@@ -116,7 +116,7 @@ const useNodeStore = create(
 
                 //remove keys in edges.data without "settings" key in objects.nodes
                 objects.nodes = (objects.nodes || []).map((node) => {
-                    if (node.type === 'ImageInputNode') return node;
+                    // if (node.type === 'ImageInputNode') return node;
                     const newNode = { ...node };
                     if (node.data && node.data.settings) {
                         const settings = { ...node.data.settings };

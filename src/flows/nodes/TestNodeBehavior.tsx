@@ -5,6 +5,8 @@ import {
   HandleSource,
   HandleTarget,
   NodeBaseData,
+  NodeBaseDataImageBase64,
+  NodeBaseDataImageBuffer,
   NodeBehaviorInterface,
   handleSourceImageDefault,
   propagateValue,
@@ -21,9 +23,7 @@ export const handleTargets: Record<string, HandleTarget> = {
   },
 }
 
-export type NodeData = {
-  imageBase64?: string
-} & NodeBaseData
+export type NodeData = {} & NodeBaseData & NodeBaseDataImageBuffer
 
 export const nodeBehavior: NodeBehaviorInterface = {
   dataIncoming(
@@ -35,27 +35,29 @@ export const nodeBehavior: NodeBehaviorInterface = {
     const node = getNodeSnapshot(nodeId)
     const store = useNodeStore.getState()
     store.updateNodeData(nodeId, {
-      ...node.data,
-      imageBase64: data,
+      imageBuffer: data,
     })
     if (this.canStartProcess(node.id)) {
       this.nodeProcess(node.id)
     }
   },
   nodeProcess(nodeId: string): void {
+    const store = useNodeStore.getState()
+    store.updateNodeData<NodeData>(nodeId, {
+      completed: false,
+    })
     let node = getNodeSnapshot<NodeData>(nodeId)
     //data.completed = true
     console.log('node process resize to:', node.id, node.type)
 
-    if (!node.data.imageBase64) {
+    if (!node.data.imageBuffer) {
       throw new Error('no image data')
     }
 
-    const store = useNodeStore.getState()
-
-    opencv2(node.data.imageBase64).then((w2b) => {
-      store.updateNodeData(nodeId, {
-        imageBase64: w2b,
+    opencv2(node.data.imageBuffer).then((w2b) => {
+      store.updateNodeData<NodeData>(nodeId, {
+        completed: true,
+        imageBuffer: w2b,
       })
 
       propagateValue(nodeId, handleSources)
@@ -63,6 +65,6 @@ export const nodeBehavior: NodeBehaviorInterface = {
   },
   canStartProcess(nodeId: string): boolean {
     const node = getNodeSnapshot<NodeData>(nodeId)
-    return !!node.data.imageBase64
+    return !!node.data.imageBuffer
   },
 }

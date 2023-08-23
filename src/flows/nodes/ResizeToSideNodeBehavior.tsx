@@ -5,6 +5,8 @@ import {
   HandleSource,
   HandleTarget,
   NodeBaseData,
+  NodeBaseDataImageBase64,
+  NodeBaseDataImageBuffer,
   NodeBehaviorInterface,
   handleSourceImageDefault,
   propagateValue,
@@ -22,13 +24,13 @@ export const handleTargets: Record<string, HandleTarget> = {
 }
 
 export type NodeData = {
-  imageBase64?: string
   settings: {
     size?: number
     resizeBase?: string
     method?: string
   }
-} & NodeBaseData
+} & NodeBaseData &
+  NodeBaseDataImageBuffer
 
 export const nodeBehavior: NodeBehaviorInterface = {
   dataIncoming(
@@ -40,13 +42,17 @@ export const nodeBehavior: NodeBehaviorInterface = {
     const node = getNodeSnapshot<NodeData>(nodeId)
     const store = useNodeStore.getState()
     store.updateNodeData(nodeId, {
-      imageBase64: data,
+      imageBuffer: data,
     })
     if (this.canStartProcess(node.id)) {
       this.nodeProcess(node.id)
     }
   },
   nodeProcess(nodeId: string): void {
+    const store = useNodeStore.getState()
+    store.updateNodeData<NodeData>(nodeId, {
+      completed: false,
+    })
     let node = getNodeSnapshot<NodeData>(nodeId)
     //data.completed = true
     console.log(
@@ -57,7 +63,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
     )
 
     if (
-      !node.data.imageBase64 ||
+      !node.data.imageBuffer ||
       !node.data.settings.size ||
       !node.data.settings.resizeBase ||
       !node.data.settings.method
@@ -65,15 +71,15 @@ export const nodeBehavior: NodeBehaviorInterface = {
       return
     }
 
-    const store = useNodeStore.getState()
     resizeBaseOn(
-      node.data.imageBase64,
+      node.data.imageBuffer,
       node.data.settings.resizeBase,
       node.data.settings.size,
       node.data.settings.method
     ).then((w2b) => {
-      store.updateNodeData(nodeId, {
-        imageBase64: w2b,
+      store.updateNodeData<NodeData>(nodeId, {
+        completed: true,
+        imageBuffer: w2b,
       })
 
       propagateValue(nodeId, handleSources)
@@ -82,13 +88,13 @@ export const nodeBehavior: NodeBehaviorInterface = {
   canStartProcess(nodeId: string): boolean {
     const node = getNodeSnapshot<NodeData>(nodeId)
     console.log(
-      'canStartProcess',
-      !!node.data.imageBase64 &&
+      'canStartProcess Resize:',
+      !!node.data.imageBuffer &&
         !!node.data.settings.size &&
         !!node.data.settings.resizeBase &&
         !!node.data.settings.method,
       {
-        imageBase64: !!node.data.imageBase64,
+        imageBuffer: !!node.data.imageBuffer,
         method: node.data.settings.method,
         size: node.data.settings.size,
         resizeBase: node.data.settings.resizeBase,
@@ -96,7 +102,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
     )
 
     return (
-      !!node.data.imageBase64 &&
+      !!node.data.imageBuffer &&
       !!node.data.settings.size &&
       !!node.data.settings.resizeBase &&
       !!node.data.settings.method

@@ -42,7 +42,10 @@ export const PixelateNode = ({ id, data }: NodeProps<NodeData>) => {
           nodeId={id}
         ></HandleSourceImage>
 
-        <ImagePreview imageBase64={data.imageBase64}></ImagePreview>
+        <ImagePreview
+          enabled={!!data.completed}
+          imageBuffer={data.imageBuffer}
+        ></ImagePreview>
       </CardContent>
     </Card>
   )

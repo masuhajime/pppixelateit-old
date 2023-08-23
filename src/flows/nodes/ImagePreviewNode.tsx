@@ -23,7 +23,10 @@ export const ImagePreviewNode = ({ id, data }: NodeProps<NodeData>) => {
         title="Image Preview"
       />
       <CardContent>
-        <ImagePreview imageBase64={data.imageBase64}></ImagePreview>
+        <ImagePreview
+          enabled={!!data.completed}
+          imageBuffer={data.imageBuffer}
+        ></ImagePreview>
       </CardContent>
       <Handle
         type="target"
