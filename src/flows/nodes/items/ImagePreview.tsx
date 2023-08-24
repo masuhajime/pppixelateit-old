@@ -1,5 +1,5 @@
-import Jimp from 'jimp'
 import { useEffect, useState } from 'react'
+import { arrayBufferToBase64 } from '../../../process/w2b'
 
 type Props = {
   enabled?: boolean
@@ -15,13 +15,15 @@ export const ImagePreview = ({
 }: Props) => {
   const [htmlImageBase64, setHtmlImageBase64] = useState<string | undefined>()
   useEffect(() => {
+    console.log('useEffect ImagePreview')
+
     if (!!imageBase64) {
       setHtmlImageBase64(imageBase64)
     }
     if (!!imageBuffer) {
-      Jimp.read(imageBuffer).then(async (jimp) => {
-        setHtmlImageBase64(await jimp.getBase64Async(Jimp.MIME_PNG))
-      })
+      setHtmlImageBase64(
+        'data:image/png;base64,' + arrayBufferToBase64(imageBuffer)
+      )
     }
   }, [imageBuffer, imageBase64])
 

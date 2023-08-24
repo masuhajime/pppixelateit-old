@@ -9,7 +9,7 @@ import { shallow } from 'zustand/shallow'
 import useNodeStore, { RFState } from '../../store/store'
 import { NodeData, handleSources } from './ImageInputNodeBehavior'
 import { ImagePreview } from './items/ImagePreview'
-import { getBufferFromBase64 } from '../../process/w2b'
+import { getBuffer, getBufferFromBase64 } from '../../process/w2b'
 
 export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
   const { updateNodeData } = useNodeStore(

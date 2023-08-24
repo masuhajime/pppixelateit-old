@@ -59,9 +59,24 @@ export const drawOutline = async (base64: string, number: number) => {
     return await img.getBase64Async(Jimp.MIME_PNG);
 }
 
-export const getBufferFromBase64 = (base64: string) => {
-    let url = base64.replace(/^data:image\/\w+;base64,/, "");
-    return Buffer.from(url, 'base64');
+export const getBufferFromBase64 = (imageBase64: string) => {
+    let strImage = imageBase64.replace(/^data:image\/[a-z]+;base64,/, "");
+    return Buffer.from(strImage, 'base64');
+}
+
+export const getBuffer = (base64: string) => {
+    return Buffer.from(base64, 'base64');
+}
+
+
+export const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
+    let binary = ''
+    const bytes = new Uint8Array(buffer)
+    const len = bytes.byteLength
+    for (let i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i])
+    }
+    return btoa(binary)
 }
 
 export const fill00ColorToTransparent = async (imageBuffer: Buffer) => {
