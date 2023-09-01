@@ -1,11 +1,9 @@
-import { getNodeBehavior } from '../../process/imageProcess'
-import { opencv2, outlinePaint } from '../../process/w2b'
+import { opencv2 } from '../../process/w2b'
 import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import {
   HandleSource,
   HandleTarget,
   NodeBaseData,
-  NodeBaseDataImageBase64,
   NodeBaseDataImageBuffer,
   NodeBehaviorInterface,
   handleSourceImageDefault,
