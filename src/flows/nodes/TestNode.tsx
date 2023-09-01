@@ -19,7 +19,11 @@ export const TestNode = ({ id, data }: NodeProps<NodeData>) => {
       }}
     >
       <CardHeader title="TestNode" />
-      <CardContent>
+      <CardContent
+        style={{
+          padding: '0',
+        }}
+      >
         <HandleTargetImage
           handleId={handleTargets.image.id}
           nodeId={id}

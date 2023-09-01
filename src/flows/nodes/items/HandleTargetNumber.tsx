@@ -26,12 +26,7 @@ export const HandleTargetNumber = (props: Props) => {
   }, [handlePositionTop])
 
   return (
-    <Box
-      ref={ref}
-      sx={{
-        padding: '4px',
-      }}
-    >
+    <Box className="node-item" ref={ref} sx={{}}>
       <Box>
         <TextField
           id="outlined-number"
