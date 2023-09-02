@@ -1,6 +1,13 @@
 import { Divider } from '@mui/material'
 
-type Props = {}
+type Props = { thickness?: number }
 export const Separator = (props: Props) => {
-  return <Divider />
+  const thickness = props.thickness ?? 2
+  return (
+    <Divider
+      sx={{
+        borderBottomWidth: `${thickness}px`,
+      }}
+    />
+  )
 }

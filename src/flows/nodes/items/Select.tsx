@@ -32,7 +32,7 @@ export const Select = (props: Props) => {
   }, [ref.current])
 
   return (
-    <Box ref={ref}>
+    <Box className="node-item" ref={ref}>
       <FormControl fullWidth>
         <InputLabel id="select-label">{props.label}</InputLabel>
         <MuiSelect
@@ -42,6 +42,7 @@ export const Select = (props: Props) => {
           label={props.label}
           className="nodrag"
           onChange={handleChange}
+          size="small"
         >
           {props.children}
         </MuiSelect>

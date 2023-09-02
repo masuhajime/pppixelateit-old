@@ -3,7 +3,7 @@ import { NodeProps } from 'reactflow'
 import { CardHeader, MenuItem } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
-import useNodeStore, { getNodeSnapshot } from '../../store/store'
+import useNodeStore from '../../store/store'
 import {
   NodeData,
   handleSources,
@@ -12,22 +12,21 @@ import {
 import { HandleSourceImage } from './items/HandleSourceImage'
 import { HandleTargetImage } from './items/HandleTargetImage'
 import { HandleTargetNumber } from './items/HandleTargetNumber'
+import { ImagePreview } from './items/ImagePreview'
 import { Select } from './items/Select'
 import { Separator } from './items/Separator'
-import { ImagePreview } from './items/ImagePreview'
+import { Node } from './components/Node'
+import { NodeHeader } from './components/NodeHeader'
+import { NodeContent } from './components/NodeContent'
 
 export const ResizeToSideNode = ({ id, data }: NodeProps<NodeData>) => {
   const store = useNodeStore.getState()
   const node = store.getNode<NodeData>(id)
 
   return (
-    <Card
-      sx={{
-        maxWidth: 256,
-      }}
-    >
-      <CardHeader title="Resize To Side" />
-      <CardContent>
+    <Node>
+      <NodeHeader title="Resize To Side" />
+      <NodeContent>
         <HandleTargetImage
           handleId={handleTargets.image.id}
           nodeId={id}
@@ -59,7 +58,7 @@ export const ResizeToSideNode = ({ id, data }: NodeProps<NodeData>) => {
         <Select
           label={'Method'}
           nodeId={id}
-          defaultValue="nearestNeighbor"
+          defaultValue={data.settings.method || 'nearestNeighbor'}
           onSelect={(value) => {
             useNodeStore.getState().updateNodeSetting(id, {
               method: value,
@@ -79,10 +78,15 @@ export const ResizeToSideNode = ({ id, data }: NodeProps<NodeData>) => {
           nodeId={id}
         ></HandleSourceImage>
         <ImagePreview
-          enabled={!!data.completed}
+          enabled={!!data.settings.enablePreview}
           imageBuffer={data.imageBuffer}
+          onTogglePreview={(enabled: boolean) => {
+            useNodeStore.getState().updateNodeSetting(id, {
+              enablePreview: enabled,
+            })
+          }}
         ></ImagePreview>
-      </CardContent>
-    </Card>
+      </NodeContent>
+    </Node>
   )
 }

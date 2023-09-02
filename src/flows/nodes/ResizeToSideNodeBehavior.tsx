@@ -1,11 +1,9 @@
-import { getNodeBehavior } from '../../process/imageProcess'
 import { resizeBaseOn } from '../../process/w2b'
 import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import {
   HandleSource,
   HandleTarget,
   NodeBaseData,
-  NodeBaseDataImageBase64,
   NodeBaseDataImageBuffer,
   NodeBehaviorInterface,
   handleSourceImageDefault,

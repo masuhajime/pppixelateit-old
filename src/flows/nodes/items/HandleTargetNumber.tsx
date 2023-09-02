@@ -26,25 +26,24 @@ export const HandleTargetNumber = (props: Props) => {
   }, [handlePositionTop])
 
   return (
-    <Box className="node-item" ref={ref} sx={{}}>
-      <Box>
-        <TextField
-          id="outlined-number"
-          label={props.name}
-          type="number"
-          InputLabelProps={{
-            shrink: true,
-          }}
-          defaultValue={props.defaultValue}
-          variant="outlined"
-          className="nodrag"
-          onChange={(e) => {
-            props.onChange &&
-              parseInt(e.target.value) &&
-              props.onChange(parseInt(e.target.value))
-          }}
-        />
-      </Box>
+    <Box className="node-item" ref={ref}>
+      <TextField
+        id="outlined-number"
+        label={props.name}
+        type="number"
+        InputLabelProps={{
+          shrink: true,
+        }}
+        defaultValue={props.defaultValue}
+        variant="outlined"
+        className="nodrag"
+        size="small"
+        onChange={(e) => {
+          props.onChange &&
+            parseInt(e.target.value) &&
+            props.onChange(parseInt(e.target.value))
+        }}
+      />
       {handlePositionTop && (
         <Handle
           type="target"

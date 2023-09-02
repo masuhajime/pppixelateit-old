@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { arrayBufferToBase64 } from '../../../process/w2b'
+import { Box, Switch, Typography } from '@mui/material'
+import VisibilityIcon from '@mui/icons-material/Visibility'
 
 type Props = {
   enabled?: boolean
@@ -15,7 +17,9 @@ export const ImagePreview = ({
 }: Props) => {
   const [htmlImageBase64, setHtmlImageBase64] = useState<string | undefined>()
   useEffect(() => {
-    console.log('useEffect ImagePreview')
+    if (!enabled) {
+      return
+    }
 
     if (!!imageBase64) {
       setHtmlImageBase64(imageBase64)
@@ -25,10 +29,16 @@ export const ImagePreview = ({
         'data:image/png;base64,' + arrayBufferToBase64(imageBuffer)
       )
     }
-  }, [imageBuffer, imageBase64])
+  }, [imageBuffer, imageBase64, enabled])
 
   return (
-    <div>
+    <Box
+      className="node-item"
+      // sx={{
+      //   display: 'flex',
+      //   alignItems: 'center',
+      // }}
+    >
       {togglePreview(enabled, onTogglePreview)}
       {enabled && (
         <>
@@ -74,7 +84,7 @@ export const ImagePreview = ({
           )}
         </>
       )}
-    </div>
+    </Box>
   )
 }
 
@@ -83,14 +93,29 @@ const togglePreview = (
   onTogglePreview?: (enabled: boolean) => void
 ) => {
   return (
-    <>
-      <div
+    <Box
+      sx={{
+        display: 'block',
+      }}
+    >
+      <VisibilityIcon
+        className="nodrag"
+        sx={{
+          color: enabled ? 'primary.main' : 'text.disabled',
+          cursor: 'pointer',
+        }}
         onClick={() => {
           !!onTogglePreview && onTogglePreview(!enabled)
         }}
-      >
-        preview: {enabled ? 'Y' : 'N'}
-      </div>
-    </>
+      ></VisibilityIcon>
+    </Box>
+    // <Switch
+    //   className="nodrag"
+    //   checked={enabled}
+    //   onChange={(_, checked) => {
+    //     !!onTogglePreview && onTogglePreview(checked)
+    //   }}
+    //   inputProps={{ 'aria-label': 'controlled' }}
+    // />
   )
 }

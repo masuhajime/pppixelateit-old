@@ -1,6 +1,6 @@
-import processStore from "../store/processStore";
-import useNodeStore, { RFState } from "../store/store";
 import { NodeBehaviorInterface } from "../flows/nodes/data/NodeData";
+import processStore from "../store/processStore";
+import useNodeStore from "../store/store";
 
 
 // const nodeTypes = {
@@ -10,6 +10,11 @@ import { NodeBehaviorInterface } from "../flows/nodes/data/NodeData";
 //   }
 
 export const getNodeBehavior = async (type: string): Promise<NodeBehaviorInterface> => {
+    return await import(`../flows/nodes/${type}Behavior`).then((module) => {
+        return module.nodeBehavior;
+    });
+
+
     switch (type) {
         case 'ImageInputNode':
             return await import(`../flows/nodes/ImageInputNodeBehavior`).then((module) => {

@@ -17,19 +17,14 @@ export const HandleSourceImage = (props: Props) => {
     if (!ref.current) {
       return
     }
-    setHandlePositionTop(ref.current.offsetTop + 16)
+    setHandlePositionTop(ref.current.offsetTop + 28)
   }, [ref.current?.offsetTop])
   React.useEffect(() => {
     updateNodeInternals(props.nodeId)
   }, [handlePositionTop])
 
   return (
-    <Box
-      ref={ref}
-      sx={{
-        padding: '4px',
-      }}
-    >
+    <Box ref={ref} className="node-item">
       <Typography variant="h6">{props.label}</Typography>
       {handlePositionTop && (
         <Handle

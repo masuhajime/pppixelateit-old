@@ -14,6 +14,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css'
 import { v4 as uuidv4 } from 'uuid'
 import './App.css'
+import './styles-node-global.css'
 import { Sidebar } from './components/Sidebar'
 import { CustomEdge } from './flows/edges/CustomEdge'
 import processStore from './store/processStore'

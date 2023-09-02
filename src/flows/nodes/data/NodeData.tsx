@@ -19,6 +19,9 @@ export type NodeBaseDataImageBase64 = {
 
 export type NodeBaseDataImageBuffer = {
   imageBuffer?: Buffer
+  settings: {
+    enablePreview?: boolean
+  }
 }
 
 export interface NodeBehaviorInterface {
