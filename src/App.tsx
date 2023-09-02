@@ -31,12 +31,13 @@ const edgeTypes: EdgeTypes = {
 
 function App() {
   const theme = createTheme({
+    palette: {
+      mode: 'dark',
+    },
     components: {
       MuiIconButton: {
         defaultProps: {
-          sx: {
-            boxShadow: 'none',
-          },
+          sx: {},
         },
       },
     },
@@ -162,9 +163,11 @@ function App() {
               <Panel position="top-left">
                 <IconButton
                   aria-label="settings"
-                  sx={{
-                    backgroundColor: 'white',
-                  }}
+                  sx={
+                    {
+                      // backgroundColor: 'white',
+                    }
+                  }
                   onClick={() => {
                     console.log('play')
                     //processStore.getState().start()
