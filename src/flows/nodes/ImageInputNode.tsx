@@ -64,8 +64,13 @@ export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
           </Box>
         </FormControl>
         <ImagePreview
-          enabled={true}
+          enabled={!!data.settings.enablePreview}
           imageBuffer={data.imageBuffer}
+          onTogglePreview={(enabled: boolean) => {
+            useNodeStore.getState().updateNodeSetting(id, {
+              enablePreview: enabled,
+            })
+          }}
         ></ImagePreview>
         <Handle
           type="source"

@@ -43,8 +43,13 @@ export const PixelateNode = ({ id, data }: NodeProps<NodeData>) => {
         ></HandleSourceImage>
 
         <ImagePreview
-          enabled={!!data.completed}
+          enabled={!!data.settings.enablePreview}
           imageBuffer={data.imageBuffer}
+          onTogglePreview={(enabled: boolean) => {
+            useNodeStore.getState().updateNodeSetting(id, {
+              enablePreview: enabled,
+            })
+          }}
         ></ImagePreview>
       </CardContent>
     </Card>

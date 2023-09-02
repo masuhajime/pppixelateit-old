@@ -11,6 +11,7 @@ import {
   handleTargets,
 } from './WhiteToBlackNodeBehavior'
 import { ImagePreview } from './items/ImagePreview'
+import useNodeStore from '../../store/store'
 
 export const WhiteToBlackNode = ({
   id,
@@ -33,8 +34,13 @@ export const WhiteToBlackNode = ({
           </Typography>
 
           <ImagePreview
-            enabled={!!data.completed}
+            enabled={!!data.settings.enablePreview}
             imageBuffer={data.imageBuffer}
+            onTogglePreview={(enabled: boolean) => {
+              useNodeStore.getState().updateNodeSetting(id, {
+                enablePreview: enabled,
+              })
+            }}
           ></ImagePreview>
         </CardContent>
       </Card>

@@ -6,6 +6,7 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import { NodeData, handleTargets } from './ImagePreviewNodeBehavior'
 import { ImagePreview } from './items/ImagePreview'
+import useNodeStore from '../../store/store'
 
 export const ImagePreviewNode = ({ id, data }: NodeProps<NodeData>) => {
   return (
@@ -24,8 +25,13 @@ export const ImagePreviewNode = ({ id, data }: NodeProps<NodeData>) => {
       />
       <CardContent>
         <ImagePreview
-          enabled={!!data.completed}
+          enabled={!!data.settings.enablePreview}
           imageBuffer={data.imageBuffer}
+          onTogglePreview={(enabled: boolean) => {
+            useNodeStore.getState().updateNodeSetting(id, {
+              enablePreview: enabled,
+            })
+          }}
         ></ImagePreview>
       </CardContent>
       <Handle

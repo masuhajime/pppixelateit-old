@@ -1,5 +1,5 @@
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
-import { IconButton } from '@mui/material'
+import { Box, IconButton } from '@mui/material'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { DragEvent, useCallback, useRef, useState } from 'react'
 import Split from 'react-split'
@@ -161,21 +161,23 @@ function App() {
               }}
             >
               <Panel position="top-left">
-                <IconButton
-                  aria-label="settings"
-                  sx={
-                    {
-                      // backgroundColor: 'white',
-                    }
-                  }
-                  onClick={() => {
-                    console.log('play')
-                    //processStore.getState().start()
-                    processController.start()
+                <Box
+                  sx={{
+                    backgroundColor: 'rgba(128,128,128,0.5)',
+                    borderRadius: '50%',
                   }}
                 >
-                  <PlayArrowIcon />
-                </IconButton>
+                  <IconButton
+                    aria-label="settings"
+                    onClick={() => {
+                      console.log('play')
+                      //processStore.getState().start()
+                      processController.start()
+                    }}
+                  >
+                    <PlayArrowIcon />
+                  </IconButton>
+                </Box>
               </Panel>
               <Background />
               <Controls />
