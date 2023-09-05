@@ -25,7 +25,7 @@ export const ImagePreviewNode = ({ id, data }: NodeProps<NodeData>) => {
       />
       <CardContent>
         <ImagePreview
-          enabled={!!data.settings.enablePreview}
+          enabled={!!data.settings.enablePreview && data.completed}
           imageBuffer={data.imageBuffer}
           onTogglePreview={(enabled: boolean) => {
             useNodeStore.getState().updateNodeSetting(id, {

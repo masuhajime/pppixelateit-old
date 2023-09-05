@@ -10,16 +10,15 @@ import { HandleTargetImage } from './items/HandleTargetImage'
 import { HandleTargetNumber } from './items/HandleTargetNumber'
 import { Separator } from './items/Separator'
 import { ImagePreview } from './items/ImagePreview'
+import { Node } from './components/Node'
+import { NodeHeader } from './components/NodeHeader'
+import { NodeContent } from './components/NodeContent'
 
 export const PosterizeNode = ({ id, data }: NodeProps<NodeData>) => {
   return (
-    <Card
-      sx={{
-        maxWidth: 256,
-      }}
-    >
-      <CardHeader title="PosterizeNode" />
-      <CardContent>
+    <Node status={data.isProcessing ? 'processing' : undefined}>
+      <NodeHeader title="PosterizeNode" />
+      <NodeContent>
         <HandleTargetImage
           handleId={handleTargets.image.id}
           nodeId={id}
@@ -43,7 +42,7 @@ export const PosterizeNode = ({ id, data }: NodeProps<NodeData>) => {
         ></HandleSourceImage>
 
         <ImagePreview
-          enabled={!!data.settings.enablePreview}
+          enabled={!!data.settings.enablePreview && data.completed}
           imageBuffer={data.imageBuffer}
           onTogglePreview={(enabled: boolean) => {
             useNodeStore.getState().updateNodeSetting(id, {
@@ -51,7 +50,7 @@ export const PosterizeNode = ({ id, data }: NodeProps<NodeData>) => {
             })
           }}
         ></ImagePreview>
-      </CardContent>
-    </Card>
+      </NodeContent>
+    </Node>
   )
 }

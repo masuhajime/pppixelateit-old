@@ -1,11 +1,9 @@
-import { getNodeBehavior } from '../../process/imageProcess'
 import { greyscale } from '../../process/w2b'
 import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import {
   HandleSource,
   HandleTarget,
   NodeBaseData,
-  NodeBaseDataImageBase64,
   NodeBaseDataImageBuffer,
   NodeBehaviorInterface,
   handleSourceImageDefault,
@@ -42,11 +40,11 @@ export const nodeBehavior: NodeBehaviorInterface = {
     })
     console.log('node', store.getNode(nodeId))
 
-    if (this.canStartProcess(node.id)) {
-      this.nodeProcess(node.id)
-    }
+    // if (this.canStartProcess(node.id)) {
+    //   this.nodeProcess(node.id)
+    // }
   },
-  async nodeProcess(nodeId: string): Promise<void> {
+  async nodeProcess(nodeId: string, callback: () => void): Promise<void> {
     let node = getNodeSnapshot<NodeData>(nodeId)
     if (!this.canStartProcess(node.id)) {
       return
@@ -67,6 +65,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
         imageBuffer: w2b,
       })
       propagateValue(nodeId, handleSources)
+      callback()
     })
   },
   canStartProcess(nodeId: string): boolean {

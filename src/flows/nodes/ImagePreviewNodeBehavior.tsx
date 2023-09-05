@@ -32,10 +32,11 @@ export const nodeBehavior: NodeBehaviorInterface = {
       imageBuffer: data,
     })
   },
-  nodeProcess(nodeId: string): void {
+  nodeProcess(nodeId: string, callback: () => void): void {
     const node = getNodeSnapshot<NodeData>(nodeId)
     //data.completed = true
     console.error('node process:', node.id, node.type)
+    callback()
   },
   canStartProcess(nodeId: string): boolean {
     const node = getNodeSnapshot<NodeData>(nodeId)

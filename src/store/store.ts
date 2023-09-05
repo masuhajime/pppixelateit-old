@@ -30,6 +30,11 @@ export type RFState = {
     onEdgesChange: OnEdgesChange;
     onConnect: OnConnect;
     nodeAdd: (node: Node) => void;
+    nodeSetProcessing<T = NodeBaseData>(nodeId: string, processing: boolean): void;
+    nodeSetAllUncompleted(): void;
+    nodeAllCleareBuffer(): void;
+    nodeSetCompleted(nodeId: string, completed: boolean): void;
+    nodeGetCompleted(nodeId: string): boolean;
 };
 
 // this is our useStore hook that we can use in our components to get parts of the store and call actions
@@ -100,6 +105,47 @@ const useNodeStore = create(
                         nodes: [...get().nodes, node]
                     })
                 },
+                nodeSetProcessing(nodeId: string, processing: boolean): void {
+                    set({
+                        nodes: get().nodes.map((node) => {
+                            if (node.id === nodeId) {
+                                node.data = { ...node.data, isProcessing: processing };
+                            }
+                            return node;
+                        }),
+                    });
+                },
+                nodeSetAllUncompleted(): void {
+                    set({
+                        nodes: get().nodes.map((node) => {
+                            node.data = { ...node.data, completed: false };
+                            return node;
+                        }),
+                    });
+                },
+                nodeAllCleareBuffer(): void {
+                    set({
+                        nodes: get().nodes.map((node) => {
+                            node.data = { ...node.data, imageBuffer: undefined };
+                            return node;
+                        }),
+                    });
+                },
+                nodeSetCompleted(nodeId: string, completed: boolean): void {
+                    set({
+                        nodes: get().nodes.map((node) => {
+                            if (node.id === nodeId) {
+                                node.data = { ...node.data, isCompleted: completed };
+                            }
+                            return node;
+                        }),
+                    });
+                },
+                nodeGetCompleted(nodeId: string): boolean {
+                    const node = get().nodes.find((node) => node.id === nodeId);
+                    if (!node) throw new Error('node not found');
+                    return node.data.completed;
+                }
             });
         },
         {

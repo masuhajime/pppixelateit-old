@@ -2,82 +2,78 @@ import { NodeBehaviorInterface } from "../flows/nodes/data/NodeData";
 import processStore from "../store/processStore";
 import useNodeStore from "../store/store";
 
-
-// const nodeTypes = {
-//     inputImage: ImageInputNode,
-//     whiteToBlack: WhiteToBlackNode,
-//     imagePreviewNode: ImagePreviewNode,
-//   }
-
 export const getNodeBehavior = async (type: string): Promise<NodeBehaviorInterface> => {
-    return await import(`../flows/nodes/${type}Behavior`).then((module) => {
+    return await import(`../flows/nodes/${type}Behavior.tsx`).then((module) => {
         return module.nodeBehavior;
     });
-
-
-    switch (type) {
-        case 'ImageInputNode':
-            return await import(`../flows/nodes/ImageInputNodeBehavior`).then((module) => {
-                return module.nodeBehavior;
-            });
-        case 'WhiteToBlackNode':
-            return await import(`../flows/nodes/WhiteToBlackNodeBehavior`).then((module) => {
-                return module.nodeBehavior;
-            }
-            );
-        case 'ImagePreviewNode':
-            return await import(`../flows/nodes/ImagePreviewNodeBehavior`).then((module) => {
-                return module.nodeBehavior;
-            }
-            );
-        case 'ResizeToSideNode':
-            return await import(`../flows/nodes/ResizeToSideNodeBehavior`).then((module) => {
-                return module.nodeBehavior;
-            }
-            );
-        case 'PosterizeNode':
-            return await import(`../flows/nodes/PosterizeNodeBehavior`).then((module) => {
-                return module.nodeBehavior;
-            }
-            );
-        case 'PixelateNode':
-            return await import(`../flows/nodes/PixelateNodeBehavior`).then((module) => {
-                return module.nodeBehavior;
-            }
-            );
-        case 'TestNode':
-            return await import(`../flows/nodes/TestNodeBehavior`).then((module) => {
-                return module.nodeBehavior;
-            }
-            );
-        case 'Fill00ColorToTransparentNode':
-            return await import(`../flows/nodes/Fill00ColorToTransparentNodeBehavior`).then((module) => {
-                return module.nodeBehavior;
-            }
-            );
-        default:
-            throw new Error(`Node type ${type} not found`);
-    }
 }
 
 class ProcessController {
     async start() {
+        const nodeStore = useNodeStore.getState();
+        nodeStore.nodeSetAllUncompleted();
+        nodeStore.nodeAllCleareBuffer();
         processStore.getState().start();
 
-        useNodeStore.getState().nodes.map(async (node) => {
-            if (node.type === undefined) {
-                return;
+        const unsubscribe = processStore.subscribe((state) => {
+            console.log('process status', state.count, state.processStatus);
+
+            if (state.processStatus != 'processing') {
+                unsubscribe();
             }
-            if (node.type !== "ImageInputNode") {
-                return;
+            if (this.checkCanStartProcess()) {
+                this.progress();
+            } else {
+                this.stop();
             }
-            const behavior = await getNodeBehavior(node.type);
-            behavior.nodeProcess(node.id);
+
+            // debug
+            if (state.count > 10) {
+                console.log('process count over 10');
+                this.stop();
+            }
         });
+
+        this.progress();
     }
 
     progress() {
-        processStore.getState().progress();
+        const nodeStore = useNodeStore.getState();
+        nodeStore.nodes.forEach(async (node) => {
+            if (node.type === undefined) {
+                return;
+            }
+            const behavior = await getNodeBehavior(node.type);
+            if (!behavior.canStartProcess(node.id)) {
+                return;
+            }
+            if (nodeStore.nodeGetCompleted(node.id)) {
+                return;
+            }
+            nodeStore.nodeSetProcessing(node.id, true);
+            behavior.nodeProcess(node.id, () => {
+                console.log('process end', {
+                    node: node.id,
+                    type: node.type,
+                });
+
+                nodeStore.nodeSetProcessing(node.id, false);
+                processStore.getState().progress();
+            });
+        });
+    }
+
+    checkCanStartProcess(): boolean {
+        return useNodeStore.getState().nodes.some(async (node) => {
+            if (node.type === undefined) {
+                return false;
+            }
+            if (useNodeStore.getState().nodeGetCompleted(node.id)) {
+                return false;
+            }
+            const behavior = await getNodeBehavior(node.type);
+            return behavior.canStartProcess(node.id);
+        });
     }
 
     stop() {

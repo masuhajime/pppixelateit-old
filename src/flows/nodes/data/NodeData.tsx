@@ -31,7 +31,7 @@ export interface NodeBehaviorInterface {
     dataType: PropagateDataType,
     data: any
   ) => void
-  nodeProcess: (nodeId: string) => void
+  nodeProcess: (nodeId: string, callback: () => void) => void
   canStartProcess(nodeId: string): boolean
 }
 

@@ -1,4 +1,5 @@
 import { getNodeBehavior } from '../../process/imageProcess'
+import { getBufferFromBase64 } from '../../process/w2b'
 import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import {
   HandleSource,
@@ -28,22 +29,36 @@ export const nodeBehavior: NodeBehaviorInterface = {
   ): void {
     throw new Error('node process: should not be incoming:' + nodeId)
   },
-  nodeProcess(nodeId: string): void {
+  nodeProcess(nodeId: string, callback: () => void): void {
     const node = getNodeSnapshot<NodeData>(nodeId)
     // TODO: throw error is not image selected
 
-    const store = useNodeStore.getState()
-    store.updateNodeData<NodeData>(nodeId, {
+    const nodeStore = useNodeStore.getState()
+
+    if (!node.data.inputFile) {
+      throw new Error('no image')
+    }
+    const reader = new FileReader()
+    reader.onload = () => {
+      const buffer = getBufferFromBase64(reader.result as string)
+      nodeStore.updateNodeData<NodeData>(node.id, {
+        imageBuffer: buffer,
+      })
+      propagateValue(nodeId, handleSources)
+      callback()
+    }
+    reader.readAsDataURL(node.data.inputFile)
+
+    nodeStore.updateNodeData<NodeData>(nodeId, {
       completed: true,
     })
-
-    propagateValue(nodeId, handleSources)
   },
   canStartProcess(nodeId: string): boolean {
     const node = getNodeSnapshot<NodeData>(nodeId)
     console.log('canStartProcess ImageInput', {
       imageBase64: !!node.data.imageBuffer,
+      inputFile: node.data.inputFile,
     })
-    return !!node.data.imageBuffer
+    return !!node.data.inputFile
   },
 }

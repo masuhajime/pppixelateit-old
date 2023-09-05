@@ -13,7 +13,7 @@ import { Separator } from './items/Separator'
 
 export const TestNode = ({ id, data }: NodeProps<NodeData>) => {
   return (
-    <Node>
+    <Node status={data.isProcessing ? 'processing' : undefined}>
       <NodeHeader title="TestNode" />
       <NodeContent>
         <HandleTargetImage
@@ -51,7 +51,7 @@ export const TestNode = ({ id, data }: NodeProps<NodeData>) => {
           nodeId={id}
         ></HandleSourceImage>
         <ImagePreview
-          enabled={!!data.settings.enablePreview}
+          enabled={!!data.settings.enablePreview && data.completed}
           imageBuffer={data.imageBuffer}
           onTogglePreview={(enabled: boolean) => {
             useNodeStore.getState().updateNodeSetting(id, {

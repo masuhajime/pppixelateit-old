@@ -15,7 +15,7 @@ export const Fill00ColorToTransparentNode = ({
   data,
 }: NodeProps<NodeData>) => {
   return (
-    <Node>
+    <Node status={data.isProcessing ? 'processing' : undefined}>
       <NodeHeader title="Fill00ColorToTransparent" />
       <NodeContent>
         <HandleTargetImage

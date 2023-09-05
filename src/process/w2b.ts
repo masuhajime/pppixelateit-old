@@ -2,6 +2,15 @@
 import cv from "@techstark/opencv-js"
 import { Buffer } from "buffer"
 import Jimp from "jimp"
+import useNodeStore from "../store/store"
+
+export const doNodeProcess = async (nodeId: string, callback: () => void) => {
+    const store = useNodeStore.getState();
+    store.nodeSetProcessing(nodeId, true);
+    await callback();
+    store.nodeSetProcessing(nodeId, false);
+}
+
 
 export const greyscale = async (imageBuffer: Buffer) => {
 

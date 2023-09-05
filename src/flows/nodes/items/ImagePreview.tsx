@@ -17,6 +17,9 @@ export const ImagePreview = ({
 }: Props) => {
   const [htmlImageBase64, setHtmlImageBase64] = useState<string | undefined>()
   useEffect(() => {
+    if (!imageBuffer) {
+      setHtmlImageBase64(undefined)
+    }
     if (!enabled) {
       return
     }

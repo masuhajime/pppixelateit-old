@@ -12,14 +12,7 @@ import { NodeHeader } from './components/NodeHeader'
 import { ImagePreview } from './items/ImagePreview'
 
 export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
-  const { updateNodeData } = useNodeStore(
-    (state: RFState) => ({
-      getNode: state.getNode,
-      getNodeTargetedFrom: state.getNodeTargetedFrom,
-      updateNodeData: state.updateNodeData,
-    }),
-    shallow
-  )
+  const nodeStore = useNodeStore.getState()
 
   const onChange = (inputFile: File | null) => {
     console.log('onChange', inputFile)
@@ -28,16 +21,16 @@ export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
       const reader = new FileReader()
       reader.onload = () => {
         const buffer = getBufferFromBase64(reader.result as string)
-        updateNodeData<NodeData>(id, {
+        nodeStore.updateNodeData<NodeData>(id, {
           imageBuffer: buffer,
         })
       }
       reader.readAsDataURL(inputFile)
-      updateNodeData<NodeData>(id, {
+      nodeStore.updateNodeData<NodeData>(id, {
         inputFile: inputFile,
       })
     } else {
-      updateNodeData<NodeData>(id, {
+      nodeStore.updateNodeData<NodeData>(id, {
         imageBuffer: undefined,
         inputFile: undefined,
       })
@@ -64,7 +57,7 @@ export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
           </Box>
         </FormControl>
         <ImagePreview
-          enabled={!!data.settings.enablePreview}
+          enabled={!!data.settings.enablePreview && data.completed}
           imageBuffer={data.imageBuffer}
           onTogglePreview={(enabled: boolean) => {
             useNodeStore.getState().updateNodeSetting(id, {

@@ -24,7 +24,7 @@ export const ResizeToSideNode = ({ id, data }: NodeProps<NodeData>) => {
   const node = store.getNode<NodeData>(id)
 
   return (
-    <Node>
+    <Node status={data.isProcessing ? 'processing' : undefined}>
       <NodeHeader title="Resize To Side" />
       <NodeContent>
         <HandleTargetImage
@@ -78,7 +78,7 @@ export const ResizeToSideNode = ({ id, data }: NodeProps<NodeData>) => {
           nodeId={id}
         ></HandleSourceImage>
         <ImagePreview
-          enabled={!!data.settings.enablePreview}
+          enabled={!!data.settings.enablePreview && data.completed}
           imageBuffer={data.imageBuffer}
           onTogglePreview={(enabled: boolean) => {
             useNodeStore.getState().updateNodeSetting(id, {

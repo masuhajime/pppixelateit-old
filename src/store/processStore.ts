@@ -2,7 +2,7 @@ import { create } from 'zustand'
 
 
 enum ProcessStatusType {
-    'running' = 'running',
+    'processing' = 'processing',
     'stop' = 'stop',
     'pause' = 'pause',
 }
@@ -24,7 +24,7 @@ const processStore = create<ProcessState>(
             set(() => {
                 return {
                     count: 0,
-                    processStatus: ProcessStatusType.running
+                    processStatus: ProcessStatusType.processing
                 }
             })
         },

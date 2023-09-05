@@ -30,16 +30,12 @@ export const nodeBehavior: NodeBehaviorInterface = {
     dataType: string,
     data: any
   ): void {
-    const node = getNodeSnapshot(nodeId)
     const store = useNodeStore.getState()
     store.updateNodeData(nodeId, {
       imageBuffer: data,
     })
-    if (this.canStartProcess(node.id)) {
-      this.nodeProcess(node.id)
-    }
   },
-  nodeProcess(nodeId: string): void {
+  nodeProcess(nodeId: string, callback: () => void): void {
     const store = useNodeStore.getState()
     store.updateNodeData<NodeData>(nodeId, {
       completed: false,
@@ -59,6 +55,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
       })
 
       propagateValue(nodeId, handleSources)
+      callback()
     })
   },
   canStartProcess(nodeId: string): boolean {
