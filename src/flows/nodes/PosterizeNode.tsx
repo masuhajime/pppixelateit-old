@@ -13,6 +13,7 @@ import { ImagePreview } from './items/ImagePreview'
 import { Node } from './components/Node'
 import { NodeHeader } from './components/NodeHeader'
 import { NodeContent } from './components/NodeContent'
+import { NodeStatus } from './components/NodeStatus'
 
 export const PosterizeNode = ({ id, data }: NodeProps<NodeData>) => {
   return (
@@ -40,7 +41,7 @@ export const PosterizeNode = ({ id, data }: NodeProps<NodeData>) => {
           handleId={handleSources.image.id}
           nodeId={id}
         ></HandleSourceImage>
-
+        <NodeStatus processTime={data.processTime}></NodeStatus>
         <ImagePreview
           enabled={!!data.settings.enablePreview && data.completed}
           imageBuffer={data.imageBuffer}

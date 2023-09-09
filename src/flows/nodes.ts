@@ -1,4 +1,5 @@
 import { Fill00ColorToTransparentNode } from "./nodes/Fill00ColorToTransparentNode";
+import { FillWithColorNode } from "./nodes/FillWithColorNode";
 import { ImageInputNode } from "./nodes/ImageInputNode";
 import { ImagePreviewNode } from "./nodes/ImagePreviewNode";
 import { PixelateNode } from "./nodes/PixelateNode";
@@ -31,6 +32,9 @@ const nodeDefines = [
     },
     {
         element: TestNode
+    },
+    {
+        element: FillWithColorNode
     },
 ]
 

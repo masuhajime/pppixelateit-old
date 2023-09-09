@@ -12,6 +12,7 @@ import { NodeHeader } from './components/NodeHeader'
 import { HandleSourceImage } from './items/HandleSourceImage'
 import { HandleTargetImage } from './items/HandleTargetImage'
 import { ImagePreview } from './items/ImagePreview'
+import { NodeStatus } from './components/NodeStatus'
 
 export const WhiteToBlackNode = ({
   id,
@@ -31,6 +32,7 @@ export const WhiteToBlackNode = ({
           handleId={handleTargets.image.id}
           nodeId={id}
         ></HandleTargetImage>
+        <NodeStatus processTime={data.processTime}></NodeStatus>
         <ImagePreview
           enabled={!!data.settings.enablePreview && data.completed}
           imageBuffer={data.imageBuffer}

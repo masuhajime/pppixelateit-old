@@ -9,6 +9,7 @@ import { HandleTargetImage } from './items/HandleTargetImage'
 import { ImagePreview } from './items/ImagePreview'
 import { Separator } from './items/Separator'
 import useNodeStore from '../../store/store'
+import { NodeStatus } from './components/NodeStatus'
 
 export const Fill00ColorToTransparentNode = ({
   id,
@@ -40,8 +41,9 @@ export const Fill00ColorToTransparentNode = ({
           handleId={handleSources.image.id}
           nodeId={id}
         ></HandleSourceImage>
+        <NodeStatus processTime={data.processTime}></NodeStatus>
         <ImagePreview
-          enabled={!!data.settings.enablePreview}
+          enabled={!!data.settings.enablePreview && data.completed}
           imageBuffer={data.imageBuffer}
           onTogglePreview={(enabled: boolean) => {
             useNodeStore.getState().updateNodeSetting(id, {

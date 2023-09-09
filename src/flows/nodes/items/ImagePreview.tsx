@@ -1,7 +1,8 @@
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+import { Box } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { arrayBufferToBase64 } from '../../../process/w2b'
-import { Box, Switch, Typography } from '@mui/material'
-import VisibilityIcon from '@mui/icons-material/Visibility'
 
 type Props = {
   enabled?: boolean
@@ -101,24 +102,31 @@ const togglePreview = (
         display: 'block',
       }}
     >
-      <VisibilityIcon
-        className="nodrag"
-        sx={{
-          color: enabled ? 'primary.main' : 'text.disabled',
-          cursor: 'pointer',
-        }}
-        onClick={() => {
-          !!onTogglePreview && onTogglePreview(!enabled)
-        }}
-      ></VisibilityIcon>
+      {enabled && (
+        <VisibilityIcon
+          className="nodrag"
+          sx={{
+            color: 'primary.main',
+            cursor: 'pointer',
+          }}
+          onClick={() => {
+            !!onTogglePreview && onTogglePreview(!enabled)
+          }}
+        ></VisibilityIcon>
+      )}
+      {!enabled && (
+        <VisibilityOffIcon
+          className="nodrag"
+          sx={{
+            color: 'text.disabled',
+            cursor: 'pointer',
+          }}
+          onClick={() => {
+            !!onTogglePreview && onTogglePreview(!enabled)
+          }}
+        ></VisibilityOffIcon>
+      )}
+      (x, y)
     </Box>
-    // <Switch
-    //   className="nodrag"
-    //   checked={enabled}
-    //   onChange={(_, checked) => {
-    //     !!onTogglePreview && onTogglePreview(checked)
-    //   }}
-    //   inputProps={{ 'aria-label': 'controlled' }}
-    // />
   )
 }

@@ -11,6 +11,7 @@ export type NodeBaseData = {
   settings: NodeBaseDataSettings
   isProcessing: boolean
   completed?: boolean
+  processTime?: number
 }
 
 export type NodeBaseDataImageBase64 = {

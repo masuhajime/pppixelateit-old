@@ -18,6 +18,7 @@ import { Separator } from './items/Separator'
 import { Node } from './components/Node'
 import { NodeHeader } from './components/NodeHeader'
 import { NodeContent } from './components/NodeContent'
+import { NodeStatus } from './components/NodeStatus'
 
 export const ResizeToSideNode = ({ id, data }: NodeProps<NodeData>) => {
   const store = useNodeStore.getState()
@@ -77,6 +78,7 @@ export const ResizeToSideNode = ({ id, data }: NodeProps<NodeData>) => {
           handleId={handleSources.image.id}
           nodeId={id}
         ></HandleSourceImage>
+        <NodeStatus processTime={data.processTime}></NodeStatus>
         <ImagePreview
           enabled={!!data.settings.enablePreview && data.completed}
           imageBuffer={data.imageBuffer}

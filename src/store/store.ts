@@ -22,7 +22,7 @@ export type RFState = {
     edges: Edge[];
     getNodeTargetedFrom: (nodeId: string) => Node[];
     updateNodeData: <T = NodeBaseData>(nodeId: string, data: Partial<T>) => void;
-    updateNodeSetting: <T = NodeBaseDataSettings>(nodeId: string, settings: T) => void;
+    updateNodeSetting: <T = NodeBaseDataSettings>(nodeId: string, settings: Partial<T>) => void;
     getNode<T = NodeBaseData>(nodeId: string): Node<T>;
     edgeDelete: (edgeId: string) => void;
     getOutgoingEdgesFromSourceNode(sourceNodeId: string): Edge[];
@@ -31,6 +31,7 @@ export type RFState = {
     onConnect: OnConnect;
     nodeAdd: (node: Node) => void;
     nodeSetProcessing<T = NodeBaseData>(nodeId: string, processing: boolean): void;
+    nodeGetProcessing(nodeId: string): boolean;
     nodeSetAllUncompleted(): void;
     nodeAllCleareBuffer(): void;
     nodeSetCompleted(nodeId: string, completed: boolean): void;
@@ -115,10 +116,15 @@ const useNodeStore = create(
                         }),
                     });
                 },
+                nodeGetProcessing(nodeId: string): boolean {
+                    const node = get().nodes.find((node) => node.id === nodeId);
+                    if (!node) throw new Error('node not found');
+                    return node.data.isProcessing;
+                },
                 nodeSetAllUncompleted(): void {
                     set({
                         nodes: get().nodes.map((node) => {
-                            node.data = { ...node.data, completed: false };
+                            node.data = { ...node.data, completed: false, isProcessing: false, processTime: undefined };
                             return node;
                         }),
                     });
@@ -192,5 +198,13 @@ const useNodeStore = create(
 );
 
 export const getNodeSnapshot = <T = NodeBaseData>(nodeId: string) => useNodeStore.getState().getNode<T>(nodeId)
+
+export const updateSetting = (nodeId: string, key: string): (value: any) => void => {
+    return (value) => {
+        useNodeStore.getState().updateNodeSetting(nodeId, {
+            [key]: value,
+        });
+    }
+}
 
 export default useNodeStore;

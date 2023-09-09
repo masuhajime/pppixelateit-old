@@ -3,6 +3,7 @@ import cv from "@techstark/opencv-js"
 import { Buffer } from "buffer"
 import Jimp from "jimp"
 import useNodeStore from "../store/store"
+import { RGBA, Vector2 } from "../dto/generals"
 
 export const doNodeProcess = async (nodeId: string, callback: () => void) => {
     const store = useNodeStore.getState();
@@ -101,6 +102,32 @@ export const fill00ColorToTransparent = async (imageBuffer: Buffer) => {
             this.bitmap.data[idx + 1] = 0;
             this.bitmap.data[idx + 2] = 0;
             this.bitmap.data[idx + 3] = 0;
+        }
+    });
+    return img.getBufferAsync(Jimp.MIME_PNG);
+}
+
+const rgbaDiff = (rgba1: RGBA, rgba2: RGBA) => {
+    return Math.abs(rgba1.r - rgba2.r) + Math.abs(rgba1.g - rgba2.g) + Math.abs(rgba1.b - rgba2.b) + Math.abs(rgba1.a - rgba2.a);
+}
+
+export const fillWithColor = async (imageBuffer: Buffer, vec: Vector2, rgba: RGBA, tolerance: number) => {
+    let img = await Jimp.read(imageBuffer);
+    // get pixel color of 0,0
+    let colorTarget = img.getPixelColor(vec.x, vec.y);
+    let colorTargetRgba = Jimp.intToRGBA(colorTarget);
+    console.log('colorTarget', colorTarget, Jimp.intToRGBA(colorTarget));
+
+    // paint colorTarget to transparent
+    img.scan(0, 0, img.bitmap.width, img.bitmap.height, function (x, y, idx) {
+        const pixelColor = img.getPixelColor(x, y);
+        const pixelRgba = Jimp.intToRGBA(pixelColor);
+
+        if (rgbaDiff(pixelRgba, colorTargetRgba) < tolerance) {
+            this.bitmap.data[idx + 0] = rgba.r;
+            this.bitmap.data[idx + 1] = rgba.g;
+            this.bitmap.data[idx + 2] = rgba.b;
+            this.bitmap.data[idx + 3] = rgba.a;
         }
     });
     return img.getBufferAsync(Jimp.MIME_PNG);

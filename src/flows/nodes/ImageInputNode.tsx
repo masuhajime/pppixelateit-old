@@ -2,14 +2,15 @@ import { Handle, NodeProps, Position } from 'reactflow'
 
 import { Box, FormControl } from '@mui/material'
 import { MuiFileInput } from 'mui-file-input'
-import { shallow } from 'zustand/shallow'
 import { getBufferFromBase64 } from '../../process/w2b'
-import useNodeStore, { RFState } from '../../store/store'
+import useNodeStore from '../../store/store'
 import { NodeData, handleSources } from './ImageInputNodeBehavior'
 import { Node } from './components/Node'
 import { NodeContent } from './components/NodeContent'
 import { NodeHeader } from './components/NodeHeader'
 import { ImagePreview } from './items/ImagePreview'
+import { NodeFooterStatus } from './components/NodeFooterStatus'
+import { NodeStatus } from './components/NodeStatus'
 
 export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
   const nodeStore = useNodeStore.getState()
@@ -56,6 +57,7 @@ export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
             />
           </Box>
         </FormControl>
+        <NodeStatus processTime={data.processTime}></NodeStatus>
         <ImagePreview
           enabled={!!data.settings.enablePreview && data.completed}
           imageBuffer={data.imageBuffer}

@@ -28,8 +28,9 @@ class ProcessController {
             }
 
             // debug
-            if (state.count > 10) {
-                console.log('process count over 10');
+            const limit = 50;
+            if (state.count > limit) {
+                console.log('######### process count over ' + limit);
                 this.stop();
             }
         });
@@ -44,20 +45,31 @@ class ProcessController {
                 return;
             }
             const behavior = await getNodeBehavior(node.type);
-            if (!behavior.canStartProcess(node.id)) {
-                return;
-            }
             if (nodeStore.nodeGetCompleted(node.id)) {
                 return;
             }
+            if (nodeStore.nodeGetProcessing(node.id)) {
+                return;
+            }
+            if (!behavior.canStartProcess(node.id)) {
+                return;
+            }
             nodeStore.nodeSetProcessing(node.id, true);
+            // start date
+            const start = new Date();
             behavior.nodeProcess(node.id, () => {
                 console.log('process end', {
                     node: node.id,
                     type: node.type,
                 });
 
-                nodeStore.nodeSetProcessing(node.id, false);
+                // end date
+                const end = new Date();
+                const diff = end.getTime() - start.getTime();
+                nodeStore.updateNodeData(node.id, {
+                    isProcessing: false,
+                    processTime: diff,
+                });
                 processStore.getState().progress();
             });
         });
