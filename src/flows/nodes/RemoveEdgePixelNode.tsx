@@ -1,10 +1,6 @@
 import { NodeProps } from 'reactflow'
 
-import { CardHeader } from '@mui/material'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import useNodeStore from '../../store/store'
-import { NodeData, handleSources, handleTargets } from './PosterizeNodeBehavior'
+import useNodeStore, { updateSetting } from '../../store/store'
 import { HandleSourceImage } from './items/HandleSourceImage'
 import { HandleTargetImage } from './items/HandleTargetImage'
 import { HandleTargetNumber } from './items/HandleTargetNumber'
@@ -14,11 +10,16 @@ import { Node } from './components/Node'
 import { NodeHeader } from './components/NodeHeader'
 import { NodeContent } from './components/NodeContent'
 import { NodeStatus } from './components/NodeStatus'
+import {
+  NodeData,
+  handleSources,
+  handleTargets,
+} from './RemoveEdgePixelNodeBehavior'
 
-export const PosterizeNode = ({ id, data }: NodeProps<NodeData>) => {
+export const RemoveEdgePixelNode = ({ id, data }: NodeProps<NodeData>) => {
   return (
     <Node status={data.isProcessing ? 'processing' : undefined}>
-      <NodeHeader title="PosterizeNode" />
+      <NodeHeader title="RemoveEdge" />
       <NodeContent>
         <HandleTargetImage
           handleId={handleTargets.image.id}
@@ -28,12 +29,8 @@ export const PosterizeNode = ({ id, data }: NodeProps<NodeData>) => {
           name="number"
           handleId="number"
           nodeId={id}
-          defaultValue={data.settings.number || 8}
-          onChange={(value) => {
-            useNodeStore.getState().updateNodeSetting(id, {
-              number: value,
-            })
-          }}
+          defaultValue={data.settings.threshold || 4}
+          onChange={updateSetting(id, 'threshold')}
         ></HandleTargetNumber>
         <Separator />
         <HandleSourceImage

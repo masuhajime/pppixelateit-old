@@ -69,7 +69,7 @@ export const FillWithColorNode = ({ id, data }: NodeProps<NodeData>) => {
         <HandleTargetNumber
           handleId={handleTargets.image.id}
           nodeId={id}
-          defaultValue={data.settings.tolerance || 30}
+          defaultValue={data.settings.tolerance || 16}
           name="tolerance"
           onChange={updateSetting(id, 'tolerance')}
         ></HandleTargetNumber>

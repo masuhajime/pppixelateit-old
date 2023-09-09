@@ -133,6 +133,37 @@ export const fillWithColor = async (imageBuffer: Buffer, vec: Vector2, rgba: RGB
     return img.getBufferAsync(Jimp.MIME_PNG);
 }
 
+export const quantize = async () => {
+    // https://docs.opencv.org/3.4/d1/d5c/tutorial_py_kmeans_opencv.html
+}
+
+export const removeEdge = async (imageBuffer: Buffer, threshold: number) => {
+    let img = await Jimp.read(imageBuffer);
+    const baseColor = {
+        r: 0,
+        g: 0,
+        b: 0,
+        a: 0
+    } as RGBA;
+    const cloneImage = img.clone();
+    img.scan(0, 0, img.bitmap.width, img.bitmap.height, function (x, y, idx) {
+        let colorAround = getPixelColorAround(cloneImage, x, y);
+        let colorCurrent = cloneImage.getPixelColor(x, y);
+        const pixelRgba = Jimp.intToRGBA(colorCurrent);
+        const countDifferentColorAround = colorAround.filter(color => {
+            const rgba = Jimp.intToRGBA(color);
+            return rgba.a !== baseColor.a;
+        }).length;
+        if (pixelRgba.a !== baseColor.a && countDifferentColorAround < threshold) {
+            this.bitmap.data[idx + 0] = 255;
+            this.bitmap.data[idx + 1] = 0;
+            this.bitmap.data[idx + 2] = 0;
+            this.bitmap.data[idx + 3] = 255;
+        }
+    });
+    return img.getBufferAsync(Jimp.MIME_PNG);
+}
+
 export const outlinePaint = async (imageBuffer: Buffer) => {
     let img = await Jimp.read(imageBuffer);
 

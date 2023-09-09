@@ -38,10 +38,14 @@ export const HandleTargetNumber = (props: Props) => {
         variant="outlined"
         className="nodrag"
         size="small"
+        sx={{ width: '100%' }}
         onChange={(e) => {
           props.onChange &&
             parseInt(e.target.value) &&
             props.onChange(parseInt(e.target.value))
+        }}
+        InputProps={{
+          inputProps: { type: 'number' },
         }}
       />
       {handlePositionTop && (

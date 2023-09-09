@@ -2,8 +2,10 @@ import { Fill00ColorToTransparentNode } from "./nodes/Fill00ColorToTransparentNo
 import { FillWithColorNode } from "./nodes/FillWithColorNode";
 import { ImageInputNode } from "./nodes/ImageInputNode";
 import { ImagePreviewNode } from "./nodes/ImagePreviewNode";
+import { OutlineNode } from "./nodes/OutlineNode";
 import { PixelateNode } from "./nodes/PixelateNode";
 import { PosterizeNode } from "./nodes/PosterizeNode";
+import { RemoveEdgePixelNode } from "./nodes/RemoveEdgePixelNode";
 import { ResizeToSideNode } from "./nodes/ResizeToSideNode";
 import { TestNode } from "./nodes/TestNode";
 import { WhiteToBlackNode } from "./nodes/WhiteToBlackNode";
@@ -35,6 +37,12 @@ const nodeDefines = [
     },
     {
         element: FillWithColorNode
+    },
+    {
+        element: RemoveEdgePixelNode
+    },
+    {
+        element: OutlineNode
     },
 ]
 
