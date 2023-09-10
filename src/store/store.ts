@@ -30,7 +30,7 @@ export type RFState = {
     onEdgesChange: OnEdgesChange;
     onConnect: OnConnect;
     nodeAdd: (node: Node) => void;
-    nodeSetProcessing<T = NodeBaseData>(nodeId: string, processing: boolean): void;
+    nodeSetProcessing(nodeId: string, processing: boolean): void;
     nodeGetProcessing(nodeId: string): boolean;
     nodeSetAllUncompleted(): void;
     nodeAllCleareBuffer(): void;
@@ -181,17 +181,17 @@ const useNodeStore = create(
 
                 return objects;
             },
-            onRehydrateStorage: (state) => {
-                console.log('hydration starts')
-                // optional
-                return (state, error) => {
-                    if (error) {
-                        console.log('an error happened during hydration', error)
-                    } else {
-                        console.log('hydration finished')
-                    }
-                }
-            },
+            // onRehydrateStorage: (state) => {
+            //     console.log('hydration starts')
+            //     // optional
+            //     return (state, error) => {
+            //         if (error) {
+            //             console.log('an error happened during hydration', error)
+            //         } else {
+            //             console.log('hydration finished')
+            //         }
+            //     }
+            // },
             // store data partialize https://docs.pmnd.rs/zustand/integrations/persisting-store-data
         }
     )

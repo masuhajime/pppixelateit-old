@@ -1,11 +1,9 @@
-import { getNodeBehavior } from '../../process/imageProcess'
 import { fill00ColorToTransparent } from '../../process/w2b'
 import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import {
   HandleSource,
   HandleTarget,
   NodeBaseData,
-  NodeBaseDataImageBase64,
   NodeBaseDataImageBuffer,
   NodeBehaviorInterface,
   handleSourceImageDefault,
@@ -32,7 +30,6 @@ export const nodeBehavior: NodeBehaviorInterface = {
     dataType: string,
     data: any
   ): void {
-    const node = getNodeSnapshot(nodeId)
     const store = useNodeStore.getState()
     store.updateNodeData(nodeId, {
       imageBuffer: data,
@@ -75,12 +72,12 @@ export const nodeBehavior: NodeBehaviorInterface = {
   },
 }
 
-const denoise0 = () => {
-  // image
-  //     .color([{apply: 'desaturate', params: [90]}])
-  //     .contrast(1)
-  //     .write("img-opt.jpg");
-}
-const denoise1 = () => {
-  // image.gaussian(15);
-}
+// const denoise0 = () => {
+//   // image
+//   //     .color([{apply: 'desaturate', params: [90]}])
+//   //     .contrast(1)
+//   //     .write("img-opt.jpg");
+// }
+// const denoise1 = () => {
+//   // image.gaussian(15);
+// }

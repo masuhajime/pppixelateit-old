@@ -1,11 +1,9 @@
-import { getNodeBehavior } from '../../process/imageProcess'
-import { fill00ColorToTransparent, fillWithColor } from '../../process/w2b'
+import { fillWithColor } from '../../process/w2b'
 import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import {
   HandleSource,
   HandleTarget,
   NodeBaseData,
-  NodeBaseDataImageBase64,
   NodeBaseDataImageBuffer,
   NodeBehaviorInterface,
   handleSourceImageDefault,

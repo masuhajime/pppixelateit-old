@@ -1,4 +1,4 @@
-import { outlinePaint, pixelate } from '../../process/w2b'
+import { outlinePaint } from '../../process/w2b'
 import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import {
   HandleSource,

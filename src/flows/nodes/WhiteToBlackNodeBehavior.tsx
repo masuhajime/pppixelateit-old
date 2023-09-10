@@ -30,7 +30,6 @@ export const nodeBehavior: NodeBehaviorInterface = {
     dataType: string,
     data: any
   ): void {
-    const node = getNodeSnapshot<NodeData>(nodeId)
     //data.completed = true
     console.log('dataIncoming:', nodeId, handleId, dataType)
 

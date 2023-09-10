@@ -1,4 +1,4 @@
-import { posterize, removeEdge } from '../../process/w2b'
+import { removeEdge } from '../../process/w2b'
 import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import {
   HandleSource,

@@ -1,10 +1,8 @@
-import { getNodeBehavior } from '../../process/imageProcess'
 import { getBufferFromBase64 } from '../../process/w2b'
 import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import {
   HandleSource,
   NodeBaseData,
-  NodeBaseDataImageBase64,
   NodeBaseDataImageBuffer,
   NodeBehaviorInterface,
   handleSourceImageDefault,

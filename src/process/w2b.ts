@@ -51,23 +51,23 @@ export const pixelate = async (imageBuffer: Buffer, number: number) => {
     return img.getBufferAsync(Jimp.MIME_PNG);
 }
 
-export const drawOutline = async (base64: string, number: number) => {
+// export const drawOutline = async (base64: string, number: number) => {
 
-    let url = base64.replace(/^data:image\/\w+;base64,/, "");
-    let buffer = Buffer.from(url, 'base64');
+//     let url = base64.replace(/^data:image\/\w+;base64,/, "");
+//     let buffer = Buffer.from(url, 'base64');
 
-    let img = await Jimp.read(buffer);
-    // paint image outline to white
-    img.scan(0, 0, img.bitmap.width, img.bitmap.height, function (x, y, idx) {
-        if (x === 0 || y === 10 || x === img.bitmap.width - 1 || y === img.bitmap.height - 1) {
-            this.bitmap.data[idx] = 255;
-            this.bitmap.data[idx + 1] = 255;
-            this.bitmap.data[idx + 2] = 255;
-            this.bitmap.data[idx + 3] = 255;
-        }
-    });
-    return await img.getBase64Async(Jimp.MIME_PNG);
-}
+//     let img = await Jimp.read(buffer);
+//     // paint image outline to white
+//     img.scan(0, 0, img.bitmap.width, img.bitmap.height, function (x, y, idx) {
+//         if (x === 0 || y === 10 || x === img.bitmap.width - 1 || y === img.bitmap.height - 1) {
+//             this.bitmap.data[idx] = 255;
+//             this.bitmap.data[idx + 1] = 255;
+//             this.bitmap.data[idx + 2] = 255;
+//             this.bitmap.data[idx + 3] = 255;
+//         }
+//     });
+//     return await img.getBase64Async(Jimp.MIME_PNG);
+// }
 
 export const getBufferFromBase64 = (imageBase64: string) => {
     let strImage = imageBase64.replace(/^data:image\/[a-z]+;base64,/, "");
@@ -263,9 +263,9 @@ export const opencv2 = async (imageBuffer: Buffer) => {
     return await jimpImageS.getBufferAsync(Jimp.MIME_PNG);
 }
 
-const getPixelColor = (img: Jimp, x: number, y: number) => {
-    return img.getPixelColor(x, y);
-}
+// const getPixelColor = (img: Jimp, x: number, y: number) => {
+//     return img.getPixelColor(x, y);
+// }
 
 const getPixelColorAround = (img: Jimp, x: number, y: number) => {
     return [

@@ -8,9 +8,8 @@ import { NodeData, handleSources } from './ImageInputNodeBehavior'
 import { Node } from './components/Node'
 import { NodeContent } from './components/NodeContent'
 import { NodeHeader } from './components/NodeHeader'
-import { ImagePreview } from './items/ImagePreview'
-import { NodeFooterStatus } from './components/NodeFooterStatus'
 import { NodeStatus } from './components/NodeStatus'
+import { ImagePreview } from './items/ImagePreview'
 
 export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
   const nodeStore = useNodeStore.getState()

@@ -14,11 +14,7 @@ import { HandleTargetImage } from './items/HandleTargetImage'
 import { ImagePreview } from './items/ImagePreview'
 import { NodeStatus } from './components/NodeStatus'
 
-export const WhiteToBlackNode = ({
-  id,
-  data,
-  isConnectable,
-}: NodeProps<NodeData>) => {
+export const WhiteToBlackNode = ({ id, data }: NodeProps<NodeData>) => {
   return (
     <Node status={data.isProcessing ? 'processing' : undefined}>
       <NodeHeader title="White To Black Node" />

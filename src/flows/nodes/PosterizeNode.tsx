@@ -1,19 +1,16 @@
 import { NodeProps } from 'reactflow'
 
-import { CardHeader } from '@mui/material'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
 import useNodeStore from '../../store/store'
 import { NodeData, handleSources, handleTargets } from './PosterizeNodeBehavior'
+import { Node } from './components/Node'
+import { NodeContent } from './components/NodeContent'
+import { NodeHeader } from './components/NodeHeader'
+import { NodeStatus } from './components/NodeStatus'
 import { HandleSourceImage } from './items/HandleSourceImage'
 import { HandleTargetImage } from './items/HandleTargetImage'
 import { HandleTargetNumber } from './items/HandleTargetNumber'
-import { Separator } from './items/Separator'
 import { ImagePreview } from './items/ImagePreview'
-import { Node } from './components/Node'
-import { NodeHeader } from './components/NodeHeader'
-import { NodeContent } from './components/NodeContent'
-import { NodeStatus } from './components/NodeStatus'
+import { Separator } from './items/Separator'
 
 export const PosterizeNode = ({ id, data }: NodeProps<NodeData>) => {
   return (

@@ -5,7 +5,6 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
-  SelectChangeEvent,
   SelectProps,
 } from '@mui/material'
 import React from 'react'
@@ -18,12 +17,12 @@ type Props = {
 } & SelectProps
 export const CheckBox = (props: Props) => {
   const ref = React.useRef<HTMLDivElement>(null)
-  const [value, setValue] = React.useState(props.defaultValue ?? '')
+  // const [value, setValue] = React.useState(props.defaultValue ?? '')
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setValue(event.target.value as string)
-    props.onSelect && props.onSelect(event.target.value as string)
-  }
+  // const handleChange = (event: SelectChangeEvent) => {
+  //   setValue(event.target.value as string)
+  //   props.onSelect && props.onSelect(event.target.value as string)
+  // }
 
   React.useEffect(() => {
     if (!ref.current) {

@@ -2,7 +2,6 @@ import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import {
   HandleTarget,
   NodeBaseData,
-  NodeBaseDataImageBase64,
   NodeBaseDataImageBuffer,
   NodeBehaviorInterface,
 } from './data/NodeData'

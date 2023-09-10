@@ -37,7 +37,6 @@ export const nodeBehavior: NodeBehaviorInterface = {
     dataType: string,
     data: any
   ): void {
-    const node = getNodeSnapshot<NodeData>(nodeId)
     const store = useNodeStore.getState()
     store.updateNodeData(nodeId, {
       imageBuffer: data,

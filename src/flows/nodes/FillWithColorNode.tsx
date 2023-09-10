@@ -4,7 +4,7 @@ import {
   NodeData,
   handleSources,
   handleTargets,
-} from './FillColorWithColorNodeBehavior'
+} from './FillWithColorNodeBehavior'
 import { Node } from './components/Node'
 import { NodeContent } from './components/NodeContent'
 import { NodeHeader } from './components/NodeHeader'

@@ -1,11 +1,9 @@
 // @flow
-import { Box, CardHeader } from '@mui/material'
-import { Switch } from './Switch'
-import { SwitchToggle } from './SwitchToggle'
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import PlayCircleIcon from '@mui/icons-material/PlayCircle'
 import StopCircleIcon from '@mui/icons-material/StopCircle'
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined'
+import { Box } from '@mui/material'
 type Props = {
   processTime?: number
 }
