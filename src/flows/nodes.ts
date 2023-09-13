@@ -1,6 +1,7 @@
 import { Fill00ColorToTransparentNode } from "./nodes/Fill00ColorToTransparentNode";
 import { FillWithColorNode } from "./nodes/FillWithColorNode";
 import { ImageInputNode } from "./nodes/ImageInputNode";
+import { ImagePreviewCompare } from "./nodes/ImagePreviewCompare";
 import { ImagePreviewNode } from "./nodes/ImagePreviewNode";
 import { OutlineNode } from "./nodes/OutlineNode";
 import { PixelateNode } from "./nodes/PixelateNode";
@@ -44,6 +45,9 @@ const nodeDefines = [
     {
         element: OutlineNode
     },
+    {
+        element: ImagePreviewCompare
+    }
 ]
 
 export const getNodeTypesForReactFlow = () => {
