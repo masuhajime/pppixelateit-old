@@ -1,14 +1,20 @@
 // @flow
-import { Box, Typography } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import * as React from 'react'
 import { Handle, Position, useUpdateNodeInternals } from 'reactflow'
+import FolderIcon from '@mui/icons-material/Folder'
+
 type Props = {
   label: string
   handleId: string
   nodeId: string
+  directory?: string
+  placeholder: string
+  disabled?: boolean
+  onSelect?: (directory: string) => void // TODO: use this
 }
 const handleSize = 20
-export const HandleSourceImage = (props: Props) => {
+export const HandleSourceDirectory = (props: Props) => {
   const ref = React.useRef<HTMLDivElement>(null)
 
   const updateNodeInternals = useUpdateNodeInternals()
@@ -25,14 +31,42 @@ export const HandleSourceImage = (props: Props) => {
 
   return (
     <Box ref={ref} className="node-item">
-      <Typography variant="h6">{props.label}</Typography>
+      <Button
+        className="nodrag"
+        variant="outlined"
+        sx={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'left',
+          textTransform: 'none',
+        }}
+        disabled={props.disabled}
+      >
+        <FolderIcon
+          sx={{
+            marginRight: '8px',
+          }}
+        ></FolderIcon>
+        <Box
+          sx={{
+            display: 'inline-block',
+            width: '100%',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {props.directory ? props.directory : props.placeholder}
+        </Box>
+      </Button>
+
       {handlePositionTop && (
         <Handle
           type="source"
           position={Position.Right}
           id={props.handleId}
           style={{
-            background: 'OrangeRed',
+            background: 'Violet',
             width: handleSize,
             height: handleSize,
             right: -handleSize / 2,

@@ -6,20 +6,19 @@ type Props = {
   name: string
   handleId: string
   nodeId: string
-  defaultValue: number
-  onChange?: (value: number) => void
+  defaultValue: string
+  onChange?: (value: string) => void
+  disableInput?: boolean
 }
 const handleSize = 20
-export const HandleTargetNumber = (props: Props) => {
+export const HandleTargetText = (props: Props) => {
   const ref = React.useRef<HTMLDivElement>(null)
   const updateNodeInternals = useUpdateNodeInternals()
   const [handlePositionTop, setHandlePositionTop] = React.useState(0)
   React.useEffect(() => {
-    if (!ref.current) {
-      return
-    }
+    const offset = !ref.current?.offsetTop ? 0 : ref.current.offsetTop
     props.onChange && props.onChange(props.defaultValue)
-    setHandlePositionTop(ref.current.offsetTop + 28)
+    setHandlePositionTop(offset + 28)
   }, [ref.current?.offsetTop])
   React.useEffect(() => {
     updateNodeInternals(props.nodeId)
@@ -29,7 +28,7 @@ export const HandleTargetNumber = (props: Props) => {
     <Box className="node-item" ref={ref}>
       <TextField
         label={props.name}
-        type="number"
+        type="text"
         InputLabelProps={{
           shrink: true,
         }}
@@ -39,13 +38,9 @@ export const HandleTargetNumber = (props: Props) => {
         size="small"
         sx={{ width: '100%' }}
         onChange={(e) => {
-          props.onChange &&
-            parseInt(e.target.value) &&
-            props.onChange(parseInt(e.target.value))
+          props.onChange && props.onChange(e.target.value || '')
         }}
-        InputProps={{
-          inputProps: { type: 'number' },
-        }}
+        disabled={props.disableInput}
       />
       {handlePositionTop && (
         <Handle
@@ -53,7 +48,7 @@ export const HandleTargetNumber = (props: Props) => {
           position={Position.Left}
           id={props.handleId}
           style={{
-            background: 'OrangeRed',
+            background: 'lime',
             width: handleSize,
             height: handleSize,
             left: -handleSize / 2,

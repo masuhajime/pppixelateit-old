@@ -1,4 +1,4 @@
-import { getBufferFromBase64 } from '../../process/w2b'
+import { fs } from '@tauri-apps/api'
 import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import {
   HandleSource,
@@ -8,13 +8,26 @@ import {
   handleSourceImageDefault,
   propagateValue,
 } from './data/NodeData'
+import { Buffer } from 'buffer'
+import path from 'path'
 
 export const handleSources: Record<string, HandleSource> = {
   image: handleSourceImageDefault,
+  directory: {
+    id: 'directory',
+    dataType: 'directory',
+    propagateValue: (nodeId: string) => {
+      const node = getNodeSnapshot<NodeData>(nodeId)
+      if (!node.data.inputFilePath) {
+        throw new Error('no image')
+      }
+      return path.dirname(node.data.inputFilePath)
+    },
+  },
 }
 
 export type NodeData = {
-  inputFile?: File
+  inputFilePath?: string
 } & NodeBaseData &
   NodeBaseDataImageBuffer
 
@@ -33,30 +46,23 @@ export const nodeBehavior: NodeBehaviorInterface = {
 
     const nodeStore = useNodeStore.getState()
 
-    if (!node.data.inputFile) {
+    if (!node.data.inputFilePath) {
       throw new Error('no image')
     }
-    const reader = new FileReader()
-    reader.onload = () => {
-      const buffer = getBufferFromBase64(reader.result as string)
-      nodeStore.updateNodeData<NodeData>(node.id, {
-        imageBuffer: buffer,
+
+    fs.readBinaryFile(node.data.inputFilePath).then((buffer) => {
+      nodeStore.updateNodeData<NodeData>(nodeId, {
+        imageBuffer: Buffer.from(buffer),
+      })
+      nodeStore.updateNodeData<NodeData>(nodeId, {
+        completed: true,
       })
       propagateValue(nodeId, handleSources)
       callback()
-    }
-    reader.readAsDataURL(node.data.inputFile)
-
-    nodeStore.updateNodeData<NodeData>(nodeId, {
-      completed: true,
     })
   },
   canStartProcess(nodeId: string): boolean {
     const node = getNodeSnapshot<NodeData>(nodeId)
-    console.log('canStartProcess ImageInput', {
-      imageBase64: !!node.data.imageBuffer,
-      inputFile: node.data.inputFile,
-    })
-    return !!node.data.inputFile
+    return !!node.data.inputFilePath
   },
 }

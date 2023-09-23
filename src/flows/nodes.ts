@@ -8,10 +8,19 @@ import { PixelateNode } from "./nodes/PixelateNode";
 import { PosterizeNode } from "./nodes/PosterizeNode";
 import { RemoveEdgePixelNode } from "./nodes/RemoveEdgePixelNode";
 import { ResizeToSideNode } from "./nodes/ResizeToSideNode";
+import { SaveImageNode } from "./nodes/SaveImageNode";
 import { TestNode } from "./nodes/TestNode";
+import { TextAppendNode } from "./nodes/TextAppendNode";
+import { TextFileNameNode } from "./nodes/TextFileNameNode";
 import { WhiteToBlackNode } from "./nodes/WhiteToBlackNode";
 
 const nodeDefines = [
+    {
+        element: TextAppendNode,
+    },
+    {
+        element: TextFileNameNode,
+    },
     {
         element: ImageInputNode,
     },
@@ -47,6 +56,9 @@ const nodeDefines = [
     },
     {
         element: ImagePreviewCompare
+    },
+    {
+        element: SaveImageNode
     }
 ]
 

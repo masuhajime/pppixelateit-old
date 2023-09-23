@@ -1,7 +1,12 @@
 import { getNodeBehavior } from '../../../process/imageProcess'
 import useNodeStore, { getNodeSnapshot } from '../../../store/store'
 
-export type PropagateDataType = 'image' | 'number' | 'buffer'
+export type PropagateDataType =
+  | 'image'
+  | 'number'
+  | 'buffer'
+  | 'text'
+  | 'directory'
 
 export type NodeBaseDataSettings = {
   [k: string]: any
@@ -51,13 +56,21 @@ export const handleSourceImageDefault = {
   id: 'image',
   dataType: 'buffer',
   propagateValue: (nodeId: string) =>
-    // getNodeSnapshot<{
-    //   imageBase64: string
-    // }>(nodeId).data.imageBase64,
     getNodeSnapshot<{
       imageBuffer: Buffer
     }>(nodeId).data.imageBuffer,
 } as HandleSource<Buffer>
+
+export const handleSourceTextDefault = {
+  id: 'text',
+  dataType: 'text',
+  propagateValue: (nodeId: string) =>
+    getNodeSnapshot<{
+      text: string
+    }>(nodeId).data.text,
+} as HandleSource<string>
+
+export const handleSourceStringDefault = handleSourceTextDefault
 
 export const propagateValue = (
   nodeId: string,
@@ -65,6 +78,7 @@ export const propagateValue = (
 ) => {
   const store = useNodeStore.getState()
   store.getOutgoingEdgesFromSourceNode(nodeId).forEach((edge) => {
+    // edge = Handle source
     const targetNode = store.getNode(edge.target)
     if (!targetNode.type) {
       return
@@ -74,6 +88,18 @@ export const propagateValue = (
         if (!edge.targetHandle) {
           return
         }
+        if (handleSource.id !== edge.sourceHandle) {
+          return
+        }
+        if (edge.target !== targetNode.id) {
+          return
+        }
+        // console.log('propagate value to: ', {
+        //   targetNode,
+        //   handleSource,
+        //   edge,
+        //   nodeId,
+        // })
         behavior.dataIncoming(
           targetNode.id,
           edge.targetHandle,

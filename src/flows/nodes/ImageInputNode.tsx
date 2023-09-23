@@ -1,64 +1,117 @@
-import { Handle, NodeProps, Position } from 'reactflow'
+import { NodeProps } from 'reactflow'
 
-import { Box, FormControl } from '@mui/material'
-import { MuiFileInput } from 'mui-file-input'
-import { getBufferFromBase64 } from '../../process/w2b'
+import ImageIcon from '@mui/icons-material/Image'
+import { Box, Button, FormControl } from '@mui/material'
+import { fs } from '@tauri-apps/api'
+import { open } from '@tauri-apps/api/dialog'
+import { Buffer } from 'buffer'
+import path from 'path'
 import useNodeStore from '../../store/store'
 import { NodeData, handleSources } from './ImageInputNodeBehavior'
 import { Node } from './components/Node'
 import { NodeContent } from './components/NodeContent'
 import { NodeHeader } from './components/NodeHeader'
 import { NodeStatus } from './components/NodeStatus'
+import { HandleSourceImage } from './items/HandleSourceImage'
 import { ImagePreview } from './items/ImagePreview'
+import { HandleSourceDirectory } from './items/HandleSourceDirectory'
 
 export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
   const nodeStore = useNodeStore.getState()
 
-  const onChange = (inputFile: File | null) => {
-    console.log('onChange', inputFile)
-    if (inputFile instanceof File) {
-      // get base64 from file
-      const reader = new FileReader()
-      reader.onload = () => {
-        const buffer = getBufferFromBase64(reader.result as string)
-        nodeStore.updateNodeData<NodeData>(id, {
-          imageBuffer: buffer,
-        })
-      }
-      reader.readAsDataURL(inputFile)
-      nodeStore.updateNodeData<NodeData>(id, {
-        inputFile: inputFile,
-      })
-    } else {
-      nodeStore.updateNodeData<NodeData>(id, {
-        imageBuffer: undefined,
-        inputFile: undefined,
-      })
-    }
+  let inputFilePath = 'Select Image File'
+  let directoryPath = undefined
+  if (!!data.inputFilePath) {
+    // get file name from path
+    inputFilePath = path.basename(data.inputFilePath) || 'Select Image File'
+    // get last directory name
+    directoryPath = path.basename(path.dirname(data.inputFilePath))
   }
+
   return (
     <Node>
       <NodeHeader title="Image Input" />
       <NodeContent>
-        <FormControl>
+        <FormControl
+          sx={{
+            width: '100%',
+          }}
+        >
           <Box className="node-item">
-            <MuiFileInput
-              id="my-input"
-              value={data.inputFile}
-              onChange={onChange}
-              inputProps={{
-                accept: 'image/*',
-              }}
+            <Button
+              className="nodrag"
+              variant="outlined"
               sx={{
-                cursor: 'pointer',
                 width: '100%',
+                minWidth: '100%',
+                display: 'flex',
+                justifyContent: 'left',
+                textTransform: 'none',
               }}
-            />
+              onClick={async () => {
+                const selectedFile = await open({
+                  multiple: false,
+                  filters: [
+                    { name: 'Image', extensions: ['png', 'jpeg', 'gif'] },
+                  ],
+                })
+                console.log(selectedFile)
+                if (Array.isArray(selectedFile)) {
+                  // user selectedFile multiple files
+                  console.error("can't select multiple files")
+                } else if (selectedFile === null) {
+                  // user cancelled the selection
+                  console.error("can't select file")
+                } else {
+                  // user selected a single file
+                  fs.readBinaryFile(selectedFile).then((buffer) => {
+                    nodeStore.updateNodeData<NodeData>(id, {
+                      inputFilePath: selectedFile,
+                      imageBuffer: Buffer.from(buffer),
+                    })
+                  })
+                }
+              }}
+            >
+              <ImageIcon
+                sx={{
+                  marginRight: '8px',
+                }}
+              ></ImageIcon>
+              <Box
+                sx={{
+                  // ellipsis
+                  display: 'inline-block',
+                  width: '100%',
+                  minWidth: '100%',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  // direction: 'rtl',
+                  // textAlign: 'left',
+                }}
+              >
+                {inputFilePath}
+              </Box>
+            </Button>
           </Box>
         </FormControl>
+        <HandleSourceDirectory
+          handleId={handleSources.directory.id}
+          label="Directory"
+          nodeId={id}
+          placeholder="Directory"
+          directory={directoryPath}
+          disabled={true}
+        ></HandleSourceDirectory>
         <NodeStatus processTime={data.processTime}></NodeStatus>
+        <HandleSourceImage
+          handleId={handleSources.image.id}
+          label="Image"
+          nodeId={id}
+        ></HandleSourceImage>
         <ImagePreview
-          enabled={!!data.settings.enablePreview && data.completed}
+          enabled={!!data.settings.enablePreview}
           imageBuffer={data.imageBuffer}
           onTogglePreview={(enabled: boolean) => {
             useNodeStore.getState().updateNodeSetting(id, {
@@ -66,18 +119,6 @@ export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
             })
           }}
         ></ImagePreview>
-        <Handle
-          type="source"
-          position={Position.Right}
-          id={handleSources.image.id}
-          onConnect={(params) => console.log('handle onConnect', id, params)}
-          style={{
-            right: -8,
-            background: 'RoyalBlue',
-            width: 16,
-            height: 16,
-          }}
-        />
       </NodeContent>
     </Node>
   )

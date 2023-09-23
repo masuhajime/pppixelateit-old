@@ -8,7 +8,7 @@ type Props = {
   nodeId: string
 }
 const handleSize = 20
-export const HandleSourceImage = (props: Props) => {
+export const HandleSourceText = (props: Props) => {
   const ref = React.useRef<HTMLDivElement>(null)
 
   const updateNodeInternals = useUpdateNodeInternals()
@@ -32,7 +32,7 @@ export const HandleSourceImage = (props: Props) => {
           position={Position.Right}
           id={props.handleId}
           style={{
-            background: 'OrangeRed',
+            background: 'lime',
             width: handleSize,
             height: handleSize,
             right: -handleSize / 2,
