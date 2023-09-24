@@ -46,7 +46,7 @@ export const SaveImageNode = ({ id, data }: NodeProps<NodeData>) => {
           name="directory"
         ></HandleTargetDirectory>
         <Separator />
-        <NodeStatus processTime={data.processTime}></NodeStatus>
+        <NodeStatus nodeData={data}></NodeStatus>
       </NodeContent>
     </Node>
   )

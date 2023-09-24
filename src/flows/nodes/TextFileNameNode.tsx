@@ -32,7 +32,7 @@ export const TextFileNameNode = ({ id, data }: NodeProps<NodeData>) => {
           label="Text"
           nodeId={id}
         ></HandleSourceText>
-        <NodeStatus processTime={data.processTime}></NodeStatus>
+        <NodeStatus nodeData={data}></NodeStatus>
       </NodeContent>
     </Node>
   )

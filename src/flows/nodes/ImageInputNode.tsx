@@ -104,7 +104,7 @@ export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
           directory={directoryPath}
           disabled={true}
         ></HandleSourceDirectory>
-        <NodeStatus processTime={data.processTime}></NodeStatus>
+        <NodeStatus nodeData={data}></NodeStatus>
         <HandleSourceImage
           handleId={handleSources.image.id}
           label="Image"

@@ -6,7 +6,9 @@ import Split from 'react-split'
 import ReactFlow, {
   Background,
   Controls,
+  EdgeChange,
   EdgeTypes,
+  NodeChange,
   Panel,
   ReactFlowInstance,
   ReactFlowProvider,
@@ -142,8 +144,12 @@ function App() {
             <ReactFlow
               nodes={nodes}
               edges={edges}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
+              onNodesChange={(changes: NodeChange[]) => {
+                onNodesChange(changes)
+              }}
+              onEdgesChange={(changes: EdgeChange[]) => {
+                onEdgesChange(changes)
+              }}
               nodeTypes={nodeTypes}
               edgeTypes={edgeTypes}
               onConnect={onConnectCustom}

@@ -41,7 +41,7 @@ export const Fill00ColorToTransparentNode = ({
           handleId={handleSources.image.id}
           nodeId={id}
         ></HandleSourceImage>
-        <NodeStatus processTime={data.processTime}></NodeStatus>
+        <NodeStatus nodeData={data}></NodeStatus>
         <ImagePreview
           enabled={!!data.settings.enablePreview && data.completed}
           imageBuffer={data.imageBuffer}

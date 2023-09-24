@@ -43,7 +43,7 @@ export const TextAppendNode = ({ id, data }: NodeProps<NodeData>) => {
           nodeId={id}
         ></HandleSourceText>
         <Separator />
-        <NodeStatus processTime={data.processTime}></NodeStatus>
+        <NodeStatus nodeData={data}></NodeStatus>
       </NodeContent>
     </Node>
   )

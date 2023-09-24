@@ -52,7 +52,7 @@ export const ImagePreviewCompare = ({ id, data }: NodeProps<NodeData>) => {
           nodeId={id}
         ></HandleTargetImage>
         <Separator />
-        <NodeStatus processTime={data.processTime}></NodeStatus>
+        <NodeStatus nodeData={data}></NodeStatus>
         {/* </NodeContent> */}
 
         {!!htmlImageBase64A && !!htmlImageBase64B && (

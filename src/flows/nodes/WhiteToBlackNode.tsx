@@ -28,7 +28,7 @@ export const WhiteToBlackNode = ({ id, data }: NodeProps<NodeData>) => {
           handleId={handleTargets.image.id}
           nodeId={id}
         ></HandleTargetImage>
-        <NodeStatus processTime={data.processTime}></NodeStatus>
+        <NodeStatus nodeData={data}></NodeStatus>
         <ImagePreview
           enabled={!!data.settings.enablePreview && data.completed}
           imageBuffer={data.imageBuffer}
