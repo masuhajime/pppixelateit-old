@@ -31,8 +31,9 @@ export const nodeBehavior: NodeBehaviorInterface = {
     data: any
   ): void {
     const store = useNodeStore.getState()
-    store.updateNodeData(nodeId, {
+    store.updateNodeData<NodeData>(nodeId, {
       imageBuffer: data,
+      completed: false,
     })
   },
   nodeProcess(nodeId: string, callback: () => void): void {
@@ -42,16 +43,19 @@ export const nodeBehavior: NodeBehaviorInterface = {
     })
     let node = getNodeSnapshot<NodeData>(nodeId)
     //data.completed = true
-    console.log('node process resize to:', node.id, node.type)
+    console.log('node process test:', node.id, node.type)
 
-    if (!node.data.imageBuffer) {
+    if (!node.data.imageBuffer?.buffer) {
       throw new Error('no image data')
     }
 
-    opencv2(node.data.imageBuffer).then((w2b) => {
+    opencv2(node.data.imageBuffer?.buffer).then((w2b) => {
       store.updateNodeData<NodeData>(nodeId, {
         completed: true,
-        imageBuffer: w2b,
+        imageBuffer: {
+          buffer: w2b,
+          end: true,
+        },
       })
 
       propagateValue(nodeId, handleSources)
@@ -60,6 +64,6 @@ export const nodeBehavior: NodeBehaviorInterface = {
   },
   canStartProcess(nodeId: string): boolean {
     const node = getNodeSnapshot<NodeData>(nodeId)
-    return !!node.data.imageBuffer
+    return !!node.data.imageBuffer?.buffer
   },
 }

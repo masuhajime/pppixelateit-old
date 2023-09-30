@@ -50,11 +50,13 @@ export const nodeBehavior: NodeBehaviorInterface = {
       case 'text':
         store.updateNodeData<NodeData>(nodeId, {
           text: data,
+          completed: false,
         })
         break
       case 'append':
         store.updateNodeData<NodeData>(nodeId, {
           append: data,
+          completed: false,
         })
         break
     }

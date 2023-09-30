@@ -3,6 +3,7 @@ import { Box, Button } from '@mui/material'
 import * as React from 'react'
 import { Handle, Position, useUpdateNodeInternals } from 'reactflow'
 import FolderIcon from '@mui/icons-material/Folder'
+import { open } from '@tauri-apps/api/dialog'
 
 type Props = {
   label: string
@@ -41,6 +42,22 @@ export const HandleSourceDirectory = (props: Props) => {
           textTransform: 'none',
         }}
         disabled={props.disabled}
+        onClick={async () => {
+          const selectedDir = await open({
+            multiple: false,
+            directory: true,
+            filters: [],
+          })
+          if (Array.isArray(selectedDir)) {
+            // user selectedFile multiple files
+            console.error("can't select multiple files")
+          } else if (selectedDir === null) {
+            // user cancelled the selection
+            console.error("can't select file")
+          } else {
+            props.onSelect && props.onSelect(selectedDir)
+          }
+        }}
       >
         <FolderIcon
           sx={{

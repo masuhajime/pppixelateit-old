@@ -1,5 +1,6 @@
 import { Fill00ColorToTransparentNode } from "./nodes/Fill00ColorToTransparentNode";
 import { FillWithColorNode } from "./nodes/FillWithColorNode";
+import { ImageInputDirectoryNode } from "./nodes/ImageInputDirectoryNode";
 import { ImageInputNode } from "./nodes/ImageInputNode";
 import { ImagePreviewCompare } from "./nodes/ImagePreviewCompare";
 import { ImagePreviewNode } from "./nodes/ImagePreviewNode";
@@ -15,6 +16,9 @@ import { TextFileNameNode } from "./nodes/TextFileNameNode";
 import { WhiteToBlackNode } from "./nodes/WhiteToBlackNode";
 
 const nodeDefines = [
+    {
+        element: ImageInputDirectoryNode,
+    },
     {
         element: TextAppendNode,
     },

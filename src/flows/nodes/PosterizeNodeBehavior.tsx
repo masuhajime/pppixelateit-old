@@ -37,9 +37,9 @@ export const nodeBehavior: NodeBehaviorInterface = {
   ): void {
     const node = getNodeSnapshot<NodeData>(nodeId)
     const store = useNodeStore.getState()
-    store.updateNodeData(nodeId, {
-      ...node.data,
+    store.updateNodeData<NodeData>(nodeId, {
       imageBuffer: data,
+      completed: false,
     })
     // if (this.canStartProcess(node.id)) {
     //   this.nodeProcess(node.id)
@@ -59,22 +59,27 @@ export const nodeBehavior: NodeBehaviorInterface = {
       node.type
     )
 
-    if (!node.data.imageBuffer || !node.data.settings.number) {
+    if (!node.data.imageBuffer?.buffer || !node.data.settings.number) {
       throw new Error('no image or number')
     }
 
-    posterize(node.data.imageBuffer, node.data.settings.number).then((w2b) => {
-      store.updateNodeData<NodeData>(nodeId, {
-        completed: true,
-        imageBuffer: w2b,
-      })
+    posterize(node.data.imageBuffer?.buffer, node.data.settings.number).then(
+      (w2b) => {
+        store.updateNodeData<NodeData>(nodeId, {
+          completed: true,
+          imageBuffer: {
+            buffer: w2b,
+            end: true,
+          },
+        })
 
-      propagateValue(nodeId, handleSources)
-      callback()
-    })
+        propagateValue(nodeId, handleSources)
+        callback()
+      }
+    )
   },
   canStartProcess(nodeId: string): boolean {
     const node = getNodeSnapshot<NodeData>(nodeId)
-    return !!node.data.imageBuffer && !!node.data.settings.number
+    return !!node.data.imageBuffer?.buffer && !!node.data.settings.number
   },
 }

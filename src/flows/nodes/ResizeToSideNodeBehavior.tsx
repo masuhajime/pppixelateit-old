@@ -38,14 +38,18 @@ export const nodeBehavior: NodeBehaviorInterface = {
     data: any
   ): void {
     const store = useNodeStore.getState()
-    store.updateNodeData(nodeId, {
+    console.log('dataIncoming ResizeToSide:', dataType)
+
+    store.updateNodeData<NodeData>(nodeId, {
       imageBuffer: data,
+      completed: false,
     })
     // if (this.canStartProcess(node.id)) {
     //   this.nodeProcess(node.id)
     // }
   },
   nodeProcess(nodeId: string, callback: () => void): void {
+    console.log('nodeProcess ResizeToSide:', nodeId)
     const store = useNodeStore.getState()
     store.updateNodeData<NodeData>(nodeId, {
       completed: false,
@@ -60,7 +64,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
     )
 
     if (
-      !node.data.imageBuffer ||
+      !node.data.imageBuffer?.buffer ||
       !node.data.settings.size ||
       !node.data.settings.resizeBase ||
       !node.data.settings.method
@@ -69,14 +73,17 @@ export const nodeBehavior: NodeBehaviorInterface = {
     }
 
     resizeBaseOn(
-      node.data.imageBuffer,
+      node.data.imageBuffer.buffer,
       node.data.settings.resizeBase,
       node.data.settings.size,
       node.data.settings.method
     ).then((w2b) => {
       store.updateNodeData<NodeData>(nodeId, {
         completed: true,
-        imageBuffer: w2b,
+        imageBuffer: {
+          buffer: w2b,
+          end: true,
+        },
       })
 
       propagateValue(nodeId, handleSources)
@@ -87,12 +94,12 @@ export const nodeBehavior: NodeBehaviorInterface = {
     const node = getNodeSnapshot<NodeData>(nodeId)
     console.log(
       'canStartProcess Resize:',
-      !!node.data.imageBuffer &&
+      !!node.data.imageBuffer?.buffer &&
         !!node.data.settings.size &&
         !!node.data.settings.resizeBase &&
         !!node.data.settings.method,
       {
-        imageBuffer: !!node.data.imageBuffer,
+        imageBuffer: !!node.data.imageBuffer?.buffer,
         method: node.data.settings.method,
         size: node.data.settings.size,
         resizeBase: node.data.settings.resizeBase,
@@ -100,7 +107,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
     )
 
     return (
-      !!node.data.imageBuffer &&
+      !!node.data.imageBuffer?.buffer &&
       !!node.data.settings.size &&
       !!node.data.settings.resizeBase &&
       !!node.data.settings.method

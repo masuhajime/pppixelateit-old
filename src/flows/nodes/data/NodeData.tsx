@@ -1,4 +1,7 @@
-import { getNodeBehavior } from '../../../process/imageProcess'
+import {
+  getNodeBehavior,
+  getNodeBehaviorCacheByType,
+} from '../../../process/imageProcess'
 import useNodeStore, { getNodeSnapshot } from '../../../store/store'
 
 export type PropagateDataType =
@@ -18,17 +21,30 @@ export type NodeBaseData = {
   completed?: boolean
   processTime?: number
 }
-
-export type NodeBaseDataImageBase64 = {
-  imageBase64?: string
-}
-
 export type NodeBaseDataImageBuffer = {
-  imageBuffer?: Buffer
+  imageBuffer?: BufferSequenceable
   settings: {
     enablePreview?: boolean
   }
 }
+export type BufferSequenceable = {
+  buffer?: Buffer
+  end: boolean
+}
+
+// define abstract class of NodeBehavior
+// abstract class NodeBehaviorAbstract {
+//   initialize?(nodeId: string): void
+//   abstract dataIncoming(
+//     nodeId: string,
+//     handleId: string,
+//     dataType: PropagateDataType,
+//     data: any
+//   ): void
+//   abstract nodeProcess(nodeId: string, callback: () => void): void
+//   abstract canStartProcess(nodeId: string): boolean
+//   hasNextIteration?(nodeId: string): boolean
+// }
 
 export interface NodeBehaviorInterface {
   dataIncoming: (
@@ -37,8 +53,10 @@ export interface NodeBehaviorInterface {
     dataType: PropagateDataType,
     data: any
   ) => void
+  initialize?(nodeId: string): void
   nodeProcess: (nodeId: string, callback: () => void) => void
   canStartProcess(nodeId: string): boolean
+  hasNextIteration?(nodeId: string): boolean
 }
 
 export type HandleTarget = {
@@ -57,9 +75,9 @@ export const handleSourceImageDefault = {
   dataType: 'buffer',
   propagateValue: (nodeId: string) =>
     getNodeSnapshot<{
-      imageBuffer: Buffer
+      imageBuffer: BufferSequenceable
     }>(nodeId).data.imageBuffer,
-} as HandleSource<Buffer>
+} as HandleSource<BufferSequenceable>
 
 export const handleSourceTextDefault = {
   id: 'text',
@@ -72,9 +90,40 @@ export const handleSourceTextDefault = {
 
 export const handleSourceStringDefault = handleSourceTextDefault
 
+export const defaultNodeInitialize = (nodeId: string) => {
+  const store = useNodeStore.getState()
+  store.updateNodeData<NodeBaseData>(nodeId, {
+    completed: false,
+    isProcessing: false,
+    processTime: undefined,
+  })
+}
+
+export const createNodeBehavior = (
+  n: Partial<NodeBehaviorInterface>
+): NodeBehaviorInterface => {
+  return { ...defaultNodeBehavior, ...n } as NodeBehaviorInterface
+}
+export const defaultNodeBehavior: NodeBehaviorInterface = {
+  dataIncoming(nodeId, handleId, dataType, data) {
+    throw new Error('node process: should not be incoming:' + nodeId)
+  },
+  initialize: defaultNodeInitialize,
+  nodeProcess(nodeId, callback) {
+    throw new Error('node process: should not be processing:' + nodeId)
+  },
+  canStartProcess(nodeId) {
+    return false
+  },
+  hasNextIteration(nodeId) {
+    return false
+  },
+}
+
 export const propagateValue = (
   nodeId: string,
-  handleSources: Record<string, HandleSource>
+  handleSources: Record<string, HandleSource>,
+  hasNextIteration?: boolean
 ) => {
   const store = useNodeStore.getState()
   store.getOutgoingEdgesFromSourceNode(nodeId).forEach((edge) => {
@@ -83,30 +132,56 @@ export const propagateValue = (
     if (!targetNode.type) {
       return
     }
-    getNodeBehavior(targetNode.type).then((behavior) => {
-      Object.values(handleSources).forEach((handleSource) => {
-        if (!edge.targetHandle) {
-          return
-        }
-        if (handleSource.id !== edge.sourceHandle) {
-          return
-        }
-        if (edge.target !== targetNode.id) {
-          return
-        }
-        // console.log('propagate value to: ', {
-        //   targetNode,
-        //   handleSource,
-        //   edge,
-        //   nodeId,
-        // })
-        behavior.dataIncoming(
-          targetNode.id,
-          edge.targetHandle,
-          handleSource.dataType,
-          handleSource.propagateValue(nodeId)
-        )
-      })
+    const nodeBehavior = getNodeBehaviorCacheByType(targetNode.type)
+
+    Object.values(handleSources).forEach((handleSource) => {
+      if (!edge.targetHandle) {
+        return
+      }
+      if (handleSource.id !== edge.sourceHandle) {
+        return
+      }
+      if (edge.target !== targetNode.id) {
+        return
+      }
+      // console.log('propagate value to: ', {
+      //   targetNode,
+      //   handleSource,
+      //   edge,
+      //   nodeId,
+      // })
+      nodeBehavior.dataIncoming(
+        targetNode.id,
+        edge.targetHandle,
+        handleSource.dataType,
+        handleSource.propagateValue(nodeId)
+      )
     })
+
+    // getNodeBehavior(targetNode.type).then((behavior) => {
+    //   Object.values(handleSources).forEach((handleSource) => {
+    //     if (!edge.targetHandle) {
+    //       return
+    //     }
+    //     if (handleSource.id !== edge.sourceHandle) {
+    //       return
+    //     }
+    //     if (edge.target !== targetNode.id) {
+    //       return
+    //     }
+    //     // console.log('propagate value to: ', {
+    //     //   targetNode,
+    //     //   handleSource,
+    //     //   edge,
+    //     //   nodeId,
+    //     // })
+    //     behavior.dataIncoming(
+    //       targetNode.id,
+    //       edge.targetHandle,
+    //       handleSource.dataType,
+    //       handleSource.propagateValue(nodeId)
+    //     )
+    //   })
+    // })
   })
 }

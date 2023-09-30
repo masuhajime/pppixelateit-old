@@ -33,6 +33,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
     const store = useNodeStore.getState()
     store.updateNodeData(nodeId, {
       imageBuffer: data,
+      completed: false,
     })
     // if (this.canStartProcess(node.id)) {
     //   this.nodeProcess(node.id)
@@ -48,7 +49,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
       node.type
     )
 
-    if (!node.data.imageBuffer) {
+    if (!node.data.imageBuffer?.buffer) {
       throw new Error('no image')
     }
 
@@ -56,10 +57,13 @@ export const nodeBehavior: NodeBehaviorInterface = {
     store.updateNodeData<NodeData>(nodeId, {
       completed: false,
     })
-    fill00ColorToTransparent(node.data.imageBuffer).then((w2b) => {
+    fill00ColorToTransparent(node.data.imageBuffer?.buffer).then((w2b) => {
       store.updateNodeData<NodeData>(nodeId, {
         completed: true,
-        imageBuffer: w2b,
+        imageBuffer: {
+          buffer: w2b,
+          end: true,
+        },
       })
 
       propagateValue(nodeId, handleSources)
@@ -68,7 +72,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
   },
   canStartProcess(nodeId: string): boolean {
     const node = getNodeSnapshot<NodeData>(nodeId)
-    return !!node.data.imageBuffer // && !!node.data.settings.number
+    return !!node.data.imageBuffer?.buffer // && !!node.data.settings.number
   },
 }
 

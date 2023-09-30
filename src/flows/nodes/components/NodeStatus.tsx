@@ -12,6 +12,7 @@ type Props = {
 export const NodeStatus = (props: Props) => {
   return (
     <Box className="node-item">
+      <Box>completed: {props.nodeData.completed ? 'true' : 'false'}</Box>
       <PlayCircleIcon></PlayCircleIcon>
       <StopCircleIcon></StopCircleIcon>
       <CheckCircleOutlineIcon

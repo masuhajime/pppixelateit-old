@@ -177,7 +177,6 @@ function App() {
                     aria-label="settings"
                     onClick={() => {
                       console.log('play')
-                      //processStore.getState().start()
                       processController.start()
                     }}
                   >

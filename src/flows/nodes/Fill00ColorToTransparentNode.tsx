@@ -44,7 +44,7 @@ export const Fill00ColorToTransparentNode = ({
         <NodeStatus nodeData={data}></NodeStatus>
         <ImagePreview
           enabled={!!data.settings.enablePreview && data.completed}
-          imageBuffer={data.imageBuffer}
+          imageBuffer={data.imageBuffer?.buffer}
           onTogglePreview={(enabled: boolean) => {
             useNodeStore.getState().updateNodeSetting(id, {
               enablePreview: enabled,

@@ -38,10 +38,12 @@ export const nodeBehavior: NodeBehaviorInterface = {
     if (handleId === 'imageA') {
       store.updateNodeData<NodeData>(nodeId, {
         imageBufferA: data,
+        completed: false,
       })
     } else if (handleId === 'imageB') {
       store.updateNodeData<NodeData>(nodeId, {
         imageBufferB: data,
+        completed: false,
       })
     }
   },

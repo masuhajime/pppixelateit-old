@@ -61,16 +61,19 @@ export const nodeBehavior: NodeBehaviorInterface = {
       case handleSources.image.id:
         store.updateNodeData<NodeData>(nodeId, {
           imageBuffer: data,
+          completed: false,
         })
         break
       case handleSources.filename.id:
         store.updateNodeData<NodeData>(nodeId, {
           filename: data,
+          completed: false,
         })
         break
       case handleSources.directory.id:
         store.updateNodeData<NodeData>(nodeId, {
           directory: data,
+          completed: false,
         })
         break
     }
@@ -85,12 +88,12 @@ export const nodeBehavior: NodeBehaviorInterface = {
     const filename = node.data.filename || node.data.settings.filename
     const directory = node.data.directory || node.data.settings.directory
 
-    if (node.data.imageBuffer === undefined) {
+    if (node.data.imageBuffer?.buffer === undefined) {
       console.error('image buffer is undefined')
       return
     }
     // imageBuffer to jimp instance
-    const jimpImage = await Jimp.read(node.data.imageBuffer)
+    const jimpImage = await Jimp.read(node.data.imageBuffer?.buffer)
 
     // jimp instance to png
     const pngBuffer = await jimpImage.getBufferAsync(Jimp.MIME_PNG)
@@ -108,7 +111,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
   canStartProcess(nodeId: string): boolean {
     const node = getNodeSnapshot<NodeData>(nodeId)
     return (
-      !!node.data.imageBuffer &&
+      !!node.data.imageBuffer?.buffer &&
       !!(node.data.filename || node.data.settings.filename) &&
       !!(node.data.directory || node.data.settings.directory)
     )

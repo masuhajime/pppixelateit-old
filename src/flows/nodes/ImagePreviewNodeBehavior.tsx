@@ -39,6 +39,6 @@ export const nodeBehavior: NodeBehaviorInterface = {
   },
   canStartProcess(nodeId: string): boolean {
     const node = getNodeSnapshot<NodeData>(nodeId)
-    return !!node.data.imageBuffer
+    return !!node.data.imageBuffer?.buffer
   },
 }

@@ -52,9 +52,10 @@ export const nodeBehavior: NodeBehaviorInterface = {
 
     fs.readBinaryFile(node.data.inputFilePath).then((buffer) => {
       nodeStore.updateNodeData<NodeData>(nodeId, {
-        imageBuffer: Buffer.from(buffer),
-      })
-      nodeStore.updateNodeData<NodeData>(nodeId, {
+        imageBuffer: {
+          buffer: Buffer.from(buffer),
+          end: true,
+        },
         completed: true,
       })
       propagateValue(nodeId, handleSources)

@@ -41,6 +41,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
       case 'text':
         store.updateNodeData<NodeData>(nodeId, {
           text: data,
+          completed: false,
         })
         break
     }

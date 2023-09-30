@@ -67,7 +67,10 @@ export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
                   fs.readBinaryFile(selectedFile).then((buffer) => {
                     nodeStore.updateNodeData<NodeData>(id, {
                       inputFilePath: selectedFile,
-                      imageBuffer: Buffer.from(buffer),
+                      imageBuffer: {
+                        buffer: Buffer.from(buffer),
+                        end: true,
+                      },
                     })
                   })
                 }
@@ -112,7 +115,7 @@ export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
         ></HandleSourceImage>
         <ImagePreview
           enabled={!!data.settings.enablePreview}
-          imageBuffer={data.imageBuffer}
+          imageBuffer={data.imageBuffer?.buffer}
           onTogglePreview={(enabled: boolean) => {
             useNodeStore.getState().updateNodeSetting(id, {
               enablePreview: enabled,
