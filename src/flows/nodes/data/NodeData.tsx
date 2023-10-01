@@ -1,7 +1,4 @@
-import {
-  getNodeBehavior,
-  getNodeBehaviorCacheByType,
-} from '../../../process/imageProcess'
+import { getNodeBehaviorCacheByType } from '../../../process/imageProcess'
 import useNodeStore, { getNodeSnapshot } from '../../../store/store'
 
 export type PropagateDataType =
@@ -144,12 +141,12 @@ export const propagateValue = (
       if (edge.target !== targetNode.id) {
         return
       }
-      // console.log('propagate value to: ', {
-      //   targetNode,
-      //   handleSource,
-      //   edge,
-      //   nodeId,
-      // })
+      console.log('propagate value to: ', {
+        targetNode,
+        handleSource,
+        edge,
+        nodeId,
+      })
       nodeBehavior.dataIncoming(
         targetNode.id,
         edge.targetHandle,
@@ -157,31 +154,5 @@ export const propagateValue = (
         handleSource.propagateValue(nodeId)
       )
     })
-
-    // getNodeBehavior(targetNode.type).then((behavior) => {
-    //   Object.values(handleSources).forEach((handleSource) => {
-    //     if (!edge.targetHandle) {
-    //       return
-    //     }
-    //     if (handleSource.id !== edge.sourceHandle) {
-    //       return
-    //     }
-    //     if (edge.target !== targetNode.id) {
-    //       return
-    //     }
-    //     // console.log('propagate value to: ', {
-    //     //   targetNode,
-    //     //   handleSource,
-    //     //   edge,
-    //     //   nodeId,
-    //     // })
-    //     behavior.dataIncoming(
-    //       targetNode.id,
-    //       edge.targetHandle,
-    //       handleSource.dataType,
-    //       handleSource.propagateValue(nodeId)
-    //     )
-    //   })
-    // })
   })
 }

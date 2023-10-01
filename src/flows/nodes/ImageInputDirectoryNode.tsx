@@ -12,6 +12,9 @@ import { NodeHeader } from './components/NodeHeader'
 import { NodeStatus } from './components/NodeStatus'
 import { HandleSourceImage } from './items/HandleSourceImage'
 import { ImagePreview } from './items/ImagePreview'
+import { HandleSourceText } from './items/HandleSourceText'
+import { fs } from '@tauri-apps/api'
+import { HandleSourceDirectory } from './items/HandleSourceDirectory'
 
 export const ImageInputDirectoryNode = ({ id, data }: NodeProps<NodeData>) => {
   const nodeStore = useNodeStore.getState()
@@ -56,9 +59,14 @@ export const ImageInputDirectoryNode = ({ id, data }: NodeProps<NodeData>) => {
                 console.error("can't select file")
               } else {
                 // log
-                console.log('selectedDir', selectedDir)
+                console.debug('selectedDir', selectedDir)
+                const files = await fs.readDir(selectedDir)
+                const filePaths = files.map((file) => {
+                  return file.path
+                })
                 nodeStore.updateNodeData<NodeData>(id, {
                   inputDirectoryPath: selectedDir,
+                  inputFilePaths: filePaths,
                 })
               }
             }}
@@ -80,14 +88,31 @@ export const ImageInputDirectoryNode = ({ id, data }: NodeProps<NodeData>) => {
               {directoryPath ? directoryPath : 'Select Directory'}
             </Box>
           </Button>
+          {data.inputFilePaths !== undefined && (
+            <Box>
+              {data.inputFilePathsPointer} / {data.inputFilePaths.length}
+            </Box>
+          )}
         </Box>
-
         <NodeStatus nodeData={data}></NodeStatus>
         <HandleSourceImage
           handleId={handleSources.image.id}
           label="Image"
           nodeId={id}
         ></HandleSourceImage>
+        <HandleSourceDirectory
+          handleId={handleSources.directory.id}
+          label="Directory"
+          nodeId={id}
+          placeholder="Directory"
+          directory={directoryPath}
+          disabled={true}
+        ></HandleSourceDirectory>
+        <HandleSourceText
+          handleId={handleSources.filename.id}
+          label="File Name"
+          nodeId={id}
+        ></HandleSourceText>
         <ImagePreview
           enabled={!!data.settings.enablePreview}
           imageBuffer={data.imageBuffer?.buffer}

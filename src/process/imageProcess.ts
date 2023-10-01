@@ -1,8 +1,7 @@
-import { log } from "console";
+import { getNodeTypes } from "../flows/nodes";
 import { NodeBehaviorInterface } from "../flows/nodes/data/NodeData";
 import processStore from "../store/processStore";
 import useNodeStore from "../store/store";
-import { getNodeTypes } from "../flows/nodes";
 
 export const getNodeBehavior = async (type: string): Promise<NodeBehaviorInterface> => {
     return await import(`../flows/nodes/${type}Behavior.tsx`).then((module) => {

@@ -7,21 +7,9 @@ import {
   NodeBehaviorInterface,
   handleSourceImageDefault,
   handleSourceTextDefault,
-  propagateValue,
 } from './data/NodeData'
 
-export const handleSources = {
-  image: handleSourceImageDefault,
-  filename: handleSourceTextDefault,
-  directory: {
-    id: 'directory',
-    dataType: 'directory',
-    propagateValue: (nodeId: string) =>
-      getNodeSnapshot<{
-        text: string
-      }>(nodeId).data.text,
-  },
-}
+export const handleSources = {}
 
 export const handleTargets = {
   image: {
@@ -57,28 +45,39 @@ export const nodeBehavior: NodeBehaviorInterface = {
   ): void {
     const node = getNodeSnapshot(nodeId)
     const store = useNodeStore.getState()
+    console.log('data incoming: ', {
+      nodeId,
+      handleId,
+      dataType,
+    })
     switch (handleId) {
-      case handleSources.image.id:
+      case handleTargets.image.id:
         store.updateNodeData<NodeData>(nodeId, {
           imageBuffer: data,
           completed: false,
         })
         break
-      case handleSources.filename.id:
+      case handleTargets.filename.id:
+        console.log('data incoming file: ', {
+          nodeId,
+          handleId,
+          dataType,
+          filename: data,
+        })
         store.updateNodeData<NodeData>(nodeId, {
           filename: data,
-          completed: false,
+          completed: true,
         })
         break
-      case handleSources.directory.id:
+      case handleTargets.directory.id:
         store.updateNodeData<NodeData>(nodeId, {
           directory: data,
-          completed: false,
+          completed: true,
         })
         break
     }
   },
-  async nodeProcess(nodeId: string, callback: () => void): void {
+  async nodeProcess(nodeId: string, callback: () => void): Promise<void> {
     const store = useNodeStore.getState()
     store.updateNodeData<NodeData>(nodeId, {
       completed: false,
@@ -110,6 +109,13 @@ export const nodeBehavior: NodeBehaviorInterface = {
   },
   canStartProcess(nodeId: string): boolean {
     const node = getNodeSnapshot<NodeData>(nodeId)
+    console.log('canStartProcess save image: ', {
+      nodeId: nodeId,
+      buffer: !!node.data.imageBuffer?.buffer,
+      imageBuffer: !!node.data.imageBuffer,
+      filename: node.data.filename,
+      directory: node.data.directory,
+    })
     return (
       !!node.data.imageBuffer?.buffer &&
       !!(node.data.filename || node.data.settings.filename) &&

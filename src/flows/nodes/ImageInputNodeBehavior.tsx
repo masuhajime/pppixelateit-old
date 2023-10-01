@@ -11,7 +11,7 @@ import {
 import { Buffer } from 'buffer'
 import path from 'path'
 
-export const handleSources: Record<string, HandleSource> = {
+export const handleSources = {
   image: handleSourceImageDefault,
   directory: {
     id: 'directory',
@@ -23,7 +23,18 @@ export const handleSources: Record<string, HandleSource> = {
       }
       return path.dirname(node.data.inputFilePath)
     },
-  },
+  } as HandleSource,
+  filename: {
+    id: 'filename',
+    dataType: 'text',
+    propagateValue: (nodeId: string) => {
+      const node = getNodeSnapshot<NodeData>(nodeId)
+      if (!node.data.inputFilePath) {
+        throw new Error('no image')
+      }
+      return path.basename(node.data.inputFilePath)
+    },
+  } as HandleSource,
 }
 
 export type NodeData = {

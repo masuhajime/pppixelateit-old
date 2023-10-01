@@ -15,6 +15,7 @@ import { NodeStatus } from './components/NodeStatus'
 import { HandleSourceImage } from './items/HandleSourceImage'
 import { ImagePreview } from './items/ImagePreview'
 import { HandleSourceDirectory } from './items/HandleSourceDirectory'
+import { HandleSourceText } from './items/HandleSourceText'
 
 export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
   const nodeStore = useNodeStore.getState()
@@ -113,6 +114,11 @@ export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
           label="Image"
           nodeId={id}
         ></HandleSourceImage>
+        <HandleSourceText
+          handleId={handleSources.filename.id}
+          label="File Name"
+          nodeId={id}
+        ></HandleSourceText>
         <ImagePreview
           enabled={!!data.settings.enablePreview}
           imageBuffer={data.imageBuffer?.buffer}

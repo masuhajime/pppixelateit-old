@@ -22,6 +22,18 @@ export const SaveImageNode = ({ id, data }: NodeProps<NodeData>) => {
           handleId={handleTargets.image.id}
           nodeId={id}
         ></HandleTargetImage>
+        <HandleTargetDirectory
+          directory={dir}
+          placeholder="Select Directory"
+          handleId={handleTargets.directory.id}
+          nodeId={id}
+          onChange={(value) => {
+            useNodeStore.getState().updateNodeData<NodeData>(id, {
+              directory: value,
+            })
+          }}
+          name="directory"
+        ></HandleTargetDirectory>
         <HandleTargetText
           name="file name"
           handleId={handleTargets.filename.id}
@@ -33,18 +45,6 @@ export const SaveImageNode = ({ id, data }: NodeProps<NodeData>) => {
             })
           }}
         ></HandleTargetText>
-        <HandleTargetDirectory
-          directory={data.directory || data.settings.directory}
-          placeholder="Select Directory"
-          handleId={handleTargets.directory.id}
-          nodeId={id}
-          onChange={(value) => {
-            useNodeStore.getState().updateNodeData<NodeData>(id, {
-              directory: value,
-            })
-          }}
-          name="directory"
-        ></HandleTargetDirectory>
         <Separator />
         <NodeStatus nodeData={data}></NodeStatus>
       </NodeContent>

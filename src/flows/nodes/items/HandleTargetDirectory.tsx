@@ -33,57 +33,54 @@ export const HandleTargetDirectory = (props: Props) => {
 
   return (
     <Box className="node-item" ref={ref}>
-      <Box className="node-item">
-        <Button
-          className="nodrag"
-          variant="outlined"
+      <Button
+        className="nodrag"
+        variant="outlined"
+        sx={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'left',
+          textTransform: 'none',
+        }}
+        onClick={async () => {
+          const selectedDir = await open({
+            multiple: false,
+            directory: true,
+            filters: [],
+          })
+          console.log(selectedDir)
+          if (Array.isArray(selectedDir)) {
+            // user selectedFile multiple files
+            console.error("can't select multiple directories")
+          } else if (selectedDir === null) {
+            // user cancelled the selection
+            console.error("can't select directory")
+          } else {
+            props.onChange && props.onChange(selectedDir)
+          }
+        }}
+      >
+        <FolderIcon
           sx={{
-            width: '100%',
-            minWidth: '100%',
-            display: 'flex',
-            justifyContent: 'left',
-            textTransform: 'none',
+            marginRight: '8px',
           }}
-          onClick={async () => {
-            const selectedDir = await open({
-              multiple: false,
-              directory: true,
-              filters: [],
-            })
-            console.log(selectedDir)
-            if (Array.isArray(selectedDir)) {
-              // user selectedFile multiple files
-              console.error("can't select multiple directories")
-            } else if (selectedDir === null) {
-              // user cancelled the selection
-              console.error("can't select directory")
-            } else {
-              props.onChange && props.onChange(selectedDir)
-            }
+        ></FolderIcon>
+        <Box
+          sx={{
+            // ellipsis
+            display: 'inline-block',
+            width: '100%',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            textAlign: 'left',
+            // direction: 'rtl',
+            // textAlign: 'left',
           }}
         >
-          <FolderIcon
-            sx={{
-              marginRight: '8px',
-            }}
-          ></FolderIcon>
-          <Box
-            sx={{
-              // ellipsis
-              display: 'inline-block',
-              width: '100%',
-              minWidth: '100%',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              // direction: 'rtl',
-              // textAlign: 'left',
-            }}
-          >
-            {props.directory ? props.directory : props.placeholder}
-          </Box>
-        </Button>
-      </Box>
+          {props.directory ? props.directory : props.placeholder}
+        </Box>
+      </Button>
       {handlePositionTop && (
         <Handle
           type="target"

@@ -10,8 +10,9 @@ import {
   propagateValue,
 } from './data/NodeData'
 import { Buffer } from 'buffer'
+import path from 'path'
 
-export const handleSources: Record<string, HandleSource> = {
+export const handleSources = {
   image: handleSourceImageDefault,
   directory: {
     id: 'directory',
@@ -23,13 +24,25 @@ export const handleSources: Record<string, HandleSource> = {
       }
       return node.data.inputDirectoryPath
     },
-  },
+  } as HandleSource,
+  filename: {
+    id: 'filename',
+    dataType: 'text',
+    propagateValue: (nodeId: string) => {
+      const node = getNodeSnapshot<NodeData>(nodeId)
+      if (!node.data.filename) {
+        throw new Error('no image')
+      }
+      return node.data.filename
+    },
+  } as HandleSource,
 }
 
 export type NodeData = {
   inputDirectoryPath?: string
   inputFilePaths?: string[]
   inputFilePathsPointer?: number
+  filename?: string
 } & NodeBaseData &
   NodeBaseDataImageBuffer
 
@@ -88,6 +101,7 @@ export const nodeBehavior: NodeBehaviorInterface = createNodeBehavior({
         buffer: Buffer.from(buffer),
         end: isEnd,
       },
+      filename: path.basename(currentFile),
       inputFilePathsPointer: node.data.inputFilePathsPointer + 1,
       completed: true,
     })

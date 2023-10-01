@@ -71,6 +71,7 @@ export const HandleSourceDirectory = (props: Props) => {
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
+            textAlign: 'left',
           }}
         >
           {props.directory ? props.directory : props.placeholder}
