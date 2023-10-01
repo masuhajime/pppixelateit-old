@@ -1,10 +1,9 @@
 // @flow
-import { Box, Button, TextField } from '@mui/material'
-import { MuiFileInput } from 'mui-file-input'
+import FolderIcon from '@mui/icons-material/Folder'
+import { Box, Button } from '@mui/material'
+import { open } from '@tauri-apps/api/dialog'
 import * as React from 'react'
 import { Handle, Position, useUpdateNodeInternals } from 'reactflow'
-import { open } from '@tauri-apps/api/dialog'
-import FolderIcon from '@mui/icons-material/Folder'
 
 type Props = {
   name: string

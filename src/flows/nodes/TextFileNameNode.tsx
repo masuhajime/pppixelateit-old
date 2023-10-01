@@ -1,6 +1,5 @@
 import { NodeProps } from 'reactflow'
 
-import useNodeStore from '../../store/store'
 import {
   NodeData,
   handleSources,
@@ -14,8 +13,6 @@ import { HandleSourceText } from './items/HandleSourceText'
 import { HandleTargetText } from './items/HandleTargetText'
 
 export const TextFileNameNode = ({ id, data }: NodeProps<NodeData>) => {
-  const store = useNodeStore.getState()
-  const node = store.getNode<NodeData>(id)
   return (
     <Node status={data.isProcessing ? 'processing' : undefined}>
       <NodeHeader title="File Name" />

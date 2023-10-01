@@ -5,8 +5,6 @@ import {
   NodeBaseData,
   NodeBaseDataImageBuffer,
   NodeBehaviorInterface,
-  handleSourceImageDefault,
-  handleSourceTextDefault,
 } from './data/NodeData'
 
 export const handleSources = {}
@@ -43,7 +41,6 @@ export const nodeBehavior: NodeBehaviorInterface = {
     dataType: string,
     data: any
   ): void {
-    const node = getNodeSnapshot(nodeId)
     const store = useNodeStore.getState()
     console.log('data incoming: ', {
       nodeId,

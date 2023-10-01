@@ -1,6 +1,6 @@
 import { NodeProps } from 'reactflow'
 
-import useNodeStore, { updateSetting } from '../../store/store'
+import { updateSetting } from '../../store/store'
 import {
   NodeData,
   handleSources,
@@ -9,14 +9,10 @@ import {
 import { Node } from './components/Node'
 import { NodeContent } from './components/NodeContent'
 import { NodeHeader } from './components/NodeHeader'
-import { HandleSourceImage } from './items/HandleSourceImage'
-import { HandleTargetImage } from './items/HandleTargetImage'
-import { HandleTargetNumber } from './items/HandleTargetNumber'
-import { ImagePreview } from './items/ImagePreview'
-import { Separator } from './items/Separator'
 import { NodeStatus } from './components/NodeStatus'
-import { HandleTargetText } from './items/HandleTargetText'
 import { HandleSourceText } from './items/HandleSourceText'
+import { HandleTargetText } from './items/HandleTargetText'
+import { Separator } from './items/Separator'
 
 export const TextAppendNode = ({ id, data }: NodeProps<NodeData>) => {
   return (

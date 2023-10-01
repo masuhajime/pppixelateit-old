@@ -4,7 +4,6 @@ import {
   HandleTarget,
   NodeBaseData,
   NodeBehaviorInterface,
-  handleSourceTextDefault,
   propagateValue,
 } from './data/NodeData'
 
