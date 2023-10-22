@@ -1,7 +1,14 @@
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import { Box, IconButton } from '@mui/material'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
-import { DragEvent, useCallback, useRef, useState } from 'react'
+import {
+  DragEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import Split from 'react-split'
 import ReactFlow, {
   Background,
@@ -25,13 +32,76 @@ import { shallow } from 'zustand/shallow'
 import { getNodeTypesForReactFlow } from './flows/nodes'
 import processController from './process/imageProcess'
 import useNodeStore, { RFState } from './store/store'
+import { Event, emit, listen } from '@tauri-apps/api/event'
+import { open, save } from '@tauri-apps/api/dialog'
+import { fdatasync } from 'fs'
+import { fs } from '@tauri-apps/api'
 
 const nodeTypes = getNodeTypesForReactFlow()
 const edgeTypes: EdgeTypes = {
   custom: CustomEdge,
 }
 
+interface PayloadFileSelect {
+  file: string
+}
+interface PayloadEmpty {}
+
 function App() {
+  const nodeStore = useNodeStore.getState()
+  const init = useCallback(() => {
+    console.log('init')
+    processStore.getState().reset()
+    // processStore.subscribe((state) => {
+    //   console.log('App: processStore in subscribe', state)
+    // })
+
+    console.log('backend listend: start')
+
+    listen('backend_save', (event: Event<PayloadEmpty>) => {
+      console.log('backend_save 1', event)
+      save({
+        title: 'Save Nodes',
+      }).then((file) => {
+        if (file === null) {
+          return
+        }
+        if (Array.isArray(file)) {
+          return
+        }
+        console.log('save to:', file)
+        fs.writeTextFile(file, nodeStore.getPartialStateJsonString())
+      })
+    })
+
+    listen('backend_load', (event: Event<PayloadEmpty>) => {
+      console.log('backend_load 1', event)
+      open({
+        directory: false,
+        multiple: false,
+        filters: [{ name: 'Json', extensions: ['json'] }],
+        title: 'Load Nodes',
+      }).then((file) => {
+        if (file === null) {
+          return
+        }
+        if (Array.isArray(file)) {
+          return
+        }
+        console.log('load from:', file)
+        file = file as string
+        // load json file
+        fs.readTextFile(file).then((content) => {
+          console.log('load from:', content)
+          const data = JSON.parse(content)
+          console.log('load from:', data)
+          // TODO: validate
+          nodeStore.setPartialState(data)
+        })
+      })
+    })
+  }, [])
+
   const theme = createTheme({
     palette: {
       mode: 'dark',
@@ -75,14 +145,6 @@ function App() {
   const onDragOver = useCallback((event: any) => {
     event.preventDefault()
     event.dataTransfer.dropEffect = 'move'
-  }, [])
-
-  const init = useCallback(() => {
-    console.log('init')
-    processStore.getState().reset()
-    // processStore.subscribe((state) => {
-    //   console.log('App: processStore in subscribe', state)
-    // })
   }, [])
 
   const onDrop = useCallback(

@@ -36,6 +36,9 @@ export type RFState = {
     nodeAllCleareBuffer(): void;
     nodeSetCompleted(nodeId: string, completed: boolean): void;
     nodeGetCompleted(nodeId: string): boolean;
+    getPartialState(): Partial<RFState>;
+    getPartialStateJsonString(): string;
+    setPartialState: (partialState: Partial<RFState>) => void;
 };
 
 // this is our useStore hook that we can use in our components to get parts of the store and call actions
@@ -151,35 +154,45 @@ const useNodeStore = create(
                     const node = get().nodes.find((node) => node.id === nodeId);
                     if (!node) throw new Error('node not found');
                     return node.data.completed;
-                }
+                },
+                getPartialState: () => {
+                    return partialize(get());
+                },
+                getPartialStateJsonString: () => {
+                    return JSON.stringify(partialize(get()));
+                },
+                setPartialState: (partialState: Partial<RFState>) => {
+                    set(partialState);
+                },
             });
         },
         {
             name: 'node-edge-store',
             storage: createJSONStorage(() => localStorage),
             partialize: (state) => {
-                const objects: Partial<RFState> =
-                    Object.fromEntries(
-                        Object.entries(state)
-                            .filter(([key]) => {
-                                return ['nodes', 'edges'].includes(key)
-                            })
-                    );
+                return partialize(state);
+                // const objects: Partial<RFState> =
+                //     Object.fromEntries(
+                //         Object.entries(state)
+                //             .filter(([key]) => {
+                //                 return ['nodes', 'edges'].includes(key)
+                //             })
+                //     );
 
-                //remove keys in edges.data without "settings" key in objects.nodes
-                objects.nodes = (objects.nodes || []).map((node) => {
-                    // if (node.type === 'ImageInputNode') return node;
-                    const newNode = { ...node };
-                    if (node.data && node.data.settings) {
-                        const settings = { ...node.data.settings };
-                        newNode.data = { settings };
-                    } else {
-                        newNode.data = { settings: {} };
-                    }
-                    return newNode;
-                });
+                // //remove keys in edges.data without "settings" key in objects.nodes
+                // objects.nodes = (objects.nodes || []).map((node) => {
+                //     // if (node.type === 'ImageInputNode') return node;
+                //     const newNode = { ...node };
+                //     if (node.data && node.data.settings) {
+                //         const settings = { ...node.data.settings };
+                //         newNode.data = { settings };
+                //     } else {
+                //         newNode.data = { settings: {} };
+                //     }
+                //     return newNode;
+                // });
 
-                return objects;
+                // return objects;
             },
             // onRehydrateStorage: (state) => {
             //     console.log('hydration starts')
@@ -196,6 +209,31 @@ const useNodeStore = create(
         }
     )
 );
+
+const partialize = (state: RFState): Partial<RFState> => {
+    const objects: Partial<RFState> =
+        Object.fromEntries(
+            Object.entries(state)
+                .filter(([key]) => {
+                    return ['nodes', 'edges'].includes(key)
+                })
+        );
+
+    //remove keys in edges.data without "settings" key in objects.nodes
+    objects.nodes = (objects.nodes || []).map((node) => {
+        // if (node.type === 'ImageInputNode') return node;
+        const newNode = { ...node };
+        if (node.data && node.data.settings) {
+            const settings = { ...node.data.settings };
+            newNode.data = { settings };
+        } else {
+            newNode.data = { settings: {} };
+        }
+        return newNode;
+    });
+
+    return objects;
+}
 
 export const getNodeSnapshot = <T = NodeBaseData>(nodeId: string) => useNodeStore.getState().getNode<T>(nodeId)
 

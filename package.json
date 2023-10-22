@@ -16,7 +16,7 @@
     "@jimp/types": "^0.22.10",
     "@mui/icons-material": "^5.14.7",
     "@mui/material": "^5.14.1",
-    "@tauri-apps/api": "^1.4.0",
+    "@tauri-apps/api": "^1.5.1",
     "@techstark/opencv-js": "^4.8.0-release.4",
     "jimp": "^0.22.10",
     "mlly": "^1.4.0",
@@ -31,7 +31,7 @@
     "zustand": "^4.3.9"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^1.4.0",
+    "@tauri-apps/cli": "^1.5.4",
     "@types/node": "^20.4.7",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
