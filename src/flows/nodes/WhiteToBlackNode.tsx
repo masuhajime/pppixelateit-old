@@ -30,7 +30,8 @@ export const WhiteToBlackNode = ({ id, data }: NodeProps<NodeData>) => {
         ></HandleTargetImage>
         <NodeStatus nodeData={data}></NodeStatus>
         <ImagePreview
-          enabled={!!data.settings.enablePreview && data.completed}
+          enabled={!!data.settings.enablePreview}
+          completed={!!data.completed}
           imageBuffer={data.imageBuffer?.buffer}
           onTogglePreview={(enabled: boolean) => {
             useNodeStore.getState().updateNodeSetting(id, {

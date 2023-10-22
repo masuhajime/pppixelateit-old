@@ -100,6 +100,12 @@ export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
             </Button>
           </Box>
         </FormControl>
+        <NodeStatus nodeData={data}></NodeStatus>
+        <HandleSourceImage
+          handleId={handleSources.image.id}
+          label="Image"
+          nodeId={id}
+        ></HandleSourceImage>
         <HandleSourceDirectory
           handleId={handleSources.directory.id}
           label="Directory"
@@ -108,12 +114,6 @@ export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
           directory={directoryPath}
           disabled={true}
         ></HandleSourceDirectory>
-        <NodeStatus nodeData={data}></NodeStatus>
-        <HandleSourceImage
-          handleId={handleSources.image.id}
-          label="Image"
-          nodeId={id}
-        ></HandleSourceImage>
         <HandleSourceText
           handleId={handleSources.filename.id}
           label="File Name"
@@ -121,6 +121,7 @@ export const ImageInputNode = ({ id, data }: NodeProps<NodeData>) => {
         ></HandleSourceText>
         <ImagePreview
           enabled={!!data.settings.enablePreview}
+          completed={!!data.completed}
           imageBuffer={data.imageBuffer?.buffer}
           onTogglePreview={(enabled: boolean) => {
             useNodeStore.getState().updateNodeSetting(id, {

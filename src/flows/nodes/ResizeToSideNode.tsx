@@ -78,7 +78,8 @@ export const ResizeToSideNode = ({ id, data }: NodeProps<NodeData>) => {
         ></HandleSourceImage>
         <NodeStatus nodeData={data}></NodeStatus>
         <ImagePreview
-          enabled={!!data.settings.enablePreview && data.completed}
+          enabled={!!data.settings.enablePreview}
+          completed={!!data.completed}
           imageBuffer={data.imageBuffer?.buffer}
           onTogglePreview={(enabled: boolean) => {
             useNodeStore.getState().updateNodeSetting(id, {

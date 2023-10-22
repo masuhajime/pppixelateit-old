@@ -115,6 +115,7 @@ export const ImageInputDirectoryNode = ({ id, data }: NodeProps<NodeData>) => {
         ></HandleSourceText>
         <ImagePreview
           enabled={!!data.settings.enablePreview}
+          completed={!!data.completed}
           imageBuffer={data.imageBuffer?.buffer}
           onTogglePreview={(enabled: boolean) => {
             useNodeStore.getState().updateNodeSetting(id, {

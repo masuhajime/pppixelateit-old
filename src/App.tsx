@@ -1,14 +1,7 @@
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import { Box, IconButton } from '@mui/material'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
-import {
-  DragEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { DragEvent, useCallback, useRef, useState } from 'react'
 import Split from 'react-split'
 import ReactFlow, {
   Background,
@@ -32,9 +25,8 @@ import { shallow } from 'zustand/shallow'
 import { getNodeTypesForReactFlow } from './flows/nodes'
 import processController from './process/imageProcess'
 import useNodeStore, { RFState } from './store/store'
-import { Event, emit, listen } from '@tauri-apps/api/event'
+import { Event, listen } from '@tauri-apps/api/event'
 import { open, save } from '@tauri-apps/api/dialog'
-import { fdatasync } from 'fs'
 import { fs } from '@tauri-apps/api'
 
 const nodeTypes = getNodeTypesForReactFlow()
@@ -42,9 +34,6 @@ const edgeTypes: EdgeTypes = {
   custom: CustomEdge,
 }
 
-interface PayloadFileSelect {
-  file: string
-}
 interface PayloadEmpty {}
 
 function App() {
