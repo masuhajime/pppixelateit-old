@@ -10,43 +10,31 @@ import {
   propagateValue,
 } from './data/NodeData'
 
-export const handleSources: Record<string, HandleSource> = {
+export const handleSources = {
   image: handleSourceImageDefault,
 }
 
-export const handleTargets: Record<string, HandleTarget> = {
+export const handleTargets = {
   image: {
     id: 'image',
     dataType: 'image',
-  },
+  } as HandleTarget,
   tolerance: {
     id: 'tolerance',
     dataType: 'number',
-  },
+  } as HandleTarget,
   x: {
     id: 'x',
     dataType: 'number',
-  },
+  } as HandleTarget,
   y: {
     id: 'y',
     dataType: 'number',
-  },
-  r: {
-    id: 'r',
-    dataType: 'number',
-  },
-  g: {
-    id: 'r',
-    dataType: 'number',
-  },
-  b: {
-    id: 'r',
-    dataType: 'number',
-  },
-  a: {
-    id: 'r',
-    dataType: 'number',
-  },
+  } as HandleTarget,
+  color: {
+    id: 'color',
+    dataType: 'color',
+  } as HandleTarget,
 }
 
 export type NodeDataSettings = {

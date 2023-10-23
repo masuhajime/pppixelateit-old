@@ -51,6 +51,7 @@ function App() {
       console.log('backend_save 1', event)
       save({
         title: 'Save Nodes',
+        filters: [{ name: 'Json', extensions: ['json'] }],
       }).then((file) => {
         if (file === null) {
           return

@@ -7,6 +7,7 @@ export type PropagateDataType =
   | 'buffer'
   | 'text'
   | 'directory'
+  | 'color'
 
 export type NodeBaseDataSettings = {
   [k: string]: any
