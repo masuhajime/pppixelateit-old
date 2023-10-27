@@ -1,7 +1,6 @@
 import { fillWithColor } from '../../process/w2b'
 import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import {
-  HandleSource,
   HandleTarget,
   NodeBaseData,
   NodeBaseDataImageBuffer,

@@ -7,6 +7,7 @@ import { ImagePreviewNode } from "./nodes/ImagePreviewNode";
 import { OutlineNode } from "./nodes/OutlineNode";
 import { PixelateNode } from "./nodes/PixelateNode";
 import { PosterizeNode } from "./nodes/PosterizeNode";
+import { RemoveBackgroundNode } from "./nodes/RemoveBackgroundNode";
 import { RemoveEdgePixelNode } from "./nodes/RemoveEdgePixelNode";
 import { ResizeToSideNode } from "./nodes/ResizeToSideNode";
 import { SaveImageNode } from "./nodes/SaveImageNode";
@@ -63,6 +64,9 @@ const nodeDefines = [
     },
     {
         element: SaveImageNode
+    },
+    {
+        element: RemoveBackgroundNode
     }
 ]
 

@@ -29,7 +29,7 @@
         "save": true
       },
       "fs": {
-        "all": false,
+        "all": true,
         "readFile": true,
         "writeFile": true,
         "readDir": true,

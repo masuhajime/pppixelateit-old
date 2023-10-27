@@ -1,0 +1,92 @@
+diff --git a/node_modules/@imgly/background-removal/dist/index.cjs b/node_modules/@imgly/background-removal/dist/index.cjs
+index 6e98d6b..2001811 100644
+--- a/node_modules/@imgly/background-removal/dist/index.cjs
++++ b/node_modules/@imgly/background-removal/dist/index.cjs
+@@ -5818,16 +5818,34 @@ async function imageEncode(imageTensor, quality = 0.8, type = "image/png") {
+     width,
+     height
+   );
+-  var canvas = new OffscreenCanvas(imageData.width, imageData.height);
++  // var canvas = new OffscreenCanvas(imageData.width, imageData.height);
++  var canvas = createCanvas();
+   var ctx = canvas.getContext("2d");
++  canvas.width = width;
++  canvas.height = height;
+   ctx.putImageData(imageData, 0, 0);
+-  return canvas.convertToBlob({ quality, type });
++  return new Promise((resolve, _reject) => {
++    canvas.toBlob(
++      (blob) => {
++        resolve(blob);
++      },
++      'image/png',
++      quality
++    );
++  });
+ }
+ 
+ // src/utils.ts
++function createCanvas() {
++  return document.createElement('canvas');
++}
+ function imageBitmapToImageData(imageBitmap) {
+-  var canvas = new OffscreenCanvas(imageBitmap.width, imageBitmap.height);
++  // var canvas = new OffscreenCanvas(imageBitmap.width, imageBitmap.height);
++  var canvas = createCanvas();
++  canvas.width = imageBitmap.width;
++  canvas.height = imageBitmap.height;
+   var ctx = canvas.getContext("2d");
++  
+   ctx.drawImage(imageBitmap, 0, 0);
+   return ctx.getImageData(0, 0, canvas.width, canvas.height);
+ }
+diff --git a/node_modules/@imgly/background-removal/dist/index.mjs b/node_modules/@imgly/background-removal/dist/index.mjs
+index f486357..bb8febc 100644
+--- a/node_modules/@imgly/background-removal/dist/index.mjs
++++ b/node_modules/@imgly/background-removal/dist/index.mjs
+@@ -5805,16 +5805,34 @@ async function imageEncode(imageTensor, quality = 0.8, type = "image/png") {
+     width,
+     height
+   );
+-  var canvas = new OffscreenCanvas(imageData.width, imageData.height);
++  // var canvas = new OffscreenCanvas(imageData.width, imageData.height);
++  var canvas = createCanvas();
+   var ctx = canvas.getContext("2d");
++  canvas.width = width;
++  canvas.height = height;
+   ctx.putImageData(imageData, 0, 0);
+-  return canvas.convertToBlob({ quality, type });
++  return new Promise((resolve, _reject) => {
++    canvas.toBlob(
++      (blob) => {
++        resolve(blob);
++      },
++      'image/png',
++      quality
++    );
++  });
+ }
+ 
+ // src/utils.ts
++function createCanvas() {
++  return document.createElement('canvas');
++}
+ function imageBitmapToImageData(imageBitmap) {
+-  var canvas = new OffscreenCanvas(imageBitmap.width, imageBitmap.height);
++  // var canvas = new OffscreenCanvas(imageBitmap.width, imageBitmap.height);
++  var canvas = createCanvas();
++  canvas.width = imageBitmap.width;
++  canvas.height = imageBitmap.height;
+   var ctx = canvas.getContext("2d");
++  
+   ctx.drawImage(imageBitmap, 0, 0);
+   return ctx.getImageData(0, 0, canvas.width, canvas.height);
+ }
+@@ -9953,6 +9971,7 @@ export {
+   src_default as default,
+   removeBackground
+ };
++
+ /*! Bundled license information:
+ 
+ is-buffer/index.js:

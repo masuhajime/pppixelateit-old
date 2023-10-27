@@ -2,8 +2,11 @@
 import cv from "@techstark/opencv-js"
 import { Buffer } from "buffer"
 import Jimp from "jimp"
-import useNodeStore from "../store/store"
 import { RGBA, Vector2 } from "../dto/generals"
+import useNodeStore from "../store/store"
+// import { removeBackground } from "@imgly/background-removal-node"
+import imglyRemoveBackground from "@imgly/background-removal"
+
 
 export const doNodeProcess = async (nodeId: string, callback: () => void) => {
     const store = useNodeStore.getState();
@@ -279,3 +282,16 @@ const getPixelColorAround = (img: Jimp, x: number, y: number) => {
         img.getPixelColor(x + 1, y + 1),
     ];
 }
+
+export const imglyRemoveBackgroundBuffer = async (imageBuffer: Buffer) => {
+    console.log('imglyRemoveBackgroundBuffer start');
+
+    const removed = await imglyRemoveBackground(imageBuffer, {
+
+    })
+    console.log('imglyRemoveBackgroundBuffer complete');
+    // const removed = await removeBackground(imageBuffer)
+    // convert removed to buffer
+    //const buffer = Buffer.from(removed)
+    return await removed.arrayBuffer()
+};
