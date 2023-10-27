@@ -1,5 +1,6 @@
 import useNodeStore from '../../store/store'
 import {
+  BufferSequenceable,
   HandleSource,
   HandleTarget,
   NodeBaseData,
@@ -8,23 +9,23 @@ import {
 
 export const handleSources: Record<string, HandleSource> = {}
 
-export const handleTargets: Record<string, HandleTarget> = {
+export const handleTargets = {
   imageA: {
     id: 'imageA',
     dataType: 'image',
-  },
+  } as HandleTarget,
   imageB: {
     id: 'imageB',
     dataType: 'image',
-  },
+  } as HandleTarget,
 }
 
 export type NodeData = {
   settings: {
     enablePreview?: boolean
   }
-  imageBufferA?: Buffer
-  imageBufferB?: Buffer
+  imageBufferA?: BufferSequenceable
+  imageBufferB?: BufferSequenceable
 } & NodeBaseData
 
 export const nodeBehavior: NodeBehaviorInterface = {
@@ -35,6 +36,8 @@ export const nodeBehavior: NodeBehaviorInterface = {
     data: any
   ): void {
     const store = useNodeStore.getState()
+    console.log('dataIncoming', nodeId, handleId, dataType, data)
+
     if (handleId === 'imageA') {
       store.updateNodeData<NodeData>(nodeId, {
         imageBufferA: data,

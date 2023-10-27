@@ -22,9 +22,9 @@ export const ImagePreviewCompare = ({ id, data }: NodeProps<NodeData>) => {
     if (!data.imageBufferA) {
       setHtmlImageBase64A(undefined)
     }
-    if (!!data.imageBufferA) {
+    if (!!data.imageBufferA?.buffer) {
       setHtmlImageBase64A(
-        'data:image/png;base64,' + arrayBufferToBase64(data.imageBufferA)
+        'data:image/png;base64,' + arrayBufferToBase64(data.imageBufferA.buffer)
       )
     }
   }, [data.imageBufferA])
@@ -32,9 +32,9 @@ export const ImagePreviewCompare = ({ id, data }: NodeProps<NodeData>) => {
     if (!data.imageBufferB) {
       setHtmlImageBase64B(undefined)
     }
-    if (!!data.imageBufferB) {
+    if (!!data.imageBufferB?.buffer) {
       setHtmlImageBase64B(
-        'data:image/png;base64,' + arrayBufferToBase64(data.imageBufferB)
+        'data:image/png;base64,' + arrayBufferToBase64(data.imageBufferB.buffer)
       )
     }
   }, [data.imageBufferB])
