@@ -3,18 +3,8 @@ import cv from "@techstark/opencv-js"
 import { Buffer } from "buffer"
 import Jimp from "jimp"
 import { RGBA, Vector2 } from "../dto/generals"
-import useNodeStore from "../store/store"
 // import { removeBackground } from "@imgly/background-removal-node"
 import imglyRemoveBackground from "@imgly/background-removal"
-
-
-export const doNodeProcess = async (nodeId: string, callback: () => void) => {
-    const store = useNodeStore.getState();
-    store.nodeSetProcessing(nodeId, true);
-    await callback();
-    store.nodeSetProcessing(nodeId, false);
-}
-
 
 export const greyscale = async (imageBuffer: Buffer) => {
 

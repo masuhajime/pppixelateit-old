@@ -1,5 +1,5 @@
 // @flow
-import { Box, Button, Popover } from '@mui/material'
+import { Box, Button, Popover, Typography } from '@mui/material'
 import { Chrome, rgbaToHexa } from '@uiw/react-color'
 import * as React from 'react'
 import { Handle, Position, useUpdateNodeInternals } from 'reactflow'
@@ -7,6 +7,7 @@ import { RGBA } from '../../../dto/generals'
 type Props = {
   handleId: string
   nodeId: string
+  label: string
   //colorHexaString?: string
   color?: RGBA
   onChange?: (color: RGBA) => void
@@ -26,7 +27,8 @@ export const HandleTargetColor = (props: Props) => {
   React.useEffect(() => {
     updateNodeInternals(props.nodeId)
   }, [handlePositionTop])
-  const color = props.color || { r: 255, g: 255, b: 255, a: 1 }
+  let color = props.color || { r: 255, g: 255, b: 255, a: 255 }
+  color = { ...color, a: color.a / 255 }
   const colorHexa = rgbaToHexa(color)
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
@@ -44,6 +46,18 @@ export const HandleTargetColor = (props: Props) => {
 
   return (
     <Box ref={ref} className="node-item">
+      <div>
+        <Typography
+          variant="caption"
+          display="block"
+          sx={{
+            paddingLeft: '1rem',
+            fontSize: '0.6rem',
+          }}
+        >
+          {props.label}
+        </Typography>
+      </div>
       <Button
         aria-describedby={id}
         variant="contained"
@@ -56,7 +70,7 @@ export const HandleTargetColor = (props: Props) => {
         className="nodrag"
       >
         {colorHexa} ({color?.r}, {color?.g}, {color?.b},{' '}
-        {Math.floor(color?.a * 100)})
+        {Math.floor((Math.round(color?.a * 100) / 100) * 255)})
       </Button>
       <Popover
         id={id}
@@ -73,7 +87,12 @@ export const HandleTargetColor = (props: Props) => {
           color={colorHexa}
           onChange={(color) => {
             if (props.onChange) {
-              props.onChange(color.rgba)
+              props.onChange({
+                r: color.rgba.r,
+                g: color.rgba.g,
+                b: color.rgba.b,
+                a: (Math.round(color.rgba.a * 100) / 100) * 255,
+              })
             }
           }}
         />

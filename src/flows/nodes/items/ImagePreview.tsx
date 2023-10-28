@@ -87,7 +87,7 @@ export const ImagePreview = ({
               <img
                 src={imageBase64}
                 style={{
-                  width: '100%',
+                  // width: '100%',
                   maxWidth: '208px',
                   height: 'auto',
                   imageRendering: 'pixelated',
@@ -107,7 +107,7 @@ export const ImagePreview = ({
               <img
                 src={htmlImageBase64}
                 style={{
-                  width: '100%',
+                  // width: '100%',
                   maxWidth: '208px',
                   height: 'auto',
                   imageRendering: 'pixelated',

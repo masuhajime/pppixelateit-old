@@ -17,9 +17,11 @@ import useNodeStore, { updateSetting } from '../../store/store'
 import { HandleTargetNumber } from './items/HandleTargetNumber'
 import { NodeStatus } from './components/NodeStatus'
 import { HandleTargetColor } from './items/HandleTargetColor'
+import { Select } from './items/Select'
+import { MenuItem } from '@mui/material'
 
 export const FillWithColorNode = ({ id, data }: NodeProps<NodeData>) => {
-  const color =
+  const colorTarget =
     data.settings.a && data.settings.r && data.settings.g && data.settings.b
       ? {
           a: data.settings.a,
@@ -33,6 +35,21 @@ export const FillWithColorNode = ({ id, data }: NodeProps<NodeData>) => {
           g: 255,
           b: 255,
         }
+  const colorFill =
+    data.settings.a2 && data.settings.r2 && data.settings.g2 && data.settings.b2
+      ? {
+          a: data.settings.a2,
+          r: data.settings.r2,
+          g: data.settings.g2,
+          b: data.settings.b2,
+        }
+      : {
+          a: 1,
+          r: 255,
+          g: 255,
+          b: 255,
+        }
+  const method = data.settings.method || 'top_left_pixel'
   return (
     <Node status={data.isProcessing ? 'processing' : undefined}>
       <NodeHeader title="FillWithColorNode" />
@@ -41,20 +58,19 @@ export const FillWithColorNode = ({ id, data }: NodeProps<NodeData>) => {
           handleId={handleTargets.image.id}
           nodeId={id}
         ></HandleTargetImage>
-        <HandleTargetNumber
-          handleId={handleTargets.x.id}
+        <Select
+          label={'Method'}
           nodeId={id}
-          defaultValue={data.settings.x || 0}
-          name="x"
-          onChange={updateSetting(id, 'x')}
-        ></HandleTargetNumber>
-        <HandleTargetNumber
-          handleId={handleTargets.y.id}
-          nodeId={id}
-          defaultValue={data.settings.y || 0}
-          name="y"
-          onChange={updateSetting(id, 'y')}
-        ></HandleTargetNumber>
+          defaultValue={method}
+          onSelect={(value) => {
+            useNodeStore.getState().updateNodeSetting(id, {
+              method: value,
+            })
+          }}
+        >
+          <MenuItem value={'top_left_pixel'}>Top Left Pixel</MenuItem>
+          <MenuItem value={'fixed_target_color'}>Fixed Target Color</MenuItem>
+        </Select>
         <HandleTargetNumber
           handleId={handleTargets.tolerance.id}
           nodeId={id}
@@ -62,16 +78,33 @@ export const FillWithColorNode = ({ id, data }: NodeProps<NodeData>) => {
           name="tolerance"
           onChange={updateSetting(id, 'tolerance')}
         ></HandleTargetNumber>
+        {method === 'fixed_target_color' && (
+          <HandleTargetColor
+            label="Target Color"
+            handleId={handleTargets.colorTarget.id}
+            nodeId={id}
+            color={colorTarget}
+            onChange={(color) => {
+              useNodeStore.getState().updateNodeSetting<NodeDataSettings>(id, {
+                r: color.r,
+                g: color.g,
+                b: color.b,
+                a: color.a,
+              })
+            }}
+          />
+        )}
         <HandleTargetColor
-          handleId={handleTargets.image.id}
-          nodeId="aaa"
-          color={color}
+          label="Fill Color"
+          handleId={handleTargets.colorFill.id}
+          nodeId={id}
+          color={colorFill}
           onChange={(color) => {
             useNodeStore.getState().updateNodeSetting<NodeDataSettings>(id, {
-              r: color.r,
-              g: color.g,
-              b: color.b,
-              a: color.a,
+              r2: color.r,
+              g2: color.g,
+              b2: color.b,
+              a2: color.a,
             })
           }}
         ></HandleTargetColor>

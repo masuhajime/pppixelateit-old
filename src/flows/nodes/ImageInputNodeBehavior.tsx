@@ -43,6 +43,11 @@ export type NodeData = {
   NodeBaseDataImageBuffer
 
 export const nodeBehavior: NodeBehaviorInterface = {
+  initialize(nodeId: string): void {
+    // useNodeStore.getState().updateNodeData<NodeData>(nodeId, {
+    //   inputFilePath: '/Users/masuhajime/pppjs/images/4-1.png',
+    // })
+  },
   dataIncoming(
     nodeId: string,
     handleId: string,
@@ -56,7 +61,6 @@ export const nodeBehavior: NodeBehaviorInterface = {
     // TODO: throw error is not image selected
 
     const nodeStore = useNodeStore.getState()
-
     if (!node.data.inputFilePath) {
       throw new Error('no image')
     }

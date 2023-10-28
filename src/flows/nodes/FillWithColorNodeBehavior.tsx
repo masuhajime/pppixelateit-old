@@ -1,4 +1,4 @@
-import { fillWithColor } from '../../process/w2b'
+import { fillWithColorA, fillWithColorFromPoint } from '../../process/fillColor'
 import useNodeStore, { getNodeSnapshot } from '../../store/store'
 import {
   HandleTarget,
@@ -30,25 +30,73 @@ export const handleTargets = {
     id: 'y',
     dataType: 'number',
   } as HandleTarget,
-  color: {
-    id: 'color',
+  colorTarget: {
+    id: 'colorTarget',
+    dataType: 'color',
+  } as HandleTarget,
+  colorFill: {
+    id: 'colorFill',
     dataType: 'color',
   } as HandleTarget,
 }
 
 export type NodeDataSettings = {
-  x: number
-  y: number
+  method: string
   r: number
   g: number
   b: number
   a: number
+  r2: number
+  g2: number
+  b2: number
+  a2: number
   tolerance: number
 }
 export type NodeData = {
   settings: NodeDataSettings
 } & NodeBaseData &
   NodeBaseDataImageBuffer
+
+const filter = (nodeData: NodeData): Promise<Buffer> => {
+  if (!nodeData.imageBuffer?.buffer) {
+    throw new Error('no image')
+  }
+  console.log('fill with color', nodeData.settings)
+
+  if (nodeData.settings.method === 'top_left_pixel') {
+    return fillWithColorFromPoint(
+      nodeData.imageBuffer?.buffer,
+      {
+        x: 0,
+        y: 0,
+      },
+      {
+        r: nodeData.settings.r2,
+        g: nodeData.settings.g2,
+        b: nodeData.settings.b2,
+        a: nodeData.settings.a2,
+      },
+      nodeData.settings.tolerance
+    )
+  } else {
+    return fillWithColorA(
+      nodeData.imageBuffer?.buffer,
+      {
+        r: nodeData.settings.r,
+        g: nodeData.settings.g,
+        b: nodeData.settings.b,
+        a: nodeData.settings.a,
+      },
+      {
+        r: nodeData.settings.r2,
+        g: nodeData.settings.g2,
+        b: nodeData.settings.b2,
+        a: nodeData.settings.a2,
+      },
+      nodeData.settings.tolerance
+    )
+  }
+}
 
 export const nodeBehavior: NodeBehaviorInterface = {
   dataIncoming(
@@ -74,20 +122,7 @@ export const nodeBehavior: NodeBehaviorInterface = {
     store.updateNodeData<NodeData>(nodeId, {
       completed: false,
     })
-    fillWithColor(
-      node.data.imageBuffer?.buffer,
-      {
-        x: node.data.settings.x,
-        y: node.data.settings.y,
-      },
-      {
-        r: node.data.settings.r,
-        g: node.data.settings.g,
-        b: node.data.settings.b,
-        a: node.data.settings.a,
-      },
-      node.data.settings.tolerance
-    ).then((w2b) => {
+    filter(node.data).then((w2b) => {
       store.updateNodeData<NodeData>(nodeId, {
         completed: true,
         imageBuffer: {
